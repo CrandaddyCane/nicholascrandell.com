@@ -37,18 +37,46 @@
         a {
             color: #0066cc;
         }
+        .site-header {
+    margin-bottom: 60px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+
+.site-header nav {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.site-header a {
+    color: #222;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.site-header a:hover {
+    text-decoration: underline;
+}
     </style>
 </head>
 
 <body>
-
+<header class="site-header">
+    <nav>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+        <a href="resume.pdf">Resume</a>
+    </nav>
+</header>
 <h1>Nicholas Crandell</h1>
 
 <p class="subtitle">
 Digital Project Manager | CMS | Analytics | Web Operations
 </p>
 
-<section>
+<section id="about">
     <h2>About</h2>
 
     <p>
@@ -59,7 +87,7 @@ Digital Project Manager | CMS | Analytics | Web Operations
     </p>
 </section>
 
-<section>
+<section id="projects">
     <h2>Projects</h2>
 
     <div class="project">
@@ -91,7 +119,7 @@ Digital Project Manager | CMS | Analytics | Web Operations
     </div>
 </section>
 
-<section>
+<section id="contact">
     <h2>Contact</h2>
 
     <p>
