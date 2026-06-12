@@ -175,3 +175,20 @@ body {
   font-weight: 800;
   line-height: 1;
 }
+
+
+.f1-section {
+  margin-top: 2rem;
+}
+
+.f1-section-header {
+  margin-bottom: 0.75rem;
+}
+
+.f1-section-header h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--f1-muted);
+}
