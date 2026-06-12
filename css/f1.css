@@ -192,3 +192,75 @@ body {
   text-transform: uppercase;
   color: var(--f1-muted);
 }
+
+.standings-section {
+  margin-top: 2.5rem;
+  max-width: 820px;
+}
+
+.section-title {
+  color: var(--f1-text);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+.standings-table {
+  border: 1px solid var(--f1-border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.standings-header,
+.standings-row {
+  display: grid;
+  grid-template-columns: 64px 64px minmax(160px, 1.4fr) minmax(160px, 1fr) 72px;
+  align-items: center;
+}
+
+.standings-header {
+  color: var(--f1-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--f1-border);
+}
+
+.standings-row {
+  min-height: 46px;
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  font-size: 0.9rem;
+}
+
+.standings-row:last-child {
+  border-bottom: none;
+}
+
+.standings-row:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.driver-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+}
+
+.change-cell {
+  color: var(--f1-muted);
+}
+
+.points-cell {
+  font-weight: 700;
+}
+
+.standings-loading {
+  padding: 1rem;
+  color: var(--f1-muted);
+  font-size: 0.9rem;
+}
