@@ -24,25 +24,39 @@
       </nav>
     </aside>
 
-    <main class="f1-content">
-      <section class="f1-hero">
-        <h1>2026 F1 Season</h1>
-      </section>
-<section class="f1-section">
-  <div class="f1-section-header">
-    <h2>Race Calendar</h2>
-  </div>
+<main class="f1-content">
+  <section class="f1-hero">
+    <h1>2026 F1 Season</h1>
+  </section>
 
-  <div id="raceStrip" class="race-strip">
-    <p class="f1-loading">Loading race calendar...</p>
-  </div>
-</section>
-      <section class="race-strip-section">
-        <div id="raceStrip" class="race-strip">
-          <p class="f1-loading">Loading race calendar...</p>
+  <section class="race-strip-section">
+    <div id="raceStrip" class="race-strip">
+      <p class="f1-loading">Loading race calendar...</p>
+    </div>
+  </section>
+
+  <section class="standings-section">
+    <div class="section-title">
+      Driver Championship
+    </div>
+
+    <div class="standings-table">
+      <div class="standings-header">
+        <div>POS</div>
+        <div>+/-</div>
+        <div>DRIVER</div>
+        <div>TEAM</div>
+        <div>PTS</div>
+      </div>
+
+      <div id="driverStandingsBody">
+        <div class="standings-loading">
+          Loading standings...
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
+  </section>
+</main>
   </div>
 
   <script src="/js/f1-overview.js"></script>
