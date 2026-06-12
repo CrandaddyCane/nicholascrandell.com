@@ -29,7 +29,7 @@ function formatRaceDate(dateString) {
   const day = date.getUTCDate();
   const month = date.getUTCMonth() + 1;
 
-  return `${day}/${month}`;
+  return `${month}/${day}`;
 }
 
 function getNextRaceIndex(races) {
