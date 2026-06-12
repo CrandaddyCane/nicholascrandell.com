@@ -82,3 +82,52 @@ body {
   font-size: 0.86rem;
   line-height: 1.55;
 }
+.f1-app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.f1-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: #0b0d12;
+  border-right: 1px solid var(--f1-border);
+  padding: 2rem 1.5rem;
+}
+
+.f1-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.03em;
+}
+
+.f1-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.f1-nav a {
+  color: var(--f1-muted);
+  text-decoration: none;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.f1-nav a:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--f1-text);
+}
+
+.f1-nav a.active {
+  background: rgba(225, 6, 0, 0.15);
+  color: var(--f1-text);
+  border: 1px solid rgba(225, 6, 0, 0.35);
+}
+
+.f1-content {
+  flex: 1;
+  padding: 4rem;
+}
