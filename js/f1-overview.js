@@ -1,4 +1,5 @@
 const raceStrip = document.getElementById('raceStrip');
+const driverStandingsBody = document.getElementById('driverStandingsBody');
 
 const countryFlags = {
   Australia: '🇦🇺',
@@ -22,6 +23,28 @@ const countryFlags = {
   Brazil: '🇧🇷',
   Qatar: '🇶🇦',
   UAE: '🇦🇪'
+};
+
+const nationalityFlags = {
+  Australian: '🇦🇺',
+  British: '🇬🇧',
+  Dutch: '🇳🇱',
+  Monegasque: '🇲🇨',
+  German: '🇩🇪',
+  Spanish: '🇪🇸',
+  French: '🇫🇷',
+  Italian: '🇮🇹',
+  Finnish: '🇫🇮',
+  Mexican: '🇲🇽',
+  Canadian: '🇨🇦',
+  Japanese: '🇯🇵',
+  Thai: '🇹🇭',
+  Chinese: '🇨🇳',
+  Brazilian: '🇧🇷',
+  Argentine: '🇦🇷',
+  American: '🇺🇸',
+  Danish: '🇩🇰',
+  New Zealander: '🇳🇿'
 };
 
 const cancelledRaces = [
@@ -107,4 +130,55 @@ async function loadRaceStrip() {
   }
 }
 
+async function loadDriverStandings() {
+  try {
+    const response = await fetch('https://api.jolpi.ca/ergast/f1/2026/driverstandings.json');
+
+    if (!response.ok) {
+      throw new Error('Unable to load driver standings.');
+    }
+
+    const data = await response.json();
+    const standingsList = data.MRData.StandingsTable.StandingsLists[0];
+
+    if (!standingsList) {
+      driverStandingsBody.innerHTML = `
+        <div class="standings-loading">
+          No driver standings available yet.
+        </div>
+      `;
+      return;
+    }
+
+    const standings = standingsList.DriverStandings;
+
+    driverStandingsBody.innerHTML = standings.map((standing) => {
+      const driver = standing.Driver;
+      const team = standing.Constructors[0];
+      const flag = nationalityFlags[driver.nationality] || '';
+
+      return `
+        <div class="standings-row">
+          <div>${standing.position}</div>
+          <div class="change-cell">–</div>
+          <div class="driver-cell">
+            <span>${flag}</span>
+            <span>${driver.familyName}</span>
+          </div>
+          <div>${team.name}</div>
+          <div class="points-cell">${standing.points}</div>
+        </div>
+      `;
+    }).join('');
+  } catch (error) {
+    driverStandingsBody.innerHTML = `
+      <div class="standings-loading">
+        Unable to load driver standings.
+      </div>
+    `;
+    console.error(error);
+  }
+}
+
 loadRaceStrip();
+loadDriverStandings();
