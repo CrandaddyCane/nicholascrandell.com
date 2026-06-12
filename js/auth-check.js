@@ -1,11 +1,14 @@
 import { supabase } from './auth.js';
 
-const {
-  data: { user },
-  error
-} = await supabase.auth.getUser();
+async function requireLogin() {
+  const {
+    data: { session },
+    error
+  } = await supabase.auth.getSession();
 
-if (error || !user) {
-  window.location.href = '/login.html';
+  if (error || !session) {
+    window.location.replace('/login.html');
+  }
 }
 
+requireLogin();
