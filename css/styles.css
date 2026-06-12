@@ -328,17 +328,7 @@ body {
 
 
 
-.overview-grid {
 
-  display: flex;
-
-  gap: 2rem;
-
-  align-items: flex-start;
-
-  margin-top: 2.5rem;
-
-}
 
 
 
@@ -552,7 +542,9 @@ body {
   gap: 2rem;
 
 
-  align-items: stretch;
+  align-items: flex-stretch;
+
+    margin-top: 2.5rem;
 
 
 }
@@ -581,7 +573,6 @@ body {
 .points-chart-card {
 
 
-  height: 540px;
 
 
   border: 1px solid var(--f1-border);
