@@ -180,9 +180,14 @@ body {
 .standings-header,
 .standings-row {
   display: grid;
-  grid-template-columns: max-content max-content max-content max-content max-content;
+  grid-template-columns:
+    minmax(36px, max-content)
+    minmax(36px, max-content)
+    minmax(max-content, max-content)
+    minmax(max-content, max-content)
+    minmax(42px, max-content);
   align-items: center;
-  column-gap: 2rem;
+  column-gap: 1.75rem;
 }
 
 .standings-header {
@@ -209,11 +214,18 @@ body {
   background: rgba(255, 255, 255, 0.035);
 }
 
+.standings-header > div,
+.standings-row > div {
+  text-align: left;
+  justify-self: start;
+}
+
 .driver-cell {
   display: flex;
   align-items: center;
   gap: 0.55rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .change-cell {
