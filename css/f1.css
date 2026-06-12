@@ -4,6 +4,7 @@
   --f1-surface-2: #181b24;
   --f1-border: #2a2e3a;
   --f1-red: #e10600;
+  --f1-green: #35c96f;
   --f1-text: #f4f4f6;
   --f1-muted: #9ca3af;
 }
@@ -19,11 +20,7 @@
 body {
   font-family: Inter, sans-serif;
   background:
-    radial-gradient(
-      circle at top left,
-      rgba(225, 6, 0, 0.18),
-      transparent 32rem
-    ),
+    radial-gradient(circle at top left, rgba(225, 6, 0, 0.18), transparent 32rem),
     var(--f1-bg);
   color: var(--f1-text);
 }
@@ -86,6 +83,51 @@ body {
   font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1;
   letter-spacing: -0.05em;
+}
+
+.race-strip-section {
+  margin-top: 1.5rem;
+}
+
+.race-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding: 1rem 0 1.5rem;
+}
+
+.race-marker {
+  min-width: 44px;
+  text-align: center;
+}
+
+.race-flag {
+  font-size: 1.6rem;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.race-date {
+  font-size: 0.8rem;
+  color: var(--f1-text);
+}
+
+.race-dot {
+  width: 9px;
+  height: 9px;
+  margin: 0.45rem auto 0;
+  border-radius: 999px;
+}
+
+.race-dot.is-next {
+  background: var(--f1-green);
+}
+
+.f1-loading,
+.f1-error {
+  color: var(--f1-muted);
+  font-size: 0.9rem;
 }
 
 @media (max-width: 900px) {
