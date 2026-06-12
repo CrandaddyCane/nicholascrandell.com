@@ -1,147 +1,28 @@
-:root {
-  --f1-bg: #07080c;
-  --f1-surface: #11131a;
-  --f1-surface-2: #181b24;
-  --f1-border: #2a2e3a;
-  --f1-red: #e10600;
-  --f1-green: #35c96f;
-  --f1-text: #f4f4f6;
-  --f1-muted: #9ca3af;
+.race-marker.is-past {
+  opacity: 0.45;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.race-marker.is-future {
+  opacity: 1;
 }
 
-body {
-  font-family: Inter, sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(225, 6, 0, 0.18), transparent 32rem),
-    var(--f1-bg);
-  color: var(--f1-text);
+.race-marker.is-cancelled {
+  opacity: 0.7;
 }
 
-.f1-app {
+.race-flag-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.race-cancelled-x {
+  position: absolute;
+  inset: -4px;
   display: flex;
-  min-height: 100vh;
-}
-
-.f1-sidebar {
-  width: 260px;
-  flex-shrink: 0;
-  background: #0b0d12;
-  border-right: 1px solid var(--f1-border);
-  padding: 2rem 1.5rem;
-}
-
-.f1-logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  margin-bottom: 2.5rem;
-}
-
-.f1-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.f1-nav a {
-  color: var(--f1-muted);
-  text-decoration: none;
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
-  transition: all 0.2s ease;
-}
-
-.f1-nav a:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--f1-text);
-}
-
-.f1-nav a.active {
-  background: rgba(225, 6, 0, 0.15);
-  color: var(--f1-text);
-  border: 1px solid rgba(225, 6, 0, 0.35);
-}
-
-.f1-content {
-  flex: 1;
-  padding: 4rem;
-}
-
-.f1-hero {
-  margin-bottom: 2rem;
-}
-
-.f1-hero h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  align-items: center;
+  justify-content: center;
+  color: var(--f1-red);
+  font-size: 2rem;
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.05em;
-}
-
-.race-strip-section {
-  margin-top: 1.5rem;
-}
-
-.race-strip {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.25rem;
-  overflow-x: auto;
-  padding: 1rem 0 1.5rem;
-}
-
-.race-marker {
-  min-width: 44px;
-  text-align: center;
-}
-
-.race-flag {
-  font-size: 1.6rem;
-  line-height: 1;
-  margin-bottom: 0.35rem;
-}
-
-.race-date {
-  font-size: 0.8rem;
-  color: var(--f1-text);
-}
-
-.race-dot {
-  width: 9px;
-  height: 9px;
-  margin: 0.45rem auto 0;
-  border-radius: 999px;
-}
-
-.race-dot.is-next {
-  background: var(--f1-green);
-}
-
-.f1-loading,
-.f1-error {
-  color: var(--f1-muted);
-  font-size: 0.9rem;
-}
-
-@media (max-width: 900px) {
-  .f1-app {
-    flex-direction: column;
-  }
-
-  .f1-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--f1-border);
-  }
-
-  .f1-content {
-    padding: 2rem;
-  }
 }
