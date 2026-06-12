@@ -90,6 +90,15 @@ function normalizeRace(race) {
   };
 }
 
+function syncChartHeight() {
+  const table = document.querySelector('.standings-table');
+  const chartCard = document.querySelector('.points-chart-card');
+
+  if (!table || !chartCard) return;
+
+  chartCard.style.height = `${table.offsetHeight}px`;
+}
+
 async function loadRaceStrip() {
   try {
     const response = await fetch('https://api.jolpi.ca/ergast/f1/2026.json');
@@ -140,7 +149,7 @@ async function loadDriverStandings() {
 
     const data = await response.json();
     const standingsList = data.MRData.StandingsTable.StandingsLists[0];
-  const topTenStandings = standings.slice(0, 10);
+
     if (!standingsList) {
       driverStandingsBody.innerHTML = `
         <div class="standings-loading">
@@ -151,8 +160,9 @@ async function loadDriverStandings() {
     }
 
     const standings = standingsList.DriverStandings;
+    const topTenStandings = standings.slice(0, 10);
 
-    driverStandingsBody.innerHTML = topTenstandings.map((standing) => {
+    driverStandingsBody.innerHTML = topTenStandings.map((standing) => {
       const driver = standing.Driver;
       const team = standing.Constructors?.[0] || standing.Constructor || {};
       const flag = nationalityFlags[driver.nationality] || '';
@@ -170,6 +180,8 @@ async function loadDriverStandings() {
         </div>
       `;
     }).join('');
+
+    syncChartHeight();
   } catch (error) {
     driverStandingsBody.innerHTML = `
       <div class="standings-loading">
@@ -179,6 +191,7 @@ async function loadDriverStandings() {
     console.error(error);
   }
 }
+
 async function loadPointsTrendChart() {
   const chartCanvas = document.getElementById('pointsTrendChart');
 
@@ -241,11 +254,11 @@ async function loadPointsTrendChart() {
     });
 
     const topTenDrivers = Object.entries(driverTotals)
-      .map(([driverCode, data]) => ({
+      .map(([driverCode, driverData]) => ({
         driverCode,
         teamName: driverTeams[driverCode],
-        totals: data.totals,
-        finalPoints: data.totals[data.totals.length - 1] || 0
+        totals: driverData.totals,
+        finalPoints: driverData.totals[driverData.totals.length - 1] || 0
       }))
       .sort((a, b) => b.finalPoints - a.finalPoints)
       .slice(0, 10);
@@ -332,16 +345,6 @@ async function loadPointsTrendChart() {
   }
 }
 
-function syncChartHeight() {
-  const table = document.querySelector('.standings-table');
-  const chartCard = document.querySelector('.points-chart-card');
-
-  if (!table || !chartCard) return;
-
-  chartCard.style.height = `${table.offsetHeight}px`;
-}
-
-syncChartHeight();
 loadRaceStrip();
 loadDriverStandings();
 loadPointsTrendChart();
