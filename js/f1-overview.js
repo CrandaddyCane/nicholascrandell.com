@@ -179,6 +179,119 @@ async function loadDriverStandings() {
     console.error(error);
   }
 }
+async function loadPointsTrendChart() {
+  const chartCanvas = document.getElementById('pointsTrendChart');
 
+  if (!chartCanvas) return;
+
+  try {
+    const response = await fetch('https://api.jolpi.ca/ergast/f1/2026/results.json?limit=1000');
+
+    if (!response.ok) {
+      throw new Error('Unable to load race results.');
+    }
+
+    const data = await response.json();
+    const races = data.MRData.RaceTable.Races;
+
+    const driverTotals = {};
+    const raceLabels = [];
+
+    races.forEach((race) => {
+      const raceLabel = race.raceName
+        .replace(' Grand Prix', '')
+        .replace(' Grand Prix', '');
+
+      raceLabels.push(raceLabel);
+
+      race.Results.forEach((result) => {
+        const driver = result.Driver;
+        const driverName = driver.familyName;
+        const points = Number(result.points);
+
+        if (!driverTotals[driverName]) {
+          driverTotals[driverName] = [];
+        }
+
+        driverTotals[driverName].currentTotal =
+          (driverTotals[driverName].currentTotal || 0) + points;
+      });
+
+      Object.keys(driverTotals).forEach((driverName) => {
+        driverTotals[driverName].push(driverTotals[driverName].currentTotal || 0);
+      });
+    });
+
+    const finalStandings = Object.entries(driverTotals)
+      .map(([driverName, totals]) => ({
+        driverName,
+        totals,
+        finalPoints: totals[totals.length - 1] || 0
+      }))
+      .sort((a, b) => b.finalPoints - a.finalPoints)
+      .slice(0, 10);
+
+    new Chart(chartCanvas, {
+      type: 'line',
+      data: {
+        labels: raceLabels,
+        datasets: finalStandings.map((driver) => ({
+          label: driver.driverName,
+          data: driver.totals,
+          borderWidth: 2,
+          tension: 0.25,
+          pointRadius: 2,
+          pointHoverRadius: 5
+        }))
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'nearest',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#f4f4f6'
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: ${context.parsed.y} pts`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#9ca3af',
+              maxRotation: 45,
+              minRotation: 45
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.06)'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#9ca3af'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.06)'
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 loadRaceStrip();
 loadDriverStandings();
+loadPointsTrendChart();
