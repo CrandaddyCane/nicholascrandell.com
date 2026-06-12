@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private | Nicholas Crandell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --accent: #6c8cff;
+      --text: #e8eaf0;
+      --muted: #7a7f96;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    body.ready { opacity: 1; }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(108,140,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,140,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(15,17,23,0.9);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    .nav-brand {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-brand .badge {
+      font-size: 0.65rem;
+      font-weight: 500;
+      background: rgba(108,140,255,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(108,140,255,0.3);
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .user-email {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .btn-logout {
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-logout:hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .page-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.4rem;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* Content cards — replace these with your actual content */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover { border-color: rgba(108,140,255,0.4); }
+
+    .card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .placeholder-note {
+      margin-top: 3rem;
+      padding: 1rem 1.25rem;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .placeholder-note strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">
+      Nicholas Crandell <span class="badge">Private</span>
+    </div>
+    <div class="nav-right">
+      <span class="user-email" id="userEmail"></span>
+      <button class="btn-logout" onclick="handleLogout()">Sign out</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <h1>Welcome back 👋</h1>
+      <p>This area is private. Only you can see this.</p>
+    </div>
+
+    <!-- Replace the cards below with your actual private content -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <h3>Family Documents</h3>
+        <p>Important files, shared links, and personal records stored here.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📷</div>
+        <h3>Photo Albums</h3>
+        <p>Private photo collections for family and close friends.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <h3>Notes</h3>
+        <p>Personal notes, reminders, and things you don't want public.</p>
+      </div>
+    </div>
+
+    <div class="placeholder-note">
+      <strong>Hey Nicholas</strong> — these cards are placeholders. Replace them with whatever private content you want to show here. You can add links, embed documents, photos, anything you like.
+    </div>
+  </main>
+
+  <script type="module">
+    import { supabase } from '../auth.js';
+
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.replace('/login.html');
+        return;
+      }
+
+      document.getElementById('userEmail').textContent = session.user.email;
+      document.body.classList.add('ready');
+    }
+
+    window.handleLogout = async function () {
+      await supabase.auth.signOut();
+      window.location.replace('/login.html');
+    };
+
+    // Also listen for auth changes (e.g. token expiry)
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        window.location.replace('/login.html');
+      }
+    });
+
+    init();
+  </script>
+
+</body>
+</html>
