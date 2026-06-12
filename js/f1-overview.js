@@ -140,7 +140,7 @@ async function loadDriverStandings() {
 
     const data = await response.json();
     const standingsList = data.MRData.StandingsTable.StandingsLists[0];
-
+  const topTenStandings = standings.slice(0, 10);
     if (!standingsList) {
       driverStandingsBody.innerHTML = `
         <div class="standings-loading">
@@ -152,7 +152,7 @@ async function loadDriverStandings() {
 
     const standings = standingsList.DriverStandings;
 
-    driverStandingsBody.innerHTML = standings.map((standing) => {
+    driverStandingsBody.innerHTML = topTenstandings.map((standing) => {
       const driver = standing.Driver;
       const team = standing.Constructors?.[0] || standing.Constructor || {};
       const flag = nationalityFlags[driver.nationality] || '';
