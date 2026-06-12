@@ -270,12 +270,21 @@ body {
   min-width: 600px;
 }
 
+.overview-grid {
+  display: flex;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.standings-section,
+.points-chart-section {
+  display: flex;
+  flex-direction: column;
+}
+
 .points-chart-card {
-  height: 540px;
-  border: 1px solid var(--f1-border);
-  border-radius: 16px;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.025);
+  flex: 1;
+  min-height: 0;
 }
 
 #pointsTrendChart {
