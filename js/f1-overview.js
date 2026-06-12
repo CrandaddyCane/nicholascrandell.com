@@ -24,10 +24,25 @@ const countryFlags = {
   UAE: '🇦🇪'
 };
 
+const cancelledRaces = [
+  {
+    raceName: 'Bahrain Grand Prix',
+    date: '2026-04-12',
+    country: 'Bahrain',
+    cancelled: true
+  },
+  {
+    raceName: 'Saudi Arabian Grand Prix',
+    date: '2026-04-19',
+    country: 'Saudi Arabia',
+    cancelled: true
+  }
+];
+
 function formatRaceDate(dateString) {
   const date = new Date(`${dateString}T12:00:00Z`);
-  const day = date.getUTCDate();
   const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
 
   return `${month}/${day}`;
 }
@@ -36,9 +51,20 @@ function getNextRaceIndex(races) {
   const today = new Date();
 
   return races.findIndex((race) => {
+    if (race.cancelled) return false;
+
     const raceDate = new Date(`${race.date}T23:59:59Z`);
     return raceDate >= today;
   });
+}
+
+function normalizeRace(race) {
+  return {
+    raceName: race.raceName,
+    date: race.date,
+    country: race.Circuit.Location.country,
+    cancelled: false
+  };
 }
 
 async function loadRaceStrip() {
@@ -50,18 +76,26 @@ async function loadRaceStrip() {
     }
 
     const data = await response.json();
-    const races = data.MRData.RaceTable.Races;
+    const apiRaces = data.MRData.RaceTable.Races.map(normalizeRace);
+
+    const races = [...apiRaces, ...cancelledRaces].sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    });
+
     const nextRaceIndex = getNextRaceIndex(races);
 
     raceStrip.innerHTML = races.map((race, index) => {
-      const country = race.Circuit.Location.country;
-      const flag = countryFlags[country] || '🏳️';
+      const flag = countryFlags[race.country] || '🏳️';
       const date = formatRaceDate(race.date);
       const isNext = index === nextRaceIndex;
+      const isPast = new Date(`${race.date}T23:59:59Z`) < new Date();
 
       return `
-        <div class="race-marker" title="${race.raceName}">
-          <div class="race-flag">${flag}</div>
+        <div class="race-marker ${isPast ? 'is-past' : 'is-future'} ${race.cancelled ? 'is-cancelled' : ''}" title="${race.raceName}">
+          <div class="race-flag-wrap">
+            <div class="race-flag">${flag}</div>
+            ${race.cancelled ? '<div class="race-cancelled-x">×</div>' : ''}
+          </div>
           <div class="race-date">${date}</div>
           <div class="race-dot ${isNext ? 'is-next' : ''}"></div>
         </div>
