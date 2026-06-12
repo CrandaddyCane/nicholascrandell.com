@@ -44,7 +44,7 @@ const nationalityFlags = {
   Argentine: '🇦🇷',
   American: '🇺🇸',
   Danish: '🇩🇰',
-  'New Zealande'r: '🇳🇿'
+  'New Zealander': '🇳🇿'
 };
 
 const cancelledRaces = [
