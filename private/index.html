@@ -124,7 +124,6 @@
       font-size: 0.9rem;
     }
 
-    /* Content cards — replace these with your actual content */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -133,14 +132,20 @@
     }
 
     .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.5rem;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, transform 0.2s;
     }
 
-    .card:hover { border-color: rgba(108,140,255,0.4); }
+    .card:hover {
+      border-color: rgba(108,140,255,0.4);
+      transform: translateY(-2px);
+    }
 
     .card-icon {
       font-size: 1.5rem;
@@ -186,22 +191,29 @@
 
   <main>
     <div class="page-header">
-      <h1>Welcome back 👋</h1>
+      <h1>Welcome back</h1>
       <p>This area is private. Only you can see this.</p>
     </div>
 
-    <!-- Replace the cards below with your actual private content -->
     <div class="grid">
+      <a class="card" href="/f1/index.html">
+        <div class="card-icon">🏁</div>
+        <h3>Formula 1 Dashboard</h3>
+        <p>Live timing, standings, race results, and historical analytics.</p>
+      </a>
+
       <div class="card">
         <div class="card-icon">📁</div>
         <h3>Family Documents</h3>
         <p>Important files, shared links, and personal records stored here.</p>
       </div>
+
       <div class="card">
         <div class="card-icon">📷</div>
         <h3>Photo Albums</h3>
         <p>Private photo collections for family and close friends.</p>
       </div>
+
       <div class="card">
         <div class="card-icon">📝</div>
         <h3>Notes</h3>
@@ -234,7 +246,6 @@
       window.location.replace('/login.html');
     };
 
-    // Also listen for auth changes (e.g. token expiry)
     supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT') {
         window.location.replace('/login.html');
