@@ -184,6 +184,19 @@ async function loadPointsTrendChart() {
 
   if (!chartCanvas) return;
 
+  const teamColors = {
+    Mercedes: '#27F4D2',
+    Ferrari: '#E80020',
+    McLaren: '#FF8000',
+    'Red Bull': '#3671C6',
+    'RB F1 Team': '#6692FF',
+    Williams: '#005AFF',
+    'Alpine F1 Team': '#0093CC',
+    'Haas F1 Team': '#B6BABD',
+    'Aston Martin': '#229971',
+    Sauber: '#52E252'
+  };
+
   try {
     const response = await fetch('https://api.jolpi.ca/ergast/f1/2026/results.json?limit=1000');
 
@@ -195,54 +208,78 @@ async function loadPointsTrendChart() {
     const races = data.MRData.RaceTable.Races;
 
     const driverTotals = {};
+    const driverTeams = {};
     const raceLabels = [];
 
     races.forEach((race) => {
-      const raceLabel = race.raceName
-        .replace(' Grand Prix', '')
-        .replace(' Grand Prix', '');
+      const country = race.Circuit.Location.country;
+      const flag = countryFlags[country] || race.raceName;
 
-      raceLabels.push(raceLabel);
+      raceLabels.push(flag);
 
       race.Results.forEach((result) => {
         const driver = result.Driver;
-        const driverName = driver.familyName;
+        const constructor = result.Constructor;
+        const driverCode = driver.code || driver.familyName.slice(0, 3).toUpperCase();
+        const teamName = constructor.name;
         const points = Number(result.points);
 
-        if (!driverTotals[driverName]) {
-          driverTotals[driverName] = [];
+        if (!driverTotals[driverCode]) {
+          driverTotals[driverCode] = {
+            currentTotal: 0,
+            totals: []
+          };
         }
 
-        driverTotals[driverName].currentTotal =
-          (driverTotals[driverName].currentTotal || 0) + points;
+        driverTeams[driverCode] = teamName;
+        driverTotals[driverCode].currentTotal += points;
       });
 
-      Object.keys(driverTotals).forEach((driverName) => {
-        driverTotals[driverName].push(driverTotals[driverName].currentTotal || 0);
+      Object.keys(driverTotals).forEach((driverCode) => {
+        driverTotals[driverCode].totals.push(driverTotals[driverCode].currentTotal);
       });
     });
 
-    const finalStandings = Object.entries(driverTotals)
-      .map(([driverName, totals]) => ({
-        driverName,
-        totals,
-        finalPoints: totals[totals.length - 1] || 0
+    const topTenDrivers = Object.entries(driverTotals)
+      .map(([driverCode, data]) => ({
+        driverCode,
+        teamName: driverTeams[driverCode],
+        totals: data.totals,
+        finalPoints: data.totals[data.totals.length - 1] || 0
       }))
       .sort((a, b) => b.finalPoints - a.finalPoints)
       .slice(0, 10);
+
+    const teamLeaderByTeam = {};
+
+    topTenDrivers.forEach((driver) => {
+      const currentLeader = teamLeaderByTeam[driver.teamName];
+
+      if (!currentLeader || driver.finalPoints > currentLeader.finalPoints) {
+        teamLeaderByTeam[driver.teamName] = driver;
+      }
+    });
 
     new Chart(chartCanvas, {
       type: 'line',
       data: {
         labels: raceLabels,
-        datasets: finalStandings.map((driver) => ({
-          label: driver.driverName,
-          data: driver.totals,
-          borderWidth: 2,
-          tension: 0.25,
-          pointRadius: 2,
-          pointHoverRadius: 5
-        }))
+        datasets: topTenDrivers.map((driver) => {
+          const isTeamLeader =
+            teamLeaderByTeam[driver.teamName]?.driverCode === driver.driverCode;
+
+          return {
+            label: driver.driverCode,
+            data: driver.totals,
+            borderColor: teamColors[driver.teamName] || '#ffffff',
+            backgroundColor: teamColors[driver.teamName] || '#ffffff',
+            borderWidth: isTeamLeader ? 3 : 2,
+            borderDash: isTeamLeader ? [] : [6, 5],
+            tension: 0.25,
+            pointRadius: 2,
+            pointHoverRadius: 5
+          };
+        })
       },
       options: {
         responsive: true,
@@ -253,8 +290,11 @@ async function loadPointsTrendChart() {
         },
         plugins: {
           legend: {
+            position: 'right',
             labels: {
-              color: '#f4f4f6'
+              color: '#f4f4f6',
+              boxWidth: 28,
+              usePointStyle: false
             }
           },
           tooltip: {
@@ -268,9 +308,7 @@ async function loadPointsTrendChart() {
         scales: {
           x: {
             ticks: {
-              color: '#9ca3af',
-              maxRotation: 45,
-              minRotation: 45
+              color: '#9ca3af'
             },
             grid: {
               color: 'rgba(255, 255, 255, 0.06)'
@@ -278,6 +316,7 @@ async function loadPointsTrendChart() {
           },
           y: {
             beginAtZero: true,
+            suggestedMax: 180,
             ticks: {
               color: '#9ca3af'
             },
