@@ -176,18 +176,17 @@ body {
   overflow: hidden;
   background: rgba(255, 255, 255, 0.025);
 }
-
 .standings-header,
 .standings-row {
   display: grid;
   grid-template-columns:
-    minmax(36px, max-content)
-    minmax(36px, max-content)
-    minmax(max-content, max-content)
-    minmax(max-content, max-content)
-    minmax(42px, max-content);
+    50px
+    50px
+    180px
+    160px
+    60px;
   align-items: center;
-  column-gap: 1.75rem;
+  column-gap: 1rem;
 }
 
 .standings-header {
@@ -218,6 +217,7 @@ body {
 .standings-row > div {
   text-align: left;
   justify-self: start;
+  width: 100%;
 }
 
 .driver-cell {
