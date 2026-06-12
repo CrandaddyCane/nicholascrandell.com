@@ -9,4 +9,3 @@ if (error || !user) {
   window.location.href = '/login.html';
 }
 
-<script type="module" src="/js/auth-check.js"></script>
