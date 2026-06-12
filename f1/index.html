@@ -24,50 +24,45 @@
       </nav>
     </aside>
 
-<main class="f1-content">
-  <section class="f1-hero">
-    <h1>2026 F1 Season</h1>
-  </section>
+    <main class="f1-content">
+      <section class="f1-hero">
+        <h1>2026 F1 Season</h1>
+      </section>
 
-  <section class="race-strip-section">
-    <div id="raceStrip" class="race-strip">
-      <p class="f1-loading">Loading race calendar...</p>
-    </div>
-  </section>
-
-  <section class="standings-section">
-    <div class="section-title">
-      Driver Championship
-    </div>
-
-
-  <div class="points-chart-card">
-    <canvas id="pointsTrendChart"></canvas>
-  </div>
-</section>
-    <div class="standings-table">
-      <div class="standings-header">
-        <div>POS</div>
-        <div>+/-</div>
-        <div>DRIVER</div>
-        <div>TEAM</div>
-        <div>PTS</div>
-      </div>
-
-      <div id="driverStandingsBody">
-        <div class="standings-loading">
-          Loading standings...
+      <section class="race-strip-section">
+        <div id="raceStrip" class="race-strip">
+          <p class="f1-loading">Loading race calendar...</p>
         </div>
+      </section>
 
-        <section class="points-chart-section">
-  <div class="section-title">
-    Championship Points Trend
+      <section class="standings-section">
+        <div class="section-title">Driver Championship</div>
+
+        <div class="standings-table">
+          <div class="standings-header">
+            <div>POS</div>
+            <div>+/-</div>
+            <div>DRIVER</div>
+            <div>TEAM</div>
+            <div>PTS</div>
+          </div>
+
+          <div id="driverStandingsBody">
+            <div class="standings-loading">Loading standings...</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="points-chart-section">
+        <div class="section-title">Championship Points Trend</div>
+
+        <div class="points-chart-card">
+          <canvas id="pointsTrendChart"></canvas>
+        </div>
+      </section>
+    </main>
   </div>
-      </div>
-    </div>
-  </section>
-</main>
-  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/js/f1-overview.js"></script>
 </body>
