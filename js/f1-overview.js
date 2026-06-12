@@ -108,7 +108,7 @@ async function loadRaceStrip() {
     const nextRaceIndex = getNextRaceIndex(races);
 
     raceStrip.innerHTML = races.map((race, index) => {
-      const flag = countryFlags[race.country] || '🏳️';
+      const flag = countryFlags[race.country] || '';
       const date = formatRaceDate(race.date);
       const isNext = index === nextRaceIndex;
       const isPast = new Date(`${race.date}T23:59:59Z`) < new Date();
@@ -154,7 +154,7 @@ async function loadDriverStandings() {
 
     driverStandingsBody.innerHTML = standings.map((standing) => {
       const driver = standing.Driver;
-      const team = standing.Constructors[0];
+      const team = standing.Constructors?.[0] || standing.Constructor || {};
       const flag = nationalityFlags[driver.nationality] || '';
 
       return `
@@ -165,7 +165,7 @@ async function loadDriverStandings() {
             <span>${flag}</span>
             <span>${driver.familyName}</span>
           </div>
-          <div>${team.name}</div>
+          <div>${team.name || 'Unknown'}</div>
           <div class="points-cell">${standing.points}</div>
         </div>
       `;
