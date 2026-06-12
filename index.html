@@ -1,223 +1,715 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nicholas Crandell</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nick Crandell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
+    :root {
+      --bg:        #f5f7f2;
+      --bg-sidebar: #ffffff;
+      --surface:   #eef1eb;
+      --border:    #dde2d8;
+      --accent:    #2d5a3d;
+      --accent-light: #4a8c61;
+      --accent-glow: rgba(45,90,61,0.08);
+      --text:      #1a1f17;
+      --muted:     #6b7566;
+      --muted2:    #9aa494;
+      --top-bar:   #1a2318;
+    }
 
-        body {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            line-height: 1.7;
-            color: #222;
-        }
+    html { scroll-behavior: smooth; }
 
-        .site-header {
-            position: sticky;
-            top: 0;
-            background: white;
-            border-bottom: 1px solid #ddd;
-            padding: 20px 0;
-            margin-bottom: 50px;
-            z-index: 100;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        .site-header nav {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
+    /* ── TOP BAR ── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 52px;
+      background: var(--top-bar);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
 
-        .site-header a {
-            color: #222;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
 
-        .site-header a:hover {
-            text-decoration: underline;
-        }
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+    }
 
-        h1 {
-            margin-bottom: 10px;
-        }
+    .topbar-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
 
-        h1 a {
-            color: inherit;
-            text-decoration: none;
-        }
+    .topbar-links {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
 
-        h2 {
-            margin-bottom: 20px;
-        }
+    .topbar-links a {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
 
-        .subtitle {
-            color: #666;
-            font-size: 1.1rem;
-            margin-top: 0;
-        }
+    .topbar-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
 
-        .hero {
-            margin-bottom: 60px;
-        }
+    .topbar-links .sep {
+      color: rgba(255,255,255,0.2);
+      font-size: 0.75rem;
+    }
 
-        .hero p {
-            max-width: 700px;
-        }
+    .btn-contact {
+      font-size: 0.78rem !important;
+      font-weight: 500 !important;
+      color: #fff !important;
+      background: var(--accent) !important;
+      border-radius: 20px !important;
+      padding: 0.35rem 0.9rem !important;
+    }
 
-        section {
-            margin-top: 60px;
-        }
+    .btn-contact:hover { background: var(--accent-light) !important; }
 
-        .project {
-            border-left: 3px solid #ccc;
-            padding-left: 20px;
-            margin-bottom: 30px;
-        }
+    /* ── LAYOUT ── */
+    .shell {
+      display: flex;
+      margin-top: 52px;
+      min-height: calc(100vh - 52px);
+    }
 
-        .project h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      padding: 2rem 0;
+      position: fixed;
+      top: 52px;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+    }
 
-        a {
-            color: #0066cc;
-        }
+    .sidebar-section {
+      margin-bottom: 1.8rem;
+      padding: 0 1.25rem;
+    }
 
-        .contact-links {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
+    .sidebar-heading {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
 
-        .contact-links a {
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .sidebar-nav a {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+      border-left: 2px solid transparent;
+    }
+
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      color: var(--accent);
+      background: var(--accent-glow);
+      border-left-color: var(--accent);
+    }
+
+    .sidebar-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--muted2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 0.6rem;
+      display: block;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      padding: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 3rem 3rem;
+      position: relative;
+      background: linear-gradient(160deg, #eaf2ec 0%, #f5f7f2 50%, #e8eef5 100%);
+      overflow: hidden;
+    }
+
+    /* Subtle aqueduct watermark behind hero */
+    .hero-watermark {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.04;
+      width: 600px;
+    }
+
+    .hero-photo-wrap {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .hero-photo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 8px 32px rgba(45,90,61,0.15);
+      display: block;
+      background: var(--surface);
+    }
+
+    /* Placeholder avatar if no photo */
+    .hero-photo-placeholder {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #4a8c61);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Instrument Serif', serif;
+      font-size: 3rem;
+      color: rgba(255,255,255,0.9);
+      border: 3px solid #fff;
+      box-shadow: 0 8px 32px rgba(45,90,61,0.15);
+      margin-bottom: 0;
+    }
+
+    .hero-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: rgba(45,90,61,0.08);
+      border: 1px solid rgba(45,90,61,0.18);
+      border-radius: 20px;
+      padding: 0.3rem 0.75rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-bio {
+      max-width: 580px;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .hero-bio strong { color: var(--text); font-weight: 500; }
+    .hero-bio a { color: var(--accent); text-decoration: none; }
+    .hero-bio a:hover { text-decoration: underline; }
+
+    .hero-cta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #fff;
+      background: var(--accent);
+      border: none;
+      border-radius: 24px;
+      padding: 0.65rem 1.4rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-primary:hover { background: var(--accent-light); }
+
+    .btn-secondary {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 0.65rem 1.4rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── CONTENT SECTIONS ── */
+    .content {
+      padding: 3rem;
+      max-width: 780px;
+    }
+
+    .section {
+      margin-bottom: 4rem;
+      scroll-margin-top: 72px;
+    }
+
+    .section-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .section-body {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 3rem 0;
+    }
+
+    /* ── PROJECT CARDS ── */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .project-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(45,90,61,0.1);
+      transform: translateY(-2px);
+    }
+
+    .project-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+    }
+
+    .project-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .project-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .project-arrow {
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── SKILLS LIST ── */
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .skill-pill {
+      font-size: 0.78rem;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.3rem 0.8rem;
+    }
+
+    /* ── CONTACT ── */
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    .contact-icon {
+      width: 20px;
+      height: 20px;
+      opacity: 0.5;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .content { padding: 2rem 1.25rem; }
+      .hero { padding: 3rem 1.5rem 2rem; }
+      .topbar-links .sep,
+      .topbar-links a:not(.btn-contact):not(:last-child) { display: none; }
+    }
+  </style>
 </head>
-
 <body>
 
-<header class="site-header">
-    <nav>
-        <a href="about.html">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#contact">Contact</a>
-        <a href=" /login.html">Admin</a>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a href="/" class="topbar-logo">
+      <!-- Inline aqueduct SVG logo mark -->
+      <svg class="logo-mark" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="30" height="30" rx="6" fill="#2d5a3d"/>
+        <!-- Bottom tier: 2 arches -->
+        <path d="M3,22 A5,5 0 0,1 13,22" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M15,22 A5,5 0 0,1 25,22" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <!-- Deck lines -->
+        <line x1="2" y1="22" x2="28" y2="22" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Top tier: 3 arches -->
+        <path d="M4,16 A4,4 0 0,1 12,16" stroke="#4ade80" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M13,16 A4,4 0 0,1 21,16" stroke="#4ade80" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <!-- Top deck -->
+        <line x1="3" y1="16" x2="27" y2="16" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Water channel -->
+        <line x1="2" y1="13" x2="28" y2="13" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="topbar-name">Nick Crandell</span>
+    </a>
+    <nav class="topbar-links">
+      <a href="#about">About</a>
+      <span class="sep">|</span>
+      <a href="#projects">Projects</a>
+      <span class="sep">|</span>
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+      <span class="sep">|</span>
+      <a href="#">Download CV</a>
+      <span class="sep">|</span>
+      <a href="/login.html">Login</a>
+      <span class="sep">|</span>
+      <a href="#contact" class="btn-contact">Contact</a>
     </nav>
-</header>
+  </header>
 
-<section class="hero">
-    <h1>
-        <a href="/">Nicholas Crandell</a>
-    </h1>
+  <div class="shell">
 
-    <p class="subtitle">
-        Digital Project Manager | CMS Strategy | Analytics | Website Operations
-    </p>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-heading">About Nick Crandell</p>
+        <ul class="sidebar-nav">
+          <li><a href="#about" class="active">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
 
-    <p>
-        I help organizations modernize digital platforms, improve customer experiences,
-        and deliver complex web initiatives from strategy through implementation.
-        My work spans website modernization, CMS governance, analytics strategy,
-        vendor management, and cross-functional project leadership.
-    </p>
-</section>
+      <div class="sidebar-section">
+        <p class="sidebar-heading">Work</p>
+        <span class="sidebar-label">Projects</span>
+        <ul class="sidebar-nav">
+          <li><a href="#projects">Overview</a></li>
+          <li><a href="#projects">Website Modernization</a></li>
+          <li><a href="#projects">CMS Governance</a></li>
+          <li><a href="#projects">Analytics Strategy</a></li>
+          <li><a href="#projects">Vendor Management</a></li>
+        </ul>
+      </div>
+    </aside>
 
-<section id="about">
-    <h2>About</h2>
+    <!-- MAIN -->
+    <main class="main">
 
-    <p>
-        I am a digital project manager with experience leading website operations,
-        CMS implementations, analytics initiatives, and digital transformation projects.
-        My background combines technology, business analysis, stakeholder management,
-        and process improvement.
-    </p>
+      <!-- HERO -->
+      <section class="hero" id="top">
 
-    <p>
-        Recent work has focused on large-scale website modernization efforts,
-        analytics strategy, content governance, workflow optimization,
-        and vendor coordination across complex digital ecosystems.
-    </p>
-</section>
+        <!-- Aqueduct watermark SVG -->
+        <svg class="hero-watermark" viewBox="0 0 600 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20,140 A55,55 0 0,1 130,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+          <path d="M150,140 A55,55 0 0,1 260,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+          <path d="M280,140 A55,55 0 0,1 390,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+          <path d="M410,140 A55,55 0 0,1 520,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+          <line x1="0" y1="140" x2="600" y2="140" stroke="#2d5a3d" stroke-width="3"/>
+          <path d="M40,100 A30,30 0 0,1 110,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+          <path d="M130,100 A30,30 0 0,1 200,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+          <path d="M220,100 A30,30 0 0,1 290,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+          <path d="M310,100 A30,30 0 0,1 380,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+          <path d="M400,100 A30,30 0 0,1 470,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+          <line x1="20" y1="100" x2="540" y2="100" stroke="#2d5a3d" stroke-width="2"/>
+        </svg>
 
-<section id="projects">
-    <h2>Projects</h2>
+        <div class="hero-photo-wrap">
+          <!-- Replace src with your actual headshot path -->
+          <div class="hero-photo-placeholder">NC</div>
+        </div>
 
-    <div class="project">
-        <h3>Website Platform Modernization</h3>
+        <h1 class="hero-title">
+          Project Leader.<br/><em>Systems Thinker.</em>
+        </h1>
 
-        <p>
-            Supported the migration from a legacy Sitecore CMS platform
-            to a modern web platform, including requirements gathering,
-            governance planning, vendor coordination, risk management,
-            and implementation oversight.
+        <div class="hero-tags">
+          <span class="hero-tag">Project Management</span>
+          <span class="hero-tag">Business Development</span>
+          <span class="hero-tag">Systems Solutions</span>
+          <span class="hero-tag">Analytics & Strategy</span>
+        </div>
+
+        <p class="hero-bio">
+          I'm <strong>Nick Crandell</strong> — I help organizations modernize digital platforms, improve customer experiences, and deliver complex web initiatives from strategy through implementation. My work spans <a href="#projects">website modernization</a>, CMS governance, analytics strategy, vendor management, and cross-functional project leadership.
         </p>
-    </div>
 
-    <div class="project">
-        <h3>Analytics & SEO Strategy</h3>
+        <div class="hero-cta">
+          <a href="#projects" class="btn-primary">View My Work</a>
+          <a href="#contact" class="btn-secondary">Get in Touch</a>
+        </div>
 
-        <p>
-            Developed reporting and measurement strategies using Google Analytics 4,
-            Google Tag Manager, conversion tracking, SEO planning,
-            and customer journey analysis.
-        </p>
-    </div>
+      </section>
 
-    <div class="project">
-        <h3>Workflow Modernization</h3>
+      <!-- CONTENT -->
+      <div class="content">
 
-        <p>
-            Improved intake and project workflows through process design,
-            stakeholder collaboration, governance planning,
-            and operational improvements.
-        </p>
-    </div>
-</section>
+        <!-- ABOUT -->
+        <section class="section" id="about">
+          <p class="section-eyebrow">About</p>
+          <h2 class="section-title">Bridging strategy and execution</h2>
+          <p class="section-body">
+            With a background spanning digital project management, business development, and systems strategy, I bring together the analytical rigor of a strategist and the practical focus of a builder. I thrive at the intersection of people, process, and technology — turning ambiguous problems into clear, measurable outcomes.
+            <br/><br/>
+            When I'm not working, you'll find me fascinated by infrastructure — bridges, aqueducts, the engineering that quietly holds civilization together.
+          </p>
+        </section>
 
-<section id="skills">
-    <h2>Skills</h2>
+        <div class="divider"></div>
 
-    <p>
-        Project Management • CMS Administration • Website Operations • Analytics • SEO •
-        Vendor Management • Stakeholder Management • Requirements Gathering •
-        Digital Strategy • Google Analytics 4 • Google Tag Manager • Sitecore •
-        Process Improvement • Agile Delivery
-    </p>
-</section>
+        <!-- PROJECTS -->
+        <section class="section" id="projects">
+          <p class="section-eyebrow">Work</p>
+          <h2 class="section-title">Selected projects</h2>
+          <div class="project-grid">
 
-<section id="contact">
-    <h2>Contact</h2>
+            <a href="#" class="project-card">
+              <p class="project-tag">Web Strategy</p>
+              <h3 class="project-title">Website Modernization</h3>
+              <p class="project-desc">Led end-to-end redesign and platform migration, improving performance, accessibility, and content governance.</p>
+              <p class="project-arrow">View case study →</p>
+            </a>
 
-    <p>
-        Connect with me professionally:
-    </p>
+            <a href="#" class="project-card">
+              <p class="project-tag">Analytics</p>
+              <h3 class="project-title">Analytics Strategy</h3>
+              <p class="project-desc">Developed measurement frameworks and dashboards to surface actionable insights across digital channels.</p>
+              <p class="project-arrow">View case study →</p>
+            </a>
 
-    <div class="contact-links">
-        <a href="https://www.linkedin.com/" target="_blank">
-            LinkedIn
-        </a>
+            <a href="#" class="project-card">
+              <p class="project-tag">Vendor Management</p>
+              <h3 class="project-title">Vendor & CMS Governance</h3>
+              <p class="project-desc">Established governance frameworks for CMS platforms and managed vendor relationships across cross-functional teams.</p>
+              <p class="project-arrow">View case study →</p>
+            </a>
 
-        <a href="mailto:nicholascrandell@gmail.com">
-            Email
-        </a>
-    </div>
+            <a href="#" class="project-card">
+              <p class="project-tag">Business Development</p>
+              <h3 class="project-title">Systems Solutions</h3>
+              <p class="project-desc">Designed scalable solutions bridging operational needs with technology capabilities for enterprise clients.</p>
+              <p class="project-arrow">View case study →</p>
+            </a>
 
-    <p>
-        Resume download coming soon.
-    </p>
-</section>
+          </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- SKILLS -->
+        <section class="section" id="skills">
+          <p class="section-eyebrow">Skills</p>
+          <h2 class="section-title">What I work with</h2>
+          <div class="skills-list">
+            <span class="skill-pill">Project Management</span>
+            <span class="skill-pill">Agile / Scrum</span>
+            <span class="skill-pill">Business Analysis</span>
+            <span class="skill-pill">CMS Governance</span>
+            <span class="skill-pill">Analytics Strategy</span>
+            <span class="skill-pill">Vendor Management</span>
+            <span class="skill-pill">Stakeholder Engagement</span>
+            <span class="skill-pill">Digital Strategy</span>
+            <span class="skill-pill">SQL / SSMS</span>
+            <span class="skill-pill">Data Visualization</span>
+            <span class="skill-pill">Process Improvement</span>
+            <span class="skill-pill">Web Modernization</span>
+          </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- CONTACT -->
+        <section class="section" id="contact">
+          <p class="section-eyebrow">Contact</p>
+          <h2 class="section-title">Let's connect</h2>
+          <p class="section-body">Open to new opportunities, collaborations, and conversations.</p>
+          <div class="contact-links">
+
+            <a href="https://linkedin.com/in/nicholascrandell" target="_blank" class="contact-link">
+              <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn — nicholascrandell
+            </a>
+
+            <a href="mailto:nicholascrandell@gmail.com" class="contact-link">
+              <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+              nicholascrandell@gmail.com
+            </a>
+
+            <a href="#" class="contact-link">
+              <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              Download CV / Resume
+            </a>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Active sidebar link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('.sidebar-nav a');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.sidebar-nav a[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
 
 </body>
 </html>
