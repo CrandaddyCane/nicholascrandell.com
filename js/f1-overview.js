@@ -331,6 +331,17 @@ async function loadPointsTrendChart() {
     console.error(error);
   }
 }
+
+function syncChartHeight() {
+  const table = document.querySelector('.standings-table');
+  const chartCard = document.querySelector('.points-chart-card');
+
+  if (!table || !chartCard) return;
+
+  chartCard.style.height = `${table.offsetHeight}px`;
+}
+
+syncChartHeight();
 loadRaceStrip();
 loadDriverStandings();
 loadPointsTrendChart();
