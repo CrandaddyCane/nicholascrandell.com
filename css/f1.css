@@ -1,336 +1,350 @@
-:root {
-  --f1-bg: #07080c;
-  --f1-surface: #11131a;
-  --f1-border: #2a2e3a;
-  --f1-red: #e10600;
-  --f1-green: #35c96f;
-  --f1-text: #f4f4f6;
-  --f1-muted: #9ca3af;
-}
+const raceStrip = document.getElementById('raceStrip');
+const driverStandingsBody = document.getElementById('driverStandingsBody');
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+const countryFlags = {
+  Australia: '🇦🇺',
+  China: '🇨🇳',
+  Japan: '🇯🇵',
+  Bahrain: '🇧🇭',
+  'Saudi Arabia': '🇸🇦',
+  USA: '🇺🇸',
+  Italy: '🇮🇹',
+  Monaco: '🇲🇨',
+  Spain: '🇪🇸',
+  Canada: '🇨🇦',
+  Austria: '🇦🇹',
+  UK: '🇬🇧',
+  Hungary: '🇭🇺',
+  Belgium: '🇧🇪',
+  Netherlands: '🇳🇱',
+  Azerbaijan: '🇦🇿',
+  Singapore: '🇸🇬',
+  Mexico: '🇲🇽',
+  Brazil: '🇧🇷',
+  Qatar: '🇶🇦',
+  UAE: '🇦🇪'
+};
 
-body {
-  font-family: Inter, Arial, sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(225, 6, 0, 0.16), transparent 34rem),
-    var(--f1-bg);
-  color: var(--f1-text);
-}
+const nationalityFlags = {
+  Australian: '🇦🇺',
+  British: '🇬🇧',
+  Dutch: '🇳🇱',
+  Monegasque: '🇲🇨',
+  German: '🇩🇪',
+  Spanish: '🇪🇸',
+  French: '🇫🇷',
+  Italian: '🇮🇹',
+  Finnish: '🇫🇮',
+  Mexican: '🇲🇽',
+  Canadian: '🇨🇦',
+  Japanese: '🇯🇵',
+  Thai: '🇹🇭',
+  Chinese: '🇨🇳',
+  Brazilian: '🇧🇷',
+  Argentine: '🇦🇷',
+  American: '🇺🇸',
+  Danish: '🇩🇰',
+  'New Zealander': '🇳🇿'
+};
 
-.f1-app {
-  display: flex;
-  min-height: 100vh;
-}
-
-.f1-sidebar {
-  width: 260px;
-  flex-shrink: 0;
-  background: #0b0d12;
-  border-right: 1px solid var(--f1-border);
-  padding: 2rem 1.5rem;
-}
-
-.f1-logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  margin-bottom: 2.5rem;
-}
-
-.f1-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.f1-nav a {
-  color: var(--f1-muted);
-  text-decoration: none;
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
-  transition: all 0.2s ease;
-}
-
-.f1-nav a:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--f1-text);
-}
-
-.f1-nav a.active {
-  background: rgba(225, 6, 0, 0.15);
-  color: var(--f1-text);
-  border: 1px solid rgba(225, 6, 0, 0.35);
-}
-
-.f1-content {
-  flex: 1;
-  padding: 4rem;
-  overflow-x: hidden;
-}
-
-.f1-hero {
-  margin-bottom: 2rem;
-}
-
-.f1-hero h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  line-height: 1;
-  letter-spacing: -0.05em;
-}
-
-/* =========================
-   Race Calendar
-   ========================= */
-
-.race-strip-section {
-  margin-top: 1.5rem;
-}
-
-.race-strip {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.15rem;
-  overflow-x: auto;
-  padding: 1rem 0 1.5rem;
-  max-width: 100%;
-}
-
-.race-marker {
-  flex: 0 0 auto;
-  min-width: 44px;
-  text-align: center;
-}
-
-.race-marker.is-past {
-  opacity: 0.45;
-}
-
-.race-marker.is-future {
-  opacity: 1;
-}
-
-.race-marker.is-cancelled {
-  opacity: 0.7;
-}
-
-.race-flag-wrap {
-  position: relative;
-  display: inline-block;
-}
-
-.race-flag {
-  font-size: 1.55rem;
-  line-height: 1;
-  margin-bottom: 0.35rem;
-}
-
-.race-date {
-  font-size: 0.8rem;
-  color: var(--f1-text);
-}
-
-.race-dot {
-  width: 9px;
-  height: 9px;
-  margin: 0.45rem auto 0;
-  border-radius: 999px;
-}
-
-.race-dot.is-next {
-  background: var(--f1-green);
-}
-
-.race-cancelled-x {
-  position: absolute;
-  inset: -5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--f1-red);
-  font-size: 2rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-/* =========================
-   Dashboard Layout
-   ========================= */
-
-.overview-grid {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-  margin-top: 2.5rem;
-}
-
-/* =========================
-   Shared Section Title
-   ========================= */
-
-.section-title {
-  color: var(--f1-text);
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.9rem;
-  letter-spacing: -0.01em;
-}
-
-/* =========================
-   Driver Championship Table
-   ========================= */
-
-.standings-section {
-  margin-top: 0;
-  width: fit-content;
-  flex-shrink: 0;
-}
-
-.standings-table {
-  width: fit-content;
-  border: 1px solid var(--f1-border);
-  border-radius: 16px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.025);
-}
-
-.standings-header,
-.standings-row {
-  display: grid;
-  grid-template-columns:
-    36px
-    34px
-    130px
-    125px
-    42px;
-  align-items: center;
-  column-gap: 1rem;
-}
-
-.standings-header {
-  color: var(--f1-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid var(--f1-border);
-}
-
-.standings-row {
-  min-height: 46px;
-  padding: 0 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
-  font-size: 0.9rem;
-}
-
-.standings-row:last-child {
-  border-bottom: none;
-}
-
-.standings-row:hover {
-  background: rgba(255, 255, 255, 0.035);
-}
-
-.standings-header > div,
-.standings-row > div {
-  text-align: left;
-  justify-self: start;
-  width: 100%;
-}
-
-.driver-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.change-cell {
-  color: var(--f1-muted);
-}
-
-.points-cell {
-  font-weight: 700;
-}
-
-/* =========================
-   Championship Trend Chart
-   ========================= */
-
-.points-chart-section {
-  margin-top: 0;
-  flex: 1;
-  min-width: 600px;
-}
-
-.overview-grid {
-  display: flex;
-  gap: 2rem;
-  align-items: stretch;
-}
-
-.standings-section,
-.points-chart-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.points-chart-card {
-  flex: 1;
-  min-height: 0;
-}
-
-#pointsTrendChart {
-  width: 100%;
-  height: 100%;
-}
-
-/* =========================
-   Loading / Errors
-   ========================= */
-
-.standings-loading,
-.f1-loading,
-.f1-error {
-  padding: 1rem 0;
-  color: var(--f1-muted);
-  font-size: 0.9rem;
-}
-
-/* =========================
-   Responsive
-   ========================= */
-
-@media (max-width: 1200px) {
-  .overview-grid {
-    flex-direction: column;
+const cancelledRaces = [
+  {
+    raceName: 'Bahrain Grand Prix',
+    date: '2026-04-12',
+    country: 'Bahrain',
+    cancelled: true
+  },
+  {
+    raceName: 'Saudi Arabian Grand Prix',
+    date: '2026-04-19',
+    country: 'Saudi Arabia',
+    cancelled: true
   }
+];
 
-  .points-chart-section {
-    width: 100%;
-    min-width: 0;
+function formatRaceDate(dateString) {
+  const date = new Date(`${dateString}T12:00:00Z`);
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
+
+  return `${month}/${day}`;
+}
+
+function getNextRaceIndex(races) {
+  const today = new Date();
+
+  return races.findIndex((race) => {
+    if (race.cancelled) return false;
+
+    const raceDate = new Date(`${race.date}T23:59:59Z`);
+    return raceDate >= today;
+  });
+}
+
+function normalizeRace(race) {
+  return {
+    raceName: race.raceName,
+    date: race.date,
+    country: race.Circuit.Location.country,
+    cancelled: false
+  };
+}
+
+function syncChartHeight() {
+  const table = document.querySelector('.standings-table');
+  const chartCard = document.querySelector('.points-chart-card');
+
+  if (!table || !chartCard) return;
+
+  chartCard.style.height = `${table.offsetHeight}px`;
+}
+
+async function loadRaceStrip() {
+  try {
+    const response = await fetch('https://api.jolpi.ca/ergast/f1/2026.json');
+
+    if (!response.ok) {
+      throw new Error('Unable to load race calendar.');
+    }
+
+    const data = await response.json();
+    const apiRaces = data.MRData.RaceTable.Races.map(normalizeRace);
+
+    const races = [...apiRaces, ...cancelledRaces].sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    });
+
+    const nextRaceIndex = getNextRaceIndex(races);
+
+    raceStrip.innerHTML = races.map((race, index) => {
+      const flag = countryFlags[race.country] || '';
+      const date = formatRaceDate(race.date);
+      const isNext = index === nextRaceIndex;
+      const isPast = new Date(`${race.date}T23:59:59Z`) < new Date();
+
+      return `
+        <div class="race-marker ${isPast ? 'is-past' : 'is-future'} ${race.cancelled ? 'is-cancelled' : ''}" title="${race.raceName}">
+          <div class="race-flag-wrap">
+            <div class="race-flag">${flag}</div>
+            ${race.cancelled ? '<div class="race-cancelled-x">×</div>' : ''}
+          </div>
+          <div class="race-date">${date}</div>
+          <div class="race-dot ${isNext ? 'is-next' : ''}"></div>
+        </div>
+      `;
+    }).join('');
+  } catch (error) {
+    raceStrip.innerHTML = '<p class="f1-error">Unable to load race calendar.</p>';
+    console.error(error);
   }
 }
 
-@media (max-width: 900px) {
-  .f1-app {
-    flex-direction: column;
-  }
+async function loadDriverStandings() {
+  try {
+    const response = await fetch('https://api.jolpi.ca/ergast/f1/2026/driverstandings.json');
 
-  .f1-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--f1-border);
-  }
+    if (!response.ok) {
+      throw new Error('Unable to load driver standings.');
+    }
 
-  .f1-content {
-    padding: 2rem;
+    const data = await response.json();
+    const standingsList = data.MRData.StandingsTable.StandingsLists[0];
+
+    if (!standingsList) {
+      driverStandingsBody.innerHTML = `
+        <div class="standings-loading">
+          No driver standings available yet.
+        </div>
+      `;
+      return;
+    }
+
+    const standings = standingsList.DriverStandings;
+    const topTenStandings = standings.slice(0, 10);
+
+    driverStandingsBody.innerHTML = topTenStandings.map((standing) => {
+      const driver = standing.Driver;
+      const team = standing.Constructors?.[0] || standing.Constructor || {};
+      const flag = nationalityFlags[driver.nationality] || '';
+
+      return `
+        <div class="standings-row">
+          <div>${standing.position}</div>
+          <div class="change-cell">–</div>
+          <div class="driver-cell">
+            <span>${flag}</span>
+            <span>${driver.familyName}</span>
+          </div>
+          <div>${team.name || 'Unknown'}</div>
+          <div class="points-cell">${standing.points}</div>
+        </div>
+      `;
+    }).join('');
+
+    syncChartHeight();
+  } catch (error) {
+    driverStandingsBody.innerHTML = `
+      <div class="standings-loading">
+        Unable to load driver standings.
+      </div>
+    `;
+    console.error(error);
   }
 }
+
+async function loadPointsTrendChart() {
+  const chartCanvas = document.getElementById('pointsTrendChart');
+
+  if (!chartCanvas) return;
+
+  const teamColors = {
+    Mercedes: '#27F4D2',
+    Ferrari: '#E80020',
+    McLaren: '#FF8000',
+    'Red Bull': '#3671C6',
+    'RB F1 Team': '#6692FF',
+    Williams: '#005AFF',
+    'Alpine F1 Team': '#0093CC',
+    'Haas F1 Team': '#B6BABD',
+    'Aston Martin': '#229971',
+    Sauber: '#52E252'
+  };
+
+  try {
+    const response = await fetch('https://api.jolpi.ca/ergast/f1/2026/results.json?limit=1000');
+
+    if (!response.ok) {
+      throw new Error('Unable to load race results.');
+    }
+
+    const data = await response.json();
+    const races = data.MRData.RaceTable.Races;
+
+    const driverTotals = {};
+    const driverTeams = {};
+    const raceLabels = [];
+
+    races.forEach((race) => {
+      const country = race.Circuit.Location.country;
+      const flag = countryFlags[country] || race.raceName;
+
+      raceLabels.push(flag);
+
+      race.Results.forEach((result) => {
+        const driver = result.Driver;
+        const constructor = result.Constructor;
+        const driverCode = driver.code || driver.familyName.slice(0, 3).toUpperCase();
+        const teamName = constructor.name;
+        const points = Number(result.points);
+
+        if (!driverTotals[driverCode]) {
+          driverTotals[driverCode] = {
+            currentTotal: 0,
+            totals: []
+          };
+        }
+
+        driverTeams[driverCode] = teamName;
+        driverTotals[driverCode].currentTotal += points;
+      });
+
+      Object.keys(driverTotals).forEach((driverCode) => {
+        driverTotals[driverCode].totals.push(driverTotals[driverCode].currentTotal);
+      });
+    });
+
+    const topTenDrivers = Object.entries(driverTotals)
+      .map(([driverCode, driverData]) => ({
+        driverCode,
+        teamName: driverTeams[driverCode],
+        totals: driverData.totals,
+        finalPoints: driverData.totals[driverData.totals.length - 1] || 0
+      }))
+      .sort((a, b) => b.finalPoints - a.finalPoints)
+      .slice(0, 10);
+
+    const teamLeaderByTeam = {};
+
+    topTenDrivers.forEach((driver) => {
+      const currentLeader = teamLeaderByTeam[driver.teamName];
+
+      if (!currentLeader || driver.finalPoints > currentLeader.finalPoints) {
+        teamLeaderByTeam[driver.teamName] = driver;
+      }
+    });
+
+    new Chart(chartCanvas, {
+      type: 'line',
+      data: {
+        labels: raceLabels,
+        datasets: topTenDrivers.map((driver) => {
+          const isTeamLeader =
+            teamLeaderByTeam[driver.teamName]?.driverCode === driver.driverCode;
+
+          return {
+            label: driver.driverCode,
+            data: driver.totals,
+            borderColor: teamColors[driver.teamName] || '#ffffff',
+            backgroundColor: teamColors[driver.teamName] || '#ffffff',
+            borderWidth: isTeamLeader ? 3 : 2,
+            borderDash: isTeamLeader ? [] : [6, 5],
+            tension: 0.25,
+            pointRadius: 2,
+            pointHoverRadius: 5
+          };
+        })
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'nearest',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              color: '#f4f4f6',
+              boxWidth: 28,
+              usePointStyle: false
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: ${context.parsed.y} pts`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#9ca3af'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.06)'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            suggestedMax: 180,
+            ticks: {
+              color: '#9ca3af'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.06)'
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+loadRaceStrip();
+loadDriverStandings();
+loadPointsTrendChart();
