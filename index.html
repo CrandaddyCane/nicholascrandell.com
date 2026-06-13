@@ -6,231 +6,77 @@
   <title>Nick Crandell</title>
 
   <link rel="stylesheet" href="css/styles.css">
-  
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
 </head>
+
 <body>
 
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <a href="/" class="topbar-logo">
-      <!-- Inline aqueduct SVG logo mark -->
-      <svg class="logo-mark" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="30" height="30" rx="6" fill="#2d5a3d"/>
-        <!-- Bottom tier: 2 arches -->
-        <path d="M3,22 A5,5 0 0,1 13,22" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <path d="M15,22 A5,5 0 0,1 25,22" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <!-- Deck lines -->
-        <line x1="2" y1="22" x2="28" y2="22" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- Top tier: 3 arches -->
-        <path d="M4,16 A4,4 0 0,1 12,16" stroke="#4ade80" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-        <path d="M13,16 A4,4 0 0,1 21,16" stroke="#4ade80" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-        <!-- Top deck -->
-        <line x1="3" y1="16" x2="27" y2="16" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
-        <!-- Water channel -->
-        <line x1="2" y1="13" x2="28" y2="13" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span class="topbar-name">Nick Crandell</span>
-    </a>
-    <nav class="topbar-links">
+  <header class="site-header">
+    <div class="nav-primary">
+      <a href="/" class="site-name">Nick Crandell</a>
+
+      <nav class="page-nav" aria-label="Primary navigation">
+        <a href="/work.html">Work</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+    </div>
+
+    <nav class="utility-nav" aria-label="Utility navigation">
       <a href="https://www.github.com" target="_blank">GitHub</a>
-      <span class="sep">|</span>
       <a href="https://www.linkedin.com/in/nick-crandell-7361a62b4" target="_blank">LinkedIn</a>
-      <span class="sep">|</span>
-      <a href="#">Download CV</a>
-      <span class="sep">|</span>
+      <a href="#">CV</a>
       <a href="/login.html">Login</a>
-      <span class="sep">|</span>
-      <a href="#contact" class="btn-contact">Contact</a>
     </nav>
-
-    <button class="mobile-menu-toggle" aria-label="Open menu">
-  Menu
-</button>
   </header>
-<nav class="mobile-menu" id="mobileMenu">
-  <a href="#about">About</a>
-  <a href="#skills">Skills</a>
-  <a href="#projects">Projects</a>
-  <a href="#contact">Contact</a>
-  <a href="/login.html">Login</a>
-</nav>
-  <div class="shell">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <p class="sidebar-heading">About Nick Crandell</p>
-        <ul class="sidebar-nav">
-          <li><a href="#about" class="active">About</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
+  <main class="main">
+
+    <section class="hero" id="top">
+      <svg class="hero-watermark" viewBox="0 0 600 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,140 A55,55 0 0,1 130,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+        <path d="M150,140 A55,55 0 0,1 260,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+        <path d="M280,140 A55,55 0 0,1 390,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+        <path d="M410,140 A55,55 0 0,1 520,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
+        <line x1="0" y1="140" x2="600" y2="140" stroke="#2d5a3d" stroke-width="3"/>
+        <path d="M40,100 A30,30 0 0,1 110,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+        <path d="M130,100 A30,30 0 0,1 200,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+        <path d="M220,100 A30,30 0 0,1 290,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+        <path d="M310,100 A30,30 0 0,1 380,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+        <path d="M400,100 A30,30 0 0,1 470,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
+        <line x1="20" y1="100" x2="540" y2="100" stroke="#2d5a3d" stroke-width="2"/>
+      </svg>
+
+      <p class="hero-bio construction-note">
+        Congratulations, you found my website in the middle of construction. Now please move along.
+      </p>
+
+      <div class="hero-photo-wrap">
+        <div class="hero-photo-placeholder">NC</div>
       </div>
 
-      <div class="sidebar-section">
-        <p class="sidebar-heading">Work</p>
-        <span class="sidebar-label">Projects</span>
-        <ul class="sidebar-nav">
-          <li><a href="#projects">Overview</a></li>
-          <li><a href="#projects">Website Modernization</a></li>
-          <li><a href="#projects">CMS Governance</a></li>
-          <li><a href="#projects">Analytics Strategy</a></li>
-          <li><a href="#projects">Vendor Management</a></li>
-        </ul>
+      <h1 class="hero-title">
+        Project Leader.<br/><em>Systems Thinker.</em>
+      </h1>
+
+      <div class="hero-tags">
+        <span class="hero-tag">Project Management</span>
+        <span class="hero-tag">Business Development</span>
+        <span class="hero-tag">Systems Solutions</span>
+        <span class="hero-tag">Analytics & Strategy</span>
       </div>
-    </aside>
 
-    <!-- MAIN -->
-    <main class="main">
+      <p class="hero-bio">
+        I'm <strong>Nick Crandell</strong> — I help organizations modernize digital platforms, improve customer experiences, and deliver complex web initiatives from strategy through implementation.
+      </p>
 
-        <p class="hero-bio">
-          Congratulations, you found my website in the middle of construction. Now please move along.</p>
-      <!-- HERO -->
-      <section class="hero" id="top">
-
-        <!-- Aqueduct watermark SVG -->
-        <svg class="hero-watermark" viewBox="0 0 600 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20,140 A55,55 0 0,1 130,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
-          <path d="M150,140 A55,55 0 0,1 260,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
-          <path d="M280,140 A55,55 0 0,1 390,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
-          <path d="M410,140 A55,55 0 0,1 520,140" stroke="#2d5a3d" stroke-width="3" fill="none"/>
-          <line x1="0" y1="140" x2="600" y2="140" stroke="#2d5a3d" stroke-width="3"/>
-          <path d="M40,100 A30,30 0 0,1 110,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
-          <path d="M130,100 A30,30 0 0,1 200,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
-          <path d="M220,100 A30,30 0 0,1 290,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
-          <path d="M310,100 A30,30 0 0,1 380,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
-          <path d="M400,100 A30,30 0 0,1 470,100" stroke="#2d5a3d" stroke-width="2" fill="none"/>
-          <line x1="20" y1="100" x2="540" y2="100" stroke="#2d5a3d" stroke-width="2"/>
-        </svg>
-
-        <div class="hero-photo-wrap">
-          <!-- Replace src with your actual headshot path -->
-          <div class="hero-photo-placeholder">NC</div>
-        </div>
-
-        <h1 class="hero-title">
-          Project Leader.<br/><em>Systems Thinker.</em>
-        </h1>
-
-        <div class="hero-tags">
-          <span class="hero-tag">Project Management</span>
-          <span class="hero-tag">Business Development</span>
-          <span class="hero-tag">Systems Solutions</span>
-          <span class="hero-tag">Analytics & Strategy</span>
-        </div>
-
-        <p class="hero-bio">
-          I'm <strong>Nick Crandell</strong> — I help organizations modernize digital platforms, improve customer experiences, and deliver complex web initiatives from strategy through implementation. My work spans <a href="#projects">website modernization</a>, CMS governance, analytics strategy, vendor management, and cross-functional project leadership.
-        </p>
-
-        <div class="hero-cta">
-          <a href="#projects" class="btn-primary">View My Work</a>
-          <a href="#contact" class="btn-secondary">Get in Touch</a>
-        </div>
-
-      </section>
-
-      <!-- CONTENT -->
-      <div class="content">
-
-        <!-- ABOUT -->
-        <section class="section" id="about">
-          <p class="section-eyebrow">About</p>
-          <h2 class="section-title">Bridging strategy and execution</h2>
-          <p class="section-body">
-            With a background spanning digital project management, business development, and systems strategy, I bring together the analytical rigor of a strategist and the practical focus of a builder. I thrive at the intersection of people, process, and technology — turning ambiguous problems into clear, measurable outcomes.
-            <br/><br/>
-            When I'm not working, you'll find me fascinated by infrastructure — bridges, aqueducts, the engineering that quietly holds civilization together.
-          </p>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- PROJECTS -->
-        <section class="section" id="projects">
-          <p class="section-eyebrow">Work</p>
-          <h2 class="section-title">Selected projects</h2>
-          <div class="project-grid">
-
-            <a href="#" class="project-card">
-              <p class="project-tag">Web Strategy</p>
-              <h3 class="project-title">Website Modernization</h3>
-              <p class="project-desc">Led end-to-end redesign and platform migration, improving performance, accessibility, and content governance.</p>
-              <p class="project-arrow">View case study →</p>
-            </a>
-
-            <a href="#" class="project-card">
-              <p class="project-tag">Analytics</p>
-              <h3 class="project-title">Analytics Strategy</h3>
-              <p class="project-desc">Developed measurement frameworks and dashboards to surface actionable insights across digital channels.</p>
-              <p class="project-arrow">View case study →</p>
-            </a>
-
-            <a href="#" class="project-card">
-              <p class="project-tag">Vendor Management</p>
-              <h3 class="project-title">Vendor & CMS Governance</h3>
-              <p class="project-desc">Established governance frameworks for CMS platforms and managed vendor relationships across cross-functional teams.</p>
-              <p class="project-arrow">View case study →</p>
-            </a>
-
-            <a href="#" class="project-card">
-              <p class="project-tag">Business Development</p>
-              <h3 class="project-title">Systems Solutions</h3>
-              <p class="project-desc">Designed scalable solutions bridging operational needs with technology capabilities for enterprise clients.</p>
-              <p class="project-arrow">View case study →</p>
-            </a>
-
-          </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- SKILLS -->
-        <section class="section" id="skills">
-          <p class="section-eyebrow">Skills</p>
-          <h2 class="section-title">What I work with</h2>
-          <div class="skills-list">
-            <span class="skill-pill">Project Management</span>
-            <span class="skill-pill">Agile / Scrum</span>
-            <span class="skill-pill">Business Analysis</span>
-            <span class="skill-pill">CMS Governance</span>
-            <span class="skill-pill">Analytics Strategy</span>
-            <span class="skill-pill">Vendor Management</span>
-            <span class="skill-pill">Stakeholder Engagement</span>
-            <span class="skill-pill">Digital Strategy</span>
-            <span class="skill-pill">SQL / SSMS</span>
-            <span class="skill-pill">Data Visualization</span>
-            <span class="skill-pill">Process Improvement</span>
-            <span class="skill-pill">Web Modernization</span>
-          </div>
-        </section>
-
-        <div class="divider"></div>
-
-
+      <div class="hero-cta">
+        <a href="/work.html" class="btn-primary">View My Work</a>
+        <a href="/contact.html" class="btn-secondary">Get in Touch</a>
       </div>
-    </main>
-  </div>
+    </section>
 
-  <script>
-    // Active sidebar link on scroll
-    const sections = document.querySelectorAll('section[id]');
-    const links = document.querySelectorAll('.sidebar-nav a');
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          links.forEach(l => l.classList.remove('active'));
-          const active = document.querySelector(`.sidebar-nav a[href="#${entry.target.id}"]`);
-          if (active) active.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-30% 0px -60% 0px' });
-
-    sections.forEach(s => observer.observe(s));
-  </script>
+  </main>
 
 </body>
 </html>
