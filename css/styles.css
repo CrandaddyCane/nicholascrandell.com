@@ -51,13 +51,15 @@ body {
 }
 
 .page-nav a {
-  color: white;
-  background: var(--accent);
+  color: rgba(255,255,255,0.82);
   text-decoration: none;
-  border-radius: 999px;
-  padding: 0.55rem 1.5rem;
   font-size: 0.9rem;
   font-weight: 500;
+  padding: 0.35rem 0;
+}
+
+.page-nav a:hover {
+  color: white;
 }
 
 .utility-nav {
@@ -195,10 +197,10 @@ body {
 }
 
 @media (max-width: 768px) {
-  .site-header {
-    padding: 1rem;
-  }
-
+.site-header {
+  padding: 1rem;
+  position: static;
+}
   .nav-primary {
     flex-direction: column;
     align-items: flex-start;
@@ -215,11 +217,14 @@ body {
     gap: 0.5rem;
   }
 
-  .page-nav a {
-    flex: 1;
-    text-align: center;
-    padding: 0.6rem 0.75rem;
-  }
+.page-nav a {
+  flex: 1;
+  text-align: center;
+  color: white;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 0.65rem 0.75rem;
+}
 
   .utility-nav {
     display: grid;
@@ -244,4 +249,5 @@ body {
   .hero-tag {
     font-size: 0.95rem;
   }
+
 }
