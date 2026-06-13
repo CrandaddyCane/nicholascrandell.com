@@ -1368,7 +1368,13 @@
 
 
     }
+.mobile-menu-toggle {
+  display: none;
+}
 
+.mobile-menu {
+  display: none;
+}
 
 
 
@@ -1377,7 +1383,42 @@
 
 
     @media (max-width: 768px) {
+.topbar-links {
+  display: none;
+}
 
+.mobile-menu-toggle {
+  display: block;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: var(--top-bar);
+  display: none;
+  flex-direction: column;
+  padding: 1rem;
+  z-index: 999;
+}
+
+.mobile-menu.open {
+  display: flex;
+}
+
+.mobile-menu a {
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 0;
+}
 
       .sidebar { display: none; }
 
