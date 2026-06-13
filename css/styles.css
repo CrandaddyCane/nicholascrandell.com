@@ -15,7 +15,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -118,7 +118,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Open Sans', sans-serif;
   font-size: 3rem;
   color: rgba(255,255,255,0.9);
   border: 3px solid #fff;
@@ -126,7 +126,7 @@ body {
 }
 
 .hero-title {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Open Sans', sans-serif;
   font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 400;
   color: var(--text);
@@ -136,8 +136,9 @@ body {
 }
 
 .hero-title em {
-  font-style: italic;
+  font-style: normal;
   color: var(--accent);
+  font-weight: 700;
 }
 
 .hero-tags {
@@ -177,7 +178,7 @@ body {
 
 .btn-primary,
 .btn-secondary {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
   border-radius: 24px;
