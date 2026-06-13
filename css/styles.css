@@ -488,6 +488,42 @@ body {
 .work-closing {
   padding-bottom: 1rem;
 }
+.work-intro-content {
+  max-width: 900px;
+}
+
+.work-intro-lead {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+}
+
+.work-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.work-pillar {
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.work-pillar h3 {
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.work-pillar p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}
 @media (max-width: 768px) {
   .work-page {
     padding: 0;
@@ -658,5 +694,8 @@ body {
 .project-card p {
   font-size: 0.98rem;
   line-height: 1.65;
+}
+  .work-pillars {
+  grid-template-columns: 1fr;
 }
 }
