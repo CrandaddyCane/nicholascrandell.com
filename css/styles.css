@@ -197,15 +197,21 @@ body {
   border: 1.5px solid var(--border);
 }
 @media (max-width: 768px) {
+  :root {
+    --mobile-primary-nav-height: 132px;
+  }
+
   .site-header {
-    padding: 0;
+    padding: var(--mobile-primary-nav-height) 0 0;
     position: static;
   }
 
   .nav-primary {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     background: var(--top-bar);
     padding: 1rem;
     flex-direction: column;
