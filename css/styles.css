@@ -9,7 +9,7 @@
   --accent-glow: rgba(45,90,61,0);
   --text: #1a1f17;
   --muted: #6b7566;
-  --top-bar: #1a2318;
+  --top-bar: #ffffff;
 }
 
 html { scroll-behavior: smooth; }
