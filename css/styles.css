@@ -66,7 +66,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 2rem;
-  background: rgba(74, 140, 97, 0.75);
+  background: rgba(74, 140, 97, 0.35);
   margin: 0 -1.5rem -1rem;
   padding: 0.75rem 1.5rem;
 }
