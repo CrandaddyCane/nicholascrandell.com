@@ -87,9 +87,12 @@ body {
   min-height: 80vh;
   display: flex;
   flex-direction: column;
-  align-items: left;
-  justify-content: left;
-  text-align: cleft;
+
+  align-items: flex-start;
+  justify-content: center;
+
+  text-align: left;
+
   padding: 4rem 3rem 3rem;
   position: relative;
   background: linear-gradient(160deg, #eaf2ec 0%, #f5f7f2 50%, #e8eef5 100%);
@@ -160,22 +163,36 @@ body {
 }
 
 .hero-bio {
-  max-width: 580px;
+  max-width: 800px;
   font-size: 1rem;
-  line-height: 1.75;
+  line-height: 1.8;
   color: var(--muted);
   margin-bottom: 2rem;
 }
 
-.hero-bio strong { color: var(--text); font-weight: 500; }
+.hero-bio p {
+  margin-bottom: 1.25rem;
+}
 
+.hero-bio .lead {
+  font-size: 1.35rem;
+  line-height: 1.45;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.hero-bio strong { color: var(--text); font-weight: 500; }
 .hero-cta {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
   justify-content: center;
 }
-
+.hero-photo-wrap {
+  position: relative;
+  margin-bottom: 2rem;
+  align-self: flex-start;
+}
 .btn-primary,
 .btn-secondary {
   font-family: 'Open Sans', sans-serif;
