@@ -67,9 +67,8 @@
         });
 
         if (response.ok) {
-          status.textContent = "Message sent successfully.";
-          form.reset();
-        } else {
+  window.location.href = "/thank-you.html";
+} else {
           status.textContent = "Something went wrong.";
         }
       } catch (error) {
