@@ -254,6 +254,20 @@ body {
   color: var(--text);
   font-weight: 600;
 }
+
+.about-hero {
+  width: 100%;
+  padding: 3rem 0;
+  background: var(--bg);
+}
+
+.about-hero-image {
+  display: block;
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
 @media (max-width: 768px) {
   :root {
     --mobile-primary-nav-height: 132px;
