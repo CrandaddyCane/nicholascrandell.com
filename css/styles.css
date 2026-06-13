@@ -82,7 +82,16 @@ body {
   width: 100%;
   padding: 0;
 }
+.hero-bio {
+  max-width: 800px;
+  text-align: left !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
 
+.hero-bio p {
+  text-align: left !important;
+}
 .hero {
   min-height: 80vh;
   display: flex;
