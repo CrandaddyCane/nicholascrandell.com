@@ -320,7 +320,70 @@ body {
 .about-content .hero-bio {
   max-width: 720px;
 }
+.form-status {
+  margin-top: 1rem;
+  color: var(--text);
+  font-weight: 500;
+}
 
+/* WORK PAGE STYLES START HERE */
+
+.work-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.work-intro {
+  margin-bottom: 4rem;
+}
+
+.work-intro h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.work-section {
+  margin-bottom: 4rem;
+}
+
+.work-section h2 {
+  margin-bottom: 1.5rem;
+  color: var(--accent);
+}
+
+.expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.expertise-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.project-item {
+  margin-bottom: 2rem;
+}
+
+.project-item h3 {
+  margin-bottom: 0.5rem;
+}
+
+.lead {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* WORK PAGE STYLES END HERE */
+
+@media (max-width: 768px) {
+  ...
+}
 @media (max-width: 768px) {
   .about-two-column {
     grid-template-columns: 1fr;
