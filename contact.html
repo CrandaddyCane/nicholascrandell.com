@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | Nick Crandell</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  font-family:Inter,sans-serif;
+  background:#f5f7f2;
+  color:#1a1f17;
+  margin:0;
+}
+
+.container{
+  max-width:700px;
+  margin:80px auto;
+  padding:0 20px;
+}
+
+h1{
+  font-family:"Instrument Serif",serif;
+  font-size:3rem;
+  margin-bottom:1rem;
+}
+
+p{
+  color:#6b7566;
+  margin-bottom:2rem;
+}
+
+form{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+
+input,
+textarea{
+  padding:1rem;
+  border:1px solid #dde2d8;
+  border-radius:12px;
+  font-family:inherit;
+  font-size:1rem;
+}
+
+textarea{
+  min-height:180px;
+  resize:vertical;
+}
+
+button{
+  width:fit-content;
+  background:#2d5a3d;
+  color:white;
+  border:none;
+  padding:.9rem 1.5rem;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:.95rem;
+}
+
+button:hover{
+  background:#4a8c61;
+}
+
+#status{
+  margin-top:1rem;
+  font-weight:500;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Contact</h1>
+
+<p>
+Have a project, opportunity, or just want to say hello?
+Send me a message.
+</p>
+
+<form id="contactForm">
+
+<input
+type="text"
+id="name"
+placeholder="Your name"
+required>
+
+<input
+type="email"
+id="email"
+placeholder="Your email"
+required>
+
+<textarea
+id="message"
+placeholder="Your message"
+required></textarea>
+
+<button type="submit">
+Send Message
+</button>
+
+</form>
+
+<div id="status"></div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+"https://yrhumnkgemvjmeqqqqzx.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_W9wdeWIMB9oK9eJzMRkfzQ_Ccl16KBp";
+
+document
+.getElementById("contactForm")
+.addEventListener("submit", async (e) => {
+
+e.preventDefault();
+
+const status =
+document.getElementById("status");
+
+status.textContent = "Sending...";
+
+const payload = {
+name: document.getElementById("name").value,
+email: document.getElementById("email").value,
+message: document.getElementById("message").value
+};
+
+try {
+
+const response = await fetch(
+`${SUPABASE_URL}/rest/v1/contact_messages`,
+{
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+"apikey": SUPABASE_KEY,
+"Authorization": `Bearer ${SUPABASE_KEY}`,
+"Prefer": "return=minimal"
+},
+body: JSON.stringify(payload)
+}
+);
+
+if(response.ok){
+status.textContent =
+"Message sent successfully.";
+
+document
+.getElementById("contactForm")
+.reset();
+}
+else{
+status.textContent =
+"Something went wrong.";
+}
+
+}
+catch(error){
+status.textContent =
+"Unable to send message.";
+}
+
+});
+
+</script>
+
+</body>
+</html>
