@@ -1,101 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About | Nicholas Crandell</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | Nick Crandell</title>
 
-    <style>
-        body {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-      font-family: 'Open Sans', sans-serif;
-            line-height: 1.7;
-            color: #222;
-        }
-
-        .site-header {
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-        }
-
-        nav {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #222;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        .profile-photo {
-            width: 220px;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 50%;
-            display: block;
-            margin: 0 auto 30px auto;
-        }
-
-        h1 {
-            text-align: center;
-        }
-    </style>
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<header class="site-header">
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="/login.html">Admin</a>
+  <header class="site-header">
+    <div class="nav-primary">
+      <a href="/" class="site-name">Nick Crandell</a>
+
+      <nav class="page-nav" aria-label="Primary navigation">
+        <a href="/work.html">Work</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+    </div>
+
+    <nav class="utility-nav" aria-label="Utility navigation">
+      <a href="https://www.github.com" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/nick-crandell-7361a62b4" target="_blank">LinkedIn</a>
+      <a href="/assets/Crandell-Nick-CV.pdf" download>CV</a>
+      <a href="/login.html">Login</a>
     </nav>
-</header>
+  </header>
 
-<img
-    src="Crandell.Nick.ProfileImage.png"
-    alt="Nicholas Crandell"
-    class="profile-photo"
->
+  <main class="main">
+<section class="about-hero">
+  <img
+    src="/assets/nick-family.jpg"
+    alt="Nick Crandell with his wife and corgi"
+    class="about-hero-image"
+  >
+</section>
+    <section class="hero contact-page">
+      <div class="contact-container">
 
-<h1>About Me</h1>
+        <h1 class="hero-title">About Me</h1>
 
-<p>
-    I'm a Digital Project Manager with a background that bridges technology,
-    business operations, and customer experience.
-</p>
+        <div class="hero-bio">
+          <p class="lead">
+            I'm a problem solver at heart.
+          </p>
 
-<p>
-    My work focuses on website modernization, CMS governance, analytics,
-    vendor management, and digital operations.
-</p>
+          <p>
+            I was raised in the Pacific Northwest, where I've spent most of my life, though my family roots trace back to the Midwest. Growing up between those influences helped shape the way I approach both life and work: practical, collaborative, and focused on finding solutions that create real value.
+          </p>
 
-<p>
-    I currently support digital initiatives at the Seattle Symphony,
-    helping coordinate website improvements, platform administration,
-    stakeholder alignment, and digital strategy efforts.
-</p>
+          <p>
+            Professionally, I've built a career at the intersection of business, technology, and people. I enjoy understanding how systems work, identifying opportunities for improvement, and helping organizations navigate change.
+          </p>
 
-<p>
-    Prior to moving into project management, I worked in customer success
-    within the SaaS industry, where I developed a strong foundation in
-    client communication, problem solving, and relationship management.
-</p>
+          <p>
+            Whether the challenge involves technology, data, operations, or process improvement, I'm motivated by the opportunity to make complex problems easier to understand and solve.
+          </p>
 
-<p>
-    I earned a Bachelor of Applied Science in Data Management and Analytics
-    with a concentration in Business Intelligence, combining technical,
-    analytical, and business-focused skillsets.
-</p>
+          <p>
+            This website serves as a place to share my professional work, technical projects, and ongoing journey as a lifelong learner.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
 
 </body>
 </html>
