@@ -1,198 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact | Nick Crandell</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Contact | Nick Crandell</title>
 
-<style>
-body{
-  font-family: 'Open Sans', sans-serif;
-  background:#f5f7f2;
-  color:#1a1f17;
-  margin:0;
-}
-
-.container{
-  max-width:700px;
-  margin:80px auto;
-  padding:0 20px;
-}
-
-h1{
-  font-family: 'Open Sans', sans-serif;
-  font-size:3rem;
-  margin-bottom:1rem;
-}
-
-p{
-  color:#6b7566;
-  margin-bottom:2rem;
-}
-
-form{
-  display:flex;
-  flex-direction:column;
-  gap:1rem;
-}
-
-input,
-textarea{
-  padding:1rem;
-  border:1px solid #dde2d8;
-  border-radius:12px;
-  font-family:inherit;
-  font-size:1rem;
-}
-
-textarea{
-  min-height:180px;
-  resize:vertical;
-}
-
-button{
-  width:fit-content;
-  background:#2d5a3d;
-  color:white;
-  border:none;
-  padding:.9rem 1.5rem;
-  border-radius:999px;
-  cursor:pointer;
-  font-size:.95rem;
-}
-
-button:hover{
-  background:#4a8c61;
-}
-
-#status{
-  margin-top:1rem;
-  font-weight:500;
-}
-</style>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-  <header class="site-header">
-    <div class="nav-primary">
-      <a href="/" class="site-name">Nick Crandell</a>
 
-      <nav class="page-nav" aria-label="Primary navigation">
-        <a href="/work.html">Work</a>
-        <a href="/about.html">About</a>
-        <a href="/contact.html">Contact</a>
-      </nav>
-    </div>
+  <div id="siteHeader"></div>
 
-    <nav class="utility-nav" aria-label="Utility navigation">
-      <a href="https://www.github.com" target="_blank">GitHub</a>
-      <a href="https://www.linkedin.com/in/nick-crandell-7361a62b4" target="_blank">LinkedIn</a>
-      <a href="/assets/Crandell-Nick-CV.pdf" download>CV</a>
-      <a href="/login.html">Login</a>
-    </nav>
-  </header>
-<div class="container">
+  <main class="main">
+    <section class="hero contact-page">
+      <div class="contact-container">
+        <p class="section-eyebrow">Contact</p>
+        <h1 class="section-title">Get in touch</h1>
 
-<h1>Contact</h1>
+        <p class="section-body">
+          Have a project, opportunity, or just want to say hello? Send me a message.
+        </p>
 
-<p>
-Have a project, opportunity, or just want to say hello?
-Send me a message.
-</p>
+        <form id="contactForm" class="contact-form">
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+          <input type="email" id="email" name="email" placeholder="Your email" required>
+          <textarea id="message" name="message" placeholder="Your message" required></textarea>
 
-<form id="contactForm">
+          <button type="submit" class="btn-primary">Send Message</button>
+        </form>
 
-<input
-type="text"
-id="name"
-placeholder="Your name"
-required>
+        <p id="status" class="form-status"></p>
+      </div>
+    </section>
+  </main>
 
-<input
-type="email"
-id="email"
-placeholder="Your email"
-required>
+  <script>
+    const SUPABASE_URL = "https://yrhumnkgemvjmeqqqqzx.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_W9wdeWIMB9oK9eJzMRkfzQ_Ccl16KBp";
 
-<textarea
-id="message"
-placeholder="Your message"
-required></textarea>
+    const form = document.getElementById("contactForm");
+    const status = document.getElementById("status");
 
-<button type="submit">
-Send Message
-</button>
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-</form>
+      status.textContent = "Sending...";
 
-<div id="status"></div>
+      const payload = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        message: document.getElementById("message").value
+      };
 
-</div>
+      try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/contact_messages`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`,
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(payload)
+        });
 
-<script>
+        if (response.ok) {
+          status.textContent = "Message sent successfully.";
+          form.reset();
+        } else {
+          status.textContent = "Something went wrong.";
+        }
+      } catch (error) {
+        status.textContent = "Unable to send message.";
+      }
+    });
+  </script>
 
-const SUPABASE_URL =
-"https://yrhumnkgemvjmeqqqqzx.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_W9wdeWIMB9oK9eJzMRkfzQ_Ccl16KBp";
-
-document
-.getElementById("contactForm")
-.addEventListener("submit", async (e) => {
-
-e.preventDefault();
-
-const status =
-document.getElementById("status");
-
-status.textContent = "Sending...";
-
-const payload = {
-name: document.getElementById("name").value,
-email: document.getElementById("email").value,
-message: document.getElementById("message").value
-};
-
-try {
-
-const response = await fetch(
-`${SUPABASE_URL}/rest/v1/contact_messages`,
-{
-method: "POST",
-headers: {
-"Content-Type": "application/json",
-"apikey": SUPABASE_KEY,
-"Authorization": `Bearer ${SUPABASE_KEY}`,
-"Prefer": "return=minimal"
-},
-body: JSON.stringify(payload)
-}
-);
-
-if(response.ok){
-status.textContent =
-"Message sent successfully.";
-
-document
-.getElementById("contactForm")
-.reset();
-}
-else{
-status.textContent =
-"Something went wrong.";
-}
-
-}
-catch(error){
-status.textContent =
-"Unable to send message.";
-}
-
-});
-
-</script>
-<script src="/js/header.js"></script>
+  <script src="/js/header.js"></script>
 </body>
 </html>
