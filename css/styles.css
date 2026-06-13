@@ -196,6 +196,46 @@ body {
   background: transparent;
   border: 1.5px solid var(--border);
 }
+
+.contact-page {
+  min-height: 80vh;
+  align-items: center;
+}
+
+.contact-container {
+  width: min(700px, calc(100% - 2rem));
+  text-align: left;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  background: white;
+  color: var(--text);
+}
+
+.contact-form textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.form-status {
+  margin-top: 1rem;
+  color: var(--text);
+  font-weight: 500;
+}
 @media (max-width: 768px) {
   :root {
     --mobile-primary-nav-height: 132px;
