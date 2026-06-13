@@ -378,7 +378,63 @@ body {
   font-weight: 600;
   margin-bottom: 1.5rem;
 }
+@media (max-width: 768px) {
+  .work-page {
+    padding: 0;
+  }
 
+  .work-hero,
+  .work-section {
+    width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 2.5rem 0;
+  }
+
+  .work-hero h1 {
+    font-size: 2.4rem;
+  }
+
+  .work-lead {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .work-hero p,
+  .work-section p {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .career-card,
+  .project-card,
+  .expertise-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+  }
+
+  .career-card h3,
+  .project-card h3,
+  .expertise-card h3 {
+    font-size: 1.25rem;
+    line-height: 1.25;
+    margin-bottom: 0.35rem;
+  }
+
+  .career-title {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    color: var(--muted);
+  }
+
+  .expertise-grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* WORK PAGE STYLES END HERE */
 
 @media (max-width: 768px) {
