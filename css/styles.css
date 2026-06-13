@@ -378,6 +378,116 @@ body {
   font-weight: 600;
   margin-bottom: 1.5rem;
 }
+
+/* Work Page */
+
+.work-page {
+  background: linear-gradient(160deg, #eaf2ec 0%, #f5f7f2 50%, #e8eef5 100%);
+  color: var(--text);
+  padding: 0 1.5rem 5rem;
+}
+
+.work-hero,
+.work-section {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.work-hero {
+  padding: 5rem 0 3.5rem;
+}
+
+.work-hero h1 {
+  font-size: clamp(2.75rem, 7vw, 4.5rem);
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+}
+
+.work-lead {
+  max-width: 760px;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.work-hero p,
+.work-closing p {
+  max-width: 820px;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.work-section {
+  padding: 3.5rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.work-section h2 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  line-height: 1.15;
+  margin-bottom: 2rem;
+}
+
+.expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.expertise-card,
+.career-card,
+.project-card {
+  background: rgba(255,255,255,0.82);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.05);
+}
+
+.expertise-card h3,
+.career-card h3,
+.project-card h3 {
+  color: var(--accent);
+  font-size: 1.15rem;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.expertise-card p,
+.career-card p,
+.project-card p {
+  font-size: 0.96rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.expertise-card p:last-child,
+.career-card p:last-child,
+.project-card p:last-child {
+  margin-bottom: 0;
+}
+
+.career-card,
+.project-card {
+  margin-bottom: 1.5rem;
+}
+
+.career-title {
+  display: block;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.work-closing {
+  padding-bottom: 1rem;
+}
 @media (max-width: 768px) {
   .work-page {
     padding: 0;
@@ -518,4 +628,35 @@ body {
   .hero-tag {
     font-size: 0.95rem;
   }
+  .work-page {
+  padding: 0 1rem 3rem;
+}
+
+.work-hero {
+  padding: 3rem 0 2rem;
+}
+
+.work-section {
+  padding: 2.5rem 0;
+}
+
+.expertise-grid {
+  grid-template-columns: 1fr;
+}
+
+.expertise-card,
+.career-card,
+.project-card {
+  padding: 1.25rem;
+  border-radius: 16px;
+}
+
+.work-hero p,
+.work-closing p,
+.expertise-card p,
+.career-card p,
+.project-card p {
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
 }
