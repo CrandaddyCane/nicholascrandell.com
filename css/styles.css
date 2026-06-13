@@ -6,7 +6,7 @@
   --border: #dde2d8;
   --accent: #2d5a3d;
   --accent-light: #4a8c61;
-  --accent-glow: rgba(45,90,61,0.08);
+  --accent-glow: rgba(45,90,61,0);
   --text: #1a1f17;
   --muted: #6b7566;
   --top-bar: #1a2318;
@@ -152,7 +152,7 @@ body {
   font-size: 0.72rem;
   font-weight: 500;
   color: var(--accent);
-  background: rgba(45,90,61,0.08);
+  background: rgba(45,90,61,0);
   border: 1px solid rgba(45,90,61,0.18);
   border-radius: 20px;
   padding: 0.3rem 0.75rem;
@@ -221,8 +221,8 @@ body {
   flex: 1;
   text-align: center;
   color: white;
-  background: rgba(255,255,255,0.08);
-  border-radius: 999px;
+  background: transparent;
+  border-radius: 0;
   padding: 0.65rem 0.75rem;
 }
 
