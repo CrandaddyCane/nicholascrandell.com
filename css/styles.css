@@ -236,6 +236,24 @@ body {
   color: var(--text);
   font-weight: 500;
 }
+.hero-bio {
+  max-width: 760px;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.hero-bio p {
+  margin-bottom: 1.25rem;
+}
+
+.hero-bio .lead {
+  font-size: 1.35rem;
+  line-height: 1.45;
+  color: var(--text);
+  font-weight: 600;
+}
 @media (max-width: 768px) {
   :root {
     --mobile-primary-nav-height: 132px;
