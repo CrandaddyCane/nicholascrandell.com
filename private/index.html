@@ -4,9 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Private | Nicholas Crandell</title>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --bg: #0f1117;
@@ -18,7 +24,7 @@
     }
 
     body {
-    font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -26,7 +32,9 @@
       transition: opacity 0.3s ease;
     }
 
-    body.ready { opacity: 1; }
+    body.ready {
+      opacity: 1;
+    }
 
     body::before {
       content: '';
@@ -36,7 +44,7 @@
         linear-gradient(rgba(108,140,255,0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(108,140,255,0.03) 1px, transparent 1px);
       background-size: 40px 40px;
-      po-events: none;
+      pointer-events: none;
     }
 
     nav {
@@ -87,7 +95,7 @@
 
     .btn-logout {
       font-size: 0.8rem;
-  font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', sans-serif;
       color: var(--muted);
       background: none;
       border: 1px solid var(--border);
@@ -126,7 +134,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 1rem;
       margin-top: 2rem;
     }
@@ -163,26 +171,17 @@
       color: var(--muted);
       line-height: 1.5;
     }
-
-    .placeholder-note {
-      margin-top: 3rem;
-      padding: 1rem 1.25rem;
-      border: 1px dashed var(--border);
-      border-radius: 10px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .placeholder-note strong { color: var(--accent); }
   </style>
 </head>
+
 <body>
 
   <nav>
     <div class="nav-brand">
-      Nicholas Crandell <span class="badge">Private</span>
+      Nicholas Crandell
+      <span class="badge">Private</span>
     </div>
+
     <div class="nav-right">
       <span class="user-email" id="userEmail"></span>
       <button class="btn-logout" onclick="handleLogout()">Sign out</button>
@@ -190,44 +189,28 @@
   </nav>
 
   <main>
+
     <div class="page-header">
       <h1>Welcome back</h1>
-      <p>This area is private. Only you can see this.</p>
+      <p>Private projects and prototypes.</p>
     </div>
 
     <div class="grid">
+
       <a class="card" href="/f1/index.html">
         <div class="card-icon">🏁</div>
         <h3>Formula 1 Dashboard</h3>
         <p>Live timing, standings, race results, and historical analytics.</p>
       </a>
-<a class="card" href="/private/subscription-explorer.html">
-  <div class="card-icon">🎟️</div>
-  <h3>Subscription Package Explorer</h3>
-  <p>Seattle Symphony 2026–27 subscription journey and package-selection prototype.</p>
-</a>
-      <div class="card">
-        <div class="card-icon">📁</div>
-        <h3>Family Documents</h3>
-        <p>Important files, shared links, and personal records stored here.</p>
-      </div>
 
-      <div class="card">
-        <div class="card-icon">📷</div>
-        <h3>Photo Albums</h3>
-        <p>Private photo collections for family and close friends.</p>
-      </div>
+      <a class="card" href="/private/subscription-explorer.html">
+        <div class="card-icon">🎟️</div>
+        <h3>Subscription Package Explorer</h3>
+        <p>Seattle Symphony 2026–27 subscription journey and package-selection prototype.</p>
+      </a>
 
-      <div class="card">
-        <div class="card-icon">📝</div>
-        <h3>Notes</h3>
-        <p>Personal notes, reminders, and things you don't want public.</p>
-      </div>
     </div>
 
-    <div class="placeholder-note">
-      <strong>Hey Nicholas</strong> — these cards are placeholders. Replace them with whatever private content you want to show here. You can add links, embed documents, photos, anything you like.
-    </div>
   </main>
 
   <script type="module">
