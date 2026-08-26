@@ -1,20 +1,728 @@
-<script type="module">
-  import { supabase } from '../auth.js';
+<!DOCTYPE html>
 
-  async function verifyPrivateSession() {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      window.location.replace('/login.html');
-      return;
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>2026–2027 Subscription Explorer Mockup</title>
+<style>
+    :root {
+      --ink:#111;
+      --muted:#666;
+      --line:#d9d9d9;
+      --soft:#f6f6f6;
+      --white:#fff;
+      --accent:#e5006d;
+      --accent-dark:#b80057;
+      --max:1180px;
+      --radius:4px;
     }
-  }
-
-  supabase.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') {
-      window.location.replace('/login.html');
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--ink);
+      background:#fff;
+      line-height:1.45;
     }
-  });
+    button, input { font:inherit; }
+    a { color:inherit; }
+    .site-header { background:#080808; color:#fff; }
+    .site-header__inner {
+      max-width:var(--max);
+      margin:auto;
+      min-height:54px;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+    .brand {
+      font-size:.86rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+    .site-nav { display:flex; gap:22px; font-size:.82rem; }
+    .site-nav a { text-decoration:none; opacity:.9; }
+    .hero { background:#fafafa; border-bottom:1px solid var(--line); }
+    .hero__inner { max-width:var(--max); margin:auto; padding:52px 24px 40px; }
+    .eyebrow {
+      margin:0 0 8px;
+      color:var(--accent);
+      text-transform:uppercase;
+      font-size:.76rem;
+      font-weight:800;
+      letter-spacing:.08em;
+    }
+    h1 {
+      margin:0;
+      max-width:900px;
+      font-size:clamp(2.15rem,4vw,3.7rem);
+      line-height:1.04;
+    }
+    .lede { max-width:800px; margin:18px 0 0; color:#333; font-size:1.05rem; }
+    .explorer { max-width:var(--max); margin:auto; padding:38px 24px 72px; }
+    .step-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:18px;
+      margin-bottom:12px;
+    }
+    .section-label { margin:0; font-size:1rem; font-weight:800; }
+    .helper { margin:4px 0 0; color:var(--muted); font-size:.9rem; }
+    .series-options {
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:9px;
+      padding:0 0 16px;
+      border-bottom:1px solid var(--line);
+    }
+    .radio-input {
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+    .series-option {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      white-space:normal;
+      min-height:46px;
+      padding:9px 12px;
+      border:1px solid #bdbdbd;
+      border-radius:999px;
+      background:#fff;
+      cursor:pointer;
+      font-size:.89rem;
+      font-weight:700;
+      transition:.15s ease;
+    }
+    .series-option:hover { border-color:#111; }
+    .radio-input:focus-visible + .series-option,
+    .radio-input:focus-visible + .package-option {
+      outline:3px solid rgba(229,0,109,.25);
+      outline-offset:2px;
+    }
+    .radio-input:checked + .series-option {
+      color:#fff;
+      background:#111;
+      border-color:#111;
+    }
+    .series-context {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:22px;
+      margin:24px 0 18px;
+      align-items:start;
+    }
+    .series-context h2 {
+      margin:0;
+      font-size:1.55rem;
+      line-height:1.15;
+    }
+    .series-context p { margin:7px 0 0; max-width:760px; color:#444; }
+    .switch-note {
+      padding:9px 12px;
+      background:#f6f6f6;
+      color:#555;
+      font-size:.8rem;
+      white-space:nowrap;
+    }
+    .package-area { margin-top:8px; }
+    .package-options {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:13px;
+    }
 
-  verifyPrivateSession();
-</script>
+    .symphonic-filter {
+      margin:18px 0 22px;
+    }
+    .symphonic-filter[hidden] { display:none; }
+    .symphonic-filter__label {
+      margin:0 0 10px;
+      font-size:.9rem;
+      font-weight:800;
+    }
+    .day-options {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+    .day-option {
+      display:block;
+      min-height:76px;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .day-option:hover { border-color:#888; }
+    .day-option__title {
+      display:block;
+      font-weight:800;
+      margin-bottom:3px;
+    }
+    .day-option__meta {
+      display:block;
+      color:#666;
+      font-size:.84rem;
+    }
+    .radio-input:checked + .day-option {
+      border:2px solid var(--accent);
+      padding:13px 15px;
+      background:#fff8fb;
+    }
+    .package-option {
+      display:block;
+      min-height:142px;
+      padding:17px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .package-option:hover {
+      border-color:#888;
+      transform:translateY(-1px);
+    }
+    .radio-input:checked + .package-option {
+      border:2px solid var(--accent);
+      padding:16px;
+      box-shadow:0 0 0 2px rgba(229,0,109,.07);
+    }
+    .package-title {
+      display:block;
+      font-size:1rem;
+      font-weight:800;
+      margin-bottom:7px;
+    }
+    .package-meta {
+      display:block;
+      color:#444;
+      font-size:.86rem;
+      margin-top:2px;
+    }
+    .selected-marker {
+      display:inline-block;
+      margin-top:10px;
+      color:var(--accent);
+      font-weight:800;
+      font-size:.79rem;
+      opacity:0;
+    }
+    .radio-input:checked + .package-option .selected-marker { opacity:1; }
+    .detail-shell {
+      margin-top:38px;
+      padding-top:38px;
+      border-top:1px solid var(--line);
+      display:grid;
+      grid-template-columns:minmax(0,1.7fr) minmax(285px,.68fr);
+      gap:42px;
+    }
+    .detail-kicker {
+      color:var(--accent);
+      text-transform:uppercase;
+      font-size:.75rem;
+      font-weight:800;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+    }
+    .detail-title {
+      margin:0;
+      font-size:clamp(1.85rem,3vw,2.8rem);
+      line-height:1.08;
+    }
+    .detail-subtitle { margin:10px 0 0; color:#444; font-size:.98rem; }
+    .stat-row {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:11px;
+      margin-top:24px;
+    }
+    .stat {
+      min-height:84px;
+      padding:13px;
+      background:var(--soft);
+    }
+    .stat-label {
+      display:block;
+      margin-bottom:4px;
+      color:var(--muted);
+      text-transform:uppercase;
+      font-size:.66rem;
+      font-weight:800;
+      letter-spacing:.06em;
+    }
+    .stat-value { display:block; font-weight:800; font-size:.92rem; }
+    .concerts { margin-top:32px; }
+    .concerts-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:9px;
+    }
+    .concerts h3 { margin:0; font-size:1.14rem; }
+    .concert-count { color:var(--muted); font-size:.84rem; }
+    .concert-list { border-top:1px solid var(--line); }
+    .concert {
+      display:grid;
+      grid-template-columns:175px minmax(0,1fr);
+      gap:20px;
+      padding:15px 0;
+      border-bottom:1px solid var(--line);
+    }
+    .concert-date { font-weight:800; font-size:.87rem; }
+    .concert-title { margin:0; font-weight:800; }
+    .concert-meta { margin:3px 0 0; color:var(--muted); font-size:.82rem; }
+    .more-button {
+      margin-top:16px;
+      padding:9px 14px;
+      border:1px solid #999;
+      background:#fff;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .more-button:hover { border-color:#111; }
+    .summary-card {
+      align-self:start;
+      position:sticky;
+      top:24px;
+      padding:21px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .summary-card h3 { margin:0 0 13px; font-size:1.08rem; }
+    .summary-line {
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      padding:9px 0;
+      border-bottom:1px solid #eee;
+      font-size:.87rem;
+    }
+    .summary-line span:first-child { color:var(--muted); }
+    .summary-line strong { text-align:right; }
+    .cta {
+      display:block;
+      width:100%;
+      margin-top:18px;
+      padding:12px 15px;
+      border:0;
+      background:var(--accent);
+      color:#fff;
+      text-align:center;
+      text-decoration:none;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .cta:hover { background:var(--accent-dark); }
+    .secondary-link {
+      display:block;
+      margin-top:11px;
+      text-align:center;
+      font-size:.85rem;
+      font-weight:700;
+    }
+    .source-details {
+      margin-top:18px;
+      padding-top:14px;
+      border-top:1px solid #eee;
+      color:#555;
+      font-size:.79rem;
+    }
+    .source-details summary { cursor:pointer; font-weight:700; }
+    .source-details dl {
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:5px 10px;
+      margin:10px 0 0;
+    }
+    .source-details dt { color:#777; }
+    .source-details dd { margin:0; word-break:break-word; }
+    .data-note {
+      max-width:var(--max);
+      margin:0 auto 50px;
+      padding:0 24px;
+      color:#666;
+      font-size:.8rem;
+    }
+    @media (max-width:900px) {
+      .series-options { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .package-options { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .detail-shell { grid-template-columns:1fr; }
+      .summary-card { position:static; }
+      .series-context { grid-template-columns:1fr; }
+      .switch-note { white-space:normal; justify-self:start; }
+    }
+    @media (max-width:650px) {
+      .series-options { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .site-nav { display:none; }
+      .hero__inner { padding-top:38px; }
+      .explorer { padding-top:28px; }
+      .package-options { grid-template-columns:1fr; }
+      .day-options { grid-template-columns:1fr; }
+      .stat-row { grid-template-columns:1fr; }
+      .concert { grid-template-columns:1fr; gap:4px; }
+    }
+  
+    .cta[disabled] {
+      cursor: default;
+      opacity: .55;
+      pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+<section class="hero">
+<div class="hero__inner">
+<p class="eyebrow">2026–2027 Season</p>
+<h1>Explore subscription packages in one place.</h1>
+<p class="lede">
+        Move between series and package schedules without backing out to another landing page.
+        The performance lists below are populated from the supplied 2026–2027 package data.
+      </p>
+</div>
+</section>
+<main class="explorer">
+<section aria-labelledby="seriesHeading">
+<div class="step-row">
+<div>
+<h2 class="section-label" id="seriesHeading">Choose a series</h2>
+<p class="helper">Switch between subscription types at any time.</p>
+</div>
+</div>
+<div class="series-options" id="seriesOptions"></div>
+</section>
+<section class="series-context">
+<div>
+<h2 id="seriesName"></h2>
+<p id="seriesDescription"></p>
+</div>
+<div class="switch-note">Series navigation stays available throughout the shopping journey.</div>
+</section>
+<section aria-labelledby="packageHeading" class="package-area">
+<div class="step-row">
+<div>
+<h2 class="section-label" id="packageHeading">Choose a package</h2>
+<p class="helper" id="packageHelper"></p>
+</div>
+</div>
+<div class="symphonic-filter" hidden="" id="symphonicFilter">
+<p class="symphonic-filter__label">First, choose when you prefer to attend</p>
+<div class="day-options" id="dayOptions"></div>
+</div>
+<div class="package-options" id="packageOptions"></div>
+</section>
+<section aria-live="polite" class="detail-shell">
+<div>
+<div class="detail-kicker" id="detailSeries"></div>
+<h2 class="detail-title" id="detailTitle"></h2>
+<p class="detail-subtitle" id="detailSubtitle"></p>
+<div class="stat-row" id="stats"></div>
+<section class="concerts">
+<div class="concerts-header">
+<h3 id="concertListLabel"></h3>
+<span class="concert-count" id="concertCount"></span>
+</div>
+<div class="concert-list" id="concertList"></div>
+<button class="more-button" hidden="" id="moreButton" type="button"></button>
+</section>
+</div>
+<aside aria-label="Selected subscription summary" class="summary-card">
+<h3>Your selection</h3>
+<div id="summaryLines"></div>
+<button aria-disabled="true" class="cta" disabled="disabled" id="purchaseButton" title="Purchase functionality intentionally disabled in this mockup" type="button">Continue to purchase</button>
+<a class="secondary-link" href="#">Subscription benefits &amp; FAQs</a>
+<details class="source-details">
+<summary>Mockup source data</summary>
+<dl id="sourceDetails"></dl>
+</details>
+</aside>
+</section>
+</main>
+<p class="data-note">
+    Data note: public-facing series/package groupings in this mockup are built from the supplied Perfs.xlsx file.
+    The newer Create Your Own package (27CYONEW) is shown; the legacy 27CYO and internal 27CYOINT package rows are not exposed as separate patron choices.
+  </p>
+<script>
+    const subscriptionData = {"symphonic": {"name": "Symphonic Series", "description": "Beloved classics and exciting new works in full-orchestra programs led by Music Director Xian Zhang and guest artists.", "packages": {"2710G": {"name": "10G Sundays", "fullName": "Symphonic Series 10G Sundays", "packageCode": "2710G", "packageId": 2900, "season": "2026-2027 Symphonic", "count": 10, "schedule": "Sundays at 2:00 PM", "dateRange": "Sep 27, 2026 – Jun 20, 2027", "listLabel": "Included concerts", "events": [{"date": "Sun, Sep 27 • 2:00 PM", "title": "Xian and James Ehnes", "meta": "", "performanceId": 28419, "productionSeasonId": 28415}, {"date": "Sun, Nov 15 • 2:00 PM", "title": "Tchaikovsky and Zarathustra", "meta": "", "performanceId": 28428, "productionSeasonId": 28425}, {"date": "Sun, Nov 22 • 2:00 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28432, "productionSeasonId": 28429}, {"date": "Sun, Feb 7 • 2:00 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28708, "productionSeasonId": 28438}, {"date": "Sun, Feb 28 • 2:00 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28451, "productionSeasonId": 28448}, {"date": "Sun, Mar 21 • 2:00 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28726, "productionSeasonId": 28723}, {"date": "Sun, Apr 18 • 2:00 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28461, "productionSeasonId": 28458}, {"date": "Sun, Apr 25 • 2:00 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28465, "productionSeasonId": 28462}, {"date": "Sun, Jun 6 • 2:00 PM", "title": "Mahler's Fourth Symphony", "meta": "", "performanceId": 28707, "productionSeasonId": 28704}, {"date": "Sun, Jun 20 • 2:00 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28472, "productionSeasonId": 28469}], "countLabel": "concerts"}, "2713A": {"name": "13A Thursdays", "fullName": "Symphonic Series 13A Thursdays", "packageCode": "2713A", "packageId": 2925, "season": "2026-2027 Symphonic", "count": 13, "schedule": "Thursdays at 7:30 PM", "dateRange": "Oct 22, 2026 – Jun 24, 2027", "listLabel": "Included concerts", "events": [{"date": "Thu, Oct 22 • 7:30 PM", "title": "Morlot Sounds of Spring", "meta": "", "performanceId": 28423, "productionSeasonId": 28422}, {"date": "Thu, Nov 5 • 7:30 PM", "title": "Leila Josefowicz Returns", "meta": "", "performanceId": 28702, "productionSeasonId": 28701}, {"date": "Thu, Nov 19 • 7:30 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28430, "productionSeasonId": 28429}, {"date": "Thu, Jan 28 • 7:30 PM", "title": "Xian and Emanuel Ax", "meta": "", "performanceId": 28434, "productionSeasonId": 28433}, {"date": "Thu, Feb 4 • 7:30 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28439, "productionSeasonId": 28438}, {"date": "Thu, Feb 25 • 7:30 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28449, "productionSeasonId": 28448}, {"date": "Thu, Mar 11 • 7:30 PM", "title": "Xian Conducts Scheherazade", "meta": "", "performanceId": 28453, "productionSeasonId": 28452}, {"date": "Thu, Mar 18 • 7:30 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28724, "productionSeasonId": 28723}, {"date": "Thu, Apr 15 • 7:30 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28459, "productionSeasonId": 28458}, {"date": "Thu, Apr 22 • 7:30 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28463, "productionSeasonId": 28462}, {"date": "Thu, May 13 • 7:30 PM", "title": "Rachmaninov Second Piano Conc", "meta": "", "performanceId": 28467, "productionSeasonId": 28466}, {"date": "Thu, Jun 17 • 7:30 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28470, "productionSeasonId": 28469}, {"date": "Thu, Jun 24 • 7:30 PM", "title": "Wagner's Ring Without Words", "meta": "", "performanceId": 28476, "productionSeasonId": 28475}], "countLabel": "concerts"}, "2713B": {"name": "13B Saturdays", "fullName": "Symphonic Series 13B Saturdays", "packageCode": "2713B", "packageId": 2926, "season": "2026-2027 Symphonic", "count": 13, "schedule": "Select dates at 8:00 PM", "dateRange": "Oct 24, 2026 – Jun 26, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Oct 24 • 8:00 PM", "title": "Morlot Sounds of Spring", "meta": "", "performanceId": 28424, "productionSeasonId": 28422}, {"date": "Sat, Nov 7 • 8:00 PM", "title": "Leila Josefowicz Returns", "meta": "", "performanceId": 28703, "productionSeasonId": 28701}, {"date": "Sat, Nov 21 • 8:00 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28431, "productionSeasonId": 28429}, {"date": "Sat, Jan 30 • 8:00 PM", "title": "Xian and Emanuel Ax", "meta": "", "performanceId": 28435, "productionSeasonId": 28433}, {"date": "Sat, Feb 6 • 8:00 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28440, "productionSeasonId": 28438}, {"date": "Sat, Feb 27 • 8:00 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28450, "productionSeasonId": 28448}, {"date": "Sat, Mar 13 • 8:00 PM", "title": "Xian Conducts Scheherazade", "meta": "", "performanceId": 28454, "productionSeasonId": 28452}, {"date": "Sat, Mar 20 • 8:00 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28725, "productionSeasonId": 28723}, {"date": "Sat, Apr 17 • 8:00 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28460, "productionSeasonId": 28458}, {"date": "Sat, Apr 24 • 8:00 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28464, "productionSeasonId": 28462}, {"date": "Fri, May 14 • 8:00 PM", "title": "Rachmaninov Second Piano Conc", "meta": "", "performanceId": 28468, "productionSeasonId": 28466}, {"date": "Sat, Jun 19 • 8:00 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28471, "productionSeasonId": 28469}, {"date": "Sat, Jun 26 • 8:00 PM", "title": "Wagner's Ring Without Words", "meta": "", "performanceId": 28477, "productionSeasonId": 28475}], "countLabel": "concerts"}, "2719A": {"name": "19A Thursdays", "fullName": "Symphonic Series 19A Thursdays", "packageCode": "2719A", "packageId": 2901, "season": "2026-2027 Symphonic", "count": 19, "schedule": "Thursdays at 7:30 PM", "dateRange": "Sep 24, 2026 – Jun 24, 2027", "listLabel": "Included concerts", "events": [{"date": "Thu, Sep 24 • 7:30 PM", "title": "Xian and James Ehnes", "meta": "", "performanceId": 28417, "productionSeasonId": 28415}, {"date": "Thu, Oct 22 • 7:30 PM", "title": "Morlot Sounds of Spring", "meta": "", "performanceId": 28423, "productionSeasonId": 28422}, {"date": "Thu, Nov 5 • 7:30 PM", "title": "Leila Josefowicz Returns", "meta": "", "performanceId": 28702, "productionSeasonId": 28701}, {"date": "Thu, Nov 12 • 7:30 PM", "title": "Tchaikovsky and Zarathustra", "meta": "", "performanceId": 28426, "productionSeasonId": 28425}, {"date": "Thu, Nov 19 • 7:30 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28430, "productionSeasonId": 28429}, {"date": "Thu, Jan 28 • 7:30 PM", "title": "Xian and Emanuel Ax", "meta": "", "performanceId": 28434, "productionSeasonId": 28433}, {"date": "Thu, Feb 4 • 7:30 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28439, "productionSeasonId": 28438}, {"date": "Thu, Feb 11 • 7:30 PM", "title": "Xian The Sounds of Spain", "meta": "", "performanceId": 28444, "productionSeasonId": 28443}, {"date": "Thu, Feb 25 • 7:30 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28449, "productionSeasonId": 28448}, {"date": "Thu, Mar 11 • 7:30 PM", "title": "Xian Conducts Scheherazade", "meta": "", "performanceId": 28453, "productionSeasonId": 28452}, {"date": "Thu, Mar 18 • 7:30 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28724, "productionSeasonId": 28723}, {"date": "Thu, Apr 8 • 7:30 PM", "title": "Grieg's Peer Gynt with Xian", "meta": "", "performanceId": 28456, "productionSeasonId": 28455}, {"date": "Thu, Apr 15 • 7:30 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28459, "productionSeasonId": 28458}, {"date": "Thu, Apr 22 • 7:30 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28463, "productionSeasonId": 28462}, {"date": "Thu, Apr 29 • 7:30 PM", "title": "Shostakovich's 10th Symphony", "meta": "", "performanceId": 28730, "productionSeasonId": 28729}, {"date": "Thu, May 13 • 7:30 PM", "title": "Rachmaninov Second Piano Conc", "meta": "", "performanceId": 28467, "productionSeasonId": 28466}, {"date": "Thu, Jun 3 • 7:30 PM", "title": "Mahler's Fourth Symphony", "meta": "", "performanceId": 28705, "productionSeasonId": 28704}, {"date": "Thu, Jun 17 • 7:30 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28470, "productionSeasonId": 28469}, {"date": "Thu, Jun 24 • 7:30 PM", "title": "Wagner's Ring Without Words", "meta": "", "performanceId": 28476, "productionSeasonId": 28475}], "countLabel": "concerts"}, "2719B": {"name": "19B Saturdays", "fullName": "Symphonic Series 19B Saturdays", "packageCode": "2719B", "packageId": 2903, "season": "2026-2027 Symphonic", "count": 19, "schedule": "Select dates at 8:00 PM", "dateRange": "Sep 26, 2026 – Jun 26, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Sep 26 • 8:00 PM", "title": "Xian and James Ehnes", "meta": "", "performanceId": 28418, "productionSeasonId": 28415}, {"date": "Sat, Oct 24 • 8:00 PM", "title": "Morlot Sounds of Spring", "meta": "", "performanceId": 28424, "productionSeasonId": 28422}, {"date": "Sat, Nov 7 • 8:00 PM", "title": "Leila Josefowicz Returns", "meta": "", "performanceId": 28703, "productionSeasonId": 28701}, {"date": "Sat, Nov 14 • 8:00 PM", "title": "Tchaikovsky and Zarathustra", "meta": "", "performanceId": 28427, "productionSeasonId": 28425}, {"date": "Sat, Nov 21 • 8:00 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28431, "productionSeasonId": 28429}, {"date": "Sat, Jan 30 • 8:00 PM", "title": "Xian and Emanuel Ax", "meta": "", "performanceId": 28435, "productionSeasonId": 28433}, {"date": "Sat, Feb 6 • 8:00 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28440, "productionSeasonId": 28438}, {"date": "Sat, Feb 13 • 8:00 PM", "title": "Xian The Sounds of Spain", "meta": "", "performanceId": 28445, "productionSeasonId": 28443}, {"date": "Sat, Feb 27 • 8:00 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28450, "productionSeasonId": 28448}, {"date": "Sat, Mar 13 • 8:00 PM", "title": "Xian Conducts Scheherazade", "meta": "", "performanceId": 28454, "productionSeasonId": 28452}, {"date": "Sat, Mar 20 • 8:00 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28725, "productionSeasonId": 28723}, {"date": "Sat, Apr 10 • 8:00 PM", "title": "Grieg's Peer Gynt with Xian", "meta": "", "performanceId": 28457, "productionSeasonId": 28455}, {"date": "Sat, Apr 17 • 8:00 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28460, "productionSeasonId": 28458}, {"date": "Sat, Apr 24 • 8:00 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28464, "productionSeasonId": 28462}, {"date": "Sat, May 1 • 8:00 PM", "title": "Shostakovich's 10th Symphony", "meta": "", "performanceId": 28731, "productionSeasonId": 28729}, {"date": "Fri, May 14 • 8:00 PM", "title": "Rachmaninov Second Piano Conc", "meta": "", "performanceId": 28468, "productionSeasonId": 28466}, {"date": "Sat, Jun 5 • 8:00 PM", "title": "Mahler's Fourth Symphony", "meta": "", "performanceId": 28706, "productionSeasonId": 28704}, {"date": "Sat, Jun 19 • 8:00 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28471, "productionSeasonId": 28469}, {"date": "Sat, Jun 26 • 8:00 PM", "title": "Wagner's Ring Without Words", "meta": "", "performanceId": 28477, "productionSeasonId": 28475}], "countLabel": "concerts"}, "275G": {"name": "5G Sundays", "fullName": "Symphonic Series 5G Sundays", "packageCode": "275G", "packageId": 2950, "season": "2026-2027 Symphonic", "count": 5, "schedule": "Sundays at 2:00 PM", "dateRange": "Sep 27, 2026 – Jun 6, 2027", "listLabel": "Included concerts", "events": [{"date": "Sun, Sep 27 • 2:00 PM", "title": "Xian and James Ehnes", "meta": "", "performanceId": 28419, "productionSeasonId": 28415}, {"date": "Sun, Nov 22 • 2:00 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28432, "productionSeasonId": 28429}, {"date": "Sun, Feb 7 • 2:00 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28708, "productionSeasonId": 28438}, {"date": "Sun, Apr 18 • 2:00 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28461, "productionSeasonId": 28458}, {"date": "Sun, Jun 6 • 2:00 PM", "title": "Mahler's Fourth Symphony", "meta": "", "performanceId": 28707, "productionSeasonId": 28704}], "countLabel": "concerts"}, "275H": {"name": "5H Sundays", "fullName": "Symphonic Series 5H Sundays", "packageCode": "275H", "packageId": 2951, "season": "2026-2027 Symphonic", "count": 5, "schedule": "Sundays at 2:00 PM", "dateRange": "Nov 15, 2026 – Jun 20, 2027", "listLabel": "Included concerts", "events": [{"date": "Sun, Nov 15 • 2:00 PM", "title": "Tchaikovsky and Zarathustra", "meta": "", "performanceId": 28428, "productionSeasonId": 28425}, {"date": "Sun, Feb 28 • 2:00 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28451, "productionSeasonId": 28448}, {"date": "Sun, Mar 21 • 2:00 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28726, "productionSeasonId": 28723}, {"date": "Sun, Apr 25 • 2:00 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28465, "productionSeasonId": 28462}, {"date": "Sun, Jun 20 • 2:00 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28472, "productionSeasonId": 28469}], "countLabel": "concerts"}, "276A": {"name": "6A Thursdays", "fullName": "Symphonic Series 6A Thursdays", "packageCode": "276A", "packageId": 2904, "season": "2026-2027 Symphonic", "count": 6, "schedule": "Thursdays at 7:30 PM", "dateRange": "Sep 24, 2026 – Jun 3, 2027", "listLabel": "Included concerts", "events": [{"date": "Thu, Sep 24 • 7:30 PM", "title": "Xian and James Ehnes", "meta": "", "performanceId": 28417, "productionSeasonId": 28415}, {"date": "Thu, Nov 12 • 7:30 PM", "title": "Tchaikovsky and Zarathustra", "meta": "", "performanceId": 28426, "productionSeasonId": 28425}, {"date": "Thu, Feb 11 • 7:30 PM", "title": "Xian The Sounds of Spain", "meta": "", "performanceId": 28444, "productionSeasonId": 28443}, {"date": "Thu, Apr 8 • 7:30 PM", "title": "Grieg's Peer Gynt with Xian", "meta": "", "performanceId": 28456, "productionSeasonId": 28455}, {"date": "Thu, Apr 29 • 7:30 PM", "title": "Shostakovich's 10th Symphony", "meta": "", "performanceId": 28730, "productionSeasonId": 28729}, {"date": "Thu, Jun 3 • 7:30 PM", "title": "Mahler's Fourth Symphony", "meta": "", "performanceId": 28705, "productionSeasonId": 28704}], "countLabel": "concerts"}, "276B": {"name": "6B Saturdays", "fullName": "Symphonic Series 6B Saturdays", "packageCode": "276B", "packageId": 2905, "season": "2026-2027 Symphonic", "count": 6, "schedule": "Saturdays at 8:00 PM", "dateRange": "Sep 26, 2026 – Jun 5, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Sep 26 • 8:00 PM", "title": "Xian and James Ehnes", "meta": "", "performanceId": 28418, "productionSeasonId": 28415}, {"date": "Sat, Nov 14 • 8:00 PM", "title": "Tchaikovsky and Zarathustra", "meta": "", "performanceId": 28427, "productionSeasonId": 28425}, {"date": "Sat, Feb 13 • 8:00 PM", "title": "Xian The Sounds of Spain", "meta": "", "performanceId": 28445, "productionSeasonId": 28443}, {"date": "Sat, Apr 10 • 8:00 PM", "title": "Grieg's Peer Gynt with Xian", "meta": "", "performanceId": 28457, "productionSeasonId": 28455}, {"date": "Sat, May 1 • 8:00 PM", "title": "Shostakovich's 10th Symphony", "meta": "", "performanceId": 28731, "productionSeasonId": 28729}, {"date": "Sat, Jun 5 • 8:00 PM", "title": "Mahler's Fourth Symphony", "meta": "", "performanceId": 28706, "productionSeasonId": 28704}], "countLabel": "concerts"}, "276E": {"name": "6E Thursdays", "fullName": "Symphonic Series 6E Thursdays", "packageCode": "276E", "packageId": 2906, "season": "2026-2027 Symphonic", "count": 6, "schedule": "Thursdays at 7:30 PM", "dateRange": "Nov 5, 2026 – Jun 17, 2027", "listLabel": "Included concerts", "events": [{"date": "Thu, Nov 5 • 7:30 PM", "title": "Leila Josefowicz Returns", "meta": "", "performanceId": 28702, "productionSeasonId": 28701}, {"date": "Thu, Jan 28 • 7:30 PM", "title": "Xian and Emanuel Ax", "meta": "", "performanceId": 28434, "productionSeasonId": 28433}, {"date": "Thu, Feb 25 • 7:30 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28449, "productionSeasonId": 28448}, {"date": "Thu, Mar 18 • 7:30 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28724, "productionSeasonId": 28723}, {"date": "Thu, Apr 22 • 7:30 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28463, "productionSeasonId": 28462}, {"date": "Thu, Jun 17 • 7:30 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28470, "productionSeasonId": 28469}], "countLabel": "concerts"}, "276F": {"name": "6F Saturdays", "fullName": "Symphonic Series 6F Saturdays", "packageCode": "276F", "packageId": 2907, "season": "2026-2027 Symphonic", "count": 6, "schedule": "Saturdays at 8:00 PM", "dateRange": "Nov 7, 2026 – Jun 19, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Nov 7 • 8:00 PM", "title": "Leila Josefowicz Returns", "meta": "", "performanceId": 28703, "productionSeasonId": 28701}, {"date": "Sat, Jan 30 • 8:00 PM", "title": "Xian and Emanuel Ax", "meta": "", "performanceId": 28435, "productionSeasonId": 28433}, {"date": "Sat, Feb 27 • 8:00 PM", "title": "Charlie Chaplin's Modern Times", "meta": "", "performanceId": 28450, "productionSeasonId": 28448}, {"date": "Sat, Mar 20 • 8:00 PM", "title": "Berlioz's Romeo and Juliet", "meta": "", "performanceId": 28725, "productionSeasonId": 28723}, {"date": "Sat, Apr 24 • 8:00 PM", "title": "Pines & Fountains of Rome", "meta": "", "performanceId": 28464, "productionSeasonId": 28462}, {"date": "Sat, Jun 19 • 8:00 PM", "title": "Xian Conducts Brahms", "meta": "", "performanceId": 28471, "productionSeasonId": 28469}], "countLabel": "concerts"}, "277C": {"name": "7C Thursdays", "fullName": "Symphonic Series 7C Thursdays", "packageCode": "277C", "packageId": 2908, "season": "2026-2027 Symphonic", "count": 7, "schedule": "Thursdays at 7:30 PM", "dateRange": "Oct 22, 2026 – Jun 24, 2027", "listLabel": "Included concerts", "events": [{"date": "Thu, Oct 22 • 7:30 PM", "title": "Morlot Sounds of Spring", "meta": "", "performanceId": 28423, "productionSeasonId": 28422}, {"date": "Thu, Nov 19 • 7:30 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28430, "productionSeasonId": 28429}, {"date": "Thu, Feb 4 • 7:30 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28439, "productionSeasonId": 28438}, {"date": "Thu, Mar 11 • 7:30 PM", "title": "Xian Conducts Scheherazade", "meta": "", "performanceId": 28453, "productionSeasonId": 28452}, {"date": "Thu, Apr 15 • 7:30 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28459, "productionSeasonId": 28458}, {"date": "Thu, May 13 • 7:30 PM", "title": "Rachmaninov Second Piano Conc", "meta": "", "performanceId": 28467, "productionSeasonId": 28466}, {"date": "Thu, Jun 24 • 7:30 PM", "title": "Wagner's Ring Without Words", "meta": "", "performanceId": 28476, "productionSeasonId": 28475}], "countLabel": "concerts"}, "277D": {"name": "7D Saturdays", "fullName": "Symphonic Series 7D Saturdays", "packageCode": "277D", "packageId": 2909, "season": "2026-2027 Symphonic", "count": 7, "schedule": "Select dates at 8:00 PM", "dateRange": "Oct 24, 2026 – Jun 26, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Oct 24 • 8:00 PM", "title": "Morlot Sounds of Spring", "meta": "", "performanceId": 28424, "productionSeasonId": 28422}, {"date": "Sat, Nov 21 • 8:00 PM", "title": "Mozart's Requiem with Xian", "meta": "", "performanceId": 28431, "productionSeasonId": 28429}, {"date": "Sat, Feb 6 • 8:00 PM", "title": "Tchaikovsky's Manfred w/Xian", "meta": "", "performanceId": 28440, "productionSeasonId": 28438}, {"date": "Sat, Mar 13 • 8:00 PM", "title": "Xian Conducts Scheherazade", "meta": "", "performanceId": 28454, "productionSeasonId": 28452}, {"date": "Sat, Apr 17 • 8:00 PM", "title": "Beethoven Pastoral Gil Shaham", "meta": "", "performanceId": 28460, "productionSeasonId": 28458}, {"date": "Fri, May 14 • 8:00 PM", "title": "Rachmaninov Second Piano Conc", "meta": "", "performanceId": 28468, "productionSeasonId": 28466}, {"date": "Sat, Jun 26 • 8:00 PM", "title": "Wagner's Ring Without Words", "meta": "", "performanceId": 28477, "productionSeasonId": 28475}], "countLabel": "concerts"}}}, "pops": {"name": "Seattle Pops Series", "description": "Film, popular music, crossover programs and live orchestral experiences.", "packages": {"27P1": {"name": "Fridays", "fullName": "Seattle Pops Series Fridays", "packageCode": "27P1", "packageId": 2910, "season": "2026-2027 Pops", "count": 4, "schedule": "Fridays at 8:00 PM", "dateRange": "Oct 2, 2026 – Jun 11, 2027", "listLabel": "Included concerts", "events": [{"date": "Fri, Oct 2 • 8:00 PM", "title": "Ennio Morricone: The Official", "meta": "", "performanceId": 28485, "productionSeasonId": 28484}, {"date": "Fri, Dec 4 • 8:00 PM", "title": "Holiday Pops", "meta": "", "performanceId": 28479, "productionSeasonId": 28478}, {"date": "Fri, Feb 19 • 8:00 PM", "title": "The Music of John Williams", "meta": "", "performanceId": 28489, "productionSeasonId": 28488}, {"date": "Fri, Jun 11 • 8:00 PM", "title": "Bear McCreary Conducts Bear Mc", "meta": "", "performanceId": 28495, "productionSeasonId": 28494}], "countLabel": "concerts"}, "27P2": {"name": "Saturdays", "fullName": "Seattle Pops Series Saturdays", "packageCode": "27P2", "packageId": 2911, "season": "2026-2027 Pops", "count": 4, "schedule": "Saturdays at 8:00 PM", "dateRange": "Oct 3, 2026 – Jun 12, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Oct 3 • 8:00 PM", "title": "Ennio Morricone: The Official", "meta": "", "performanceId": 28486, "productionSeasonId": 28484}, {"date": "Sat, Dec 5 • 8:00 PM", "title": "Holiday Pops", "meta": "", "performanceId": 28480, "productionSeasonId": 28478}, {"date": "Sat, Feb 20 • 8:00 PM", "title": "The Music of John Williams", "meta": "", "performanceId": 28490, "productionSeasonId": 28488}, {"date": "Sat, Jun 12 • 8:00 PM", "title": "Bear McCreary Conducts Bear Mc", "meta": "", "performanceId": 28496, "productionSeasonId": 28494}], "countLabel": "concerts"}, "27P3": {"name": "Sundays", "fullName": "Seattle Pops Series Sundays", "packageCode": "27P3", "packageId": 2912, "season": "2026-2027 Pops", "count": 4, "schedule": "Sundays at 2:00 PM", "dateRange": "Oct 4, 2026 – Jun 13, 2027", "listLabel": "Included concerts", "events": [{"date": "Sun, Oct 4 • 2:00 PM", "title": "Ennio Morricone: The Official", "meta": "", "performanceId": 28487, "productionSeasonId": 28484}, {"date": "Sun, Dec 6 • 2:00 PM", "title": "Holiday Pops", "meta": "", "performanceId": 28481, "productionSeasonId": 28478}, {"date": "Sun, Feb 21 • 2:00 PM", "title": "The Music of John Williams", "meta": "", "performanceId": 28491, "productionSeasonId": 28488}, {"date": "Sun, Jun 13 • 2:00 PM", "title": "Bear McCreary Conducts Bear Mc", "meta": "", "performanceId": 28497, "productionSeasonId": 28494}], "countLabel": "concerts"}}}, "recital": {"name": "In Recital Series", "description": "Internationally acclaimed musicians in solo and recital performances on the Benaroya Hall mainstage.", "packages": {"27IR": {"name": "Full Series", "fullName": "In Recital Series", "packageCode": "27IR", "packageId": 2913, "season": "2026-2027 Signature", "count": 4, "schedule": "Select dates • 7:30 PM / 8:00 PM", "dateRange": "Oct 27, 2026 – May 15, 2027", "listLabel": "Included concerts", "events": [{"date": "Tue, Oct 27 • 7:30 PM", "title": "Paul Lewis Plays Mozart Sonata", "meta": "", "performanceId": 28676, "productionSeasonId": 28675}, {"date": "Tue, Feb 23 • 7:30 PM", "title": "Vikingur Olafsson Debussy...", "meta": "", "performanceId": 28679, "productionSeasonId": 28678}, {"date": "Thu, Apr 1 • 7:30 PM", "title": "Yeol Eum Son Plays Rachmaninov", "meta": "", "performanceId": 28683, "productionSeasonId": 28682}, {"date": "Sat, May 15 • 8:00 PM", "title": "Alisa Weilerstein & Inon Barna", "meta": "", "performanceId": 28688, "productionSeasonId": 28686}], "countLabel": "concerts"}}}, "chamber": {"name": "Chamber Series", "description": "Curated small-ensemble programs featuring Seattle Symphony musicians.", "packages": {"27CH": {"name": "Full Series", "fullName": "Chamber Series", "packageCode": "27CH", "packageId": 2899, "season": "2026-2027 Signature", "count": 4, "schedule": "Tuesdays at 7:30 PM", "dateRange": "Feb 9, 2027 – May 11, 2027", "listLabel": "Included concerts", "events": [{"date": "Tue, Feb 9 • 7:30 PM", "title": "Beethoven's Cello Sonatas", "meta": "", "performanceId": 28733, "productionSeasonId": 28732}, {"date": "Tue, Mar 9 • 7:30 PM", "title": "Beethoven & Tower", "meta": "", "performanceId": 28735, "productionSeasonId": 28734}, {"date": "Tue, Apr 13 • 7:30 PM", "title": "Beethoven & Alberga", "meta": "", "performanceId": 28737, "productionSeasonId": 28736}, {"date": "Tue, May 11 • 7:30 PM", "title": "Beethoven & Beach", "meta": "", "performanceId": 28739, "productionSeasonId": 28738}], "countLabel": "concerts"}}}, "octave9": {"name": "Octave 9 Series", "description": "Immersive performances that push the boundaries of sound, space and creative possibility.", "packages": {"27O9A": {"name": "Series A", "fullName": "Octave 9 Series A", "packageCode": "27O9A", "packageId": 2914, "season": "2026-2027 Octave 9", "count": 6, "schedule": "Fridays • 6:30 PM / 7:00 PM", "dateRange": "Oct 16, 2026 – Jun 18, 2027", "listLabel": "Included concerts", "events": [{"date": "Fri, Oct 16 • 7:00 PM", "title": "Etudes and Devotions", "meta": "", "performanceId": 28499, "productionSeasonId": 28498}, {"date": "Fri, Nov 6 • 6:30 PM", "title": "The World of György Kurtág", "meta": "", "performanceId": 28502, "productionSeasonId": 28501}, {"date": "Fri, Mar 5 • 7:00 PM", "title": "Inheritances", "meta": "", "performanceId": 28505, "productionSeasonId": 28504}, {"date": "Fri, Apr 2 • 7:00 PM", "title": "The Elwha River", "meta": "", "performanceId": 28508, "productionSeasonId": 28507}, {"date": "Fri, May 7 • 7:00 PM", "title": "Pamela Z", "meta": "", "performanceId": 28511, "productionSeasonId": 28510}, {"date": "Fri, Jun 18 • 7:00 PM", "title": "Brandee Younger", "meta": "", "performanceId": 28513, "productionSeasonId": 28512}], "countLabel": "concerts"}, "27O9B": {"name": "Series B", "fullName": "Octave 9 Series B", "packageCode": "27O9B", "packageId": 2915, "season": "2026-2027 Octave 9", "count": 6, "schedule": "Fridays • 8:30 PM / 9:00 PM", "dateRange": "Oct 16, 2026 – Jun 18, 2027", "listLabel": "Included concerts", "events": [{"date": "Fri, Oct 16 • 9:00 PM", "title": "Etudes and Devotions", "meta": "", "performanceId": 28500, "productionSeasonId": 28498}, {"date": "Fri, Nov 6 • 8:30 PM", "title": "The World of György Kurtág", "meta": "", "performanceId": 28503, "productionSeasonId": 28501}, {"date": "Fri, Mar 5 • 9:00 PM", "title": "Inheritances", "meta": "", "performanceId": 28506, "productionSeasonId": 28504}, {"date": "Fri, Apr 2 • 9:00 PM", "title": "The Elwha River", "meta": "", "performanceId": 28509, "productionSeasonId": 28507}, {"date": "Fri, May 7 • 9:00 PM", "title": "Pamela Z", "meta": "", "performanceId": 28709, "productionSeasonId": 28510}, {"date": "Fri, Jun 18 • 9:00 PM", "title": "Brandee Younger", "meta": "", "performanceId": 28514, "productionSeasonId": 28512}], "countLabel": "concerts"}}}, "family": {"name": "Family Concert Series", "description": "Musical storytelling and orchestral discovery designed for young listeners and their families.", "packages": {"27FC": {"name": "Full Series", "fullName": "Family Concert Series", "packageCode": "27FC", "packageId": 2916, "season": "2026-2027 Family", "count": 4, "schedule": "Saturdays at 11:00 AM", "dateRange": "Oct 31, 2026 – May 8, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Oct 31 • 11:00 AM", "title": "Halloween Spooktacular!", "meta": "", "performanceId": 28692, "productionSeasonId": 28691}, {"date": "Sat, Dec 5 • 11:00 AM", "title": "The Snowman", "meta": "", "performanceId": 28694, "productionSeasonId": 28693}, {"date": "Sat, Feb 20 • 11:00 AM", "title": "Sunny w/ a Chance of Symphony", "meta": "", "performanceId": 28698, "productionSeasonId": 28697}, {"date": "Sat, May 8 • 11:00 AM", "title": "The Firebird", "meta": "", "performanceId": 28700, "productionSeasonId": 28699}], "countLabel": "concerts"}}}, "tinytots": {"name": "Tiny Tots Series", "description": "Interactive musical experiences designed for the youngest listeners.", "packages": {"27T1": {"name": "Fri 10:30 AM", "fullName": "Tiny Tots Series Fri 10:30am", "packageCode": "27T1", "packageId": 2917, "season": "2026-2027 Family", "count": 5, "schedule": "Fridays at 10:30 AM", "dateRange": "Oct 2, 2026 – Jun 4, 2027", "listLabel": "Included concerts", "events": [{"date": "Fri, Oct 2 • 10:30 AM", "title": "The Percussion: Sounds from Ho", "meta": "", "performanceId": 28520, "productionSeasonId": 28519}, {"date": "Fri, Dec 11 • 10:30 AM", "title": "The Strings: Holiday String-Al", "meta": "", "performanceId": 28525, "productionSeasonId": 28524}, {"date": "Fri, Feb 5 • 10:30 AM", "title": "The Brass: Movie Magic", "meta": "", "performanceId": 28588, "productionSeasonId": 28587}, {"date": "Fri, Apr 16 • 10:30 AM", "title": "The Winds: Campfire Jams", "meta": "", "performanceId": 28593, "productionSeasonId": 28592}, {"date": "Fri, Jun 4 • 10:30 AM", "title": "Tiny Orchestra: M is for Music", "meta": "", "performanceId": 28598, "productionSeasonId": 28597}], "countLabel": "concerts"}, "27T2": {"name": "Sat 9:30 AM", "fullName": "Tiny Tots Series Sat 9:30am", "packageCode": "27T2", "packageId": 2919, "season": "2026-2027 Family", "count": 5, "schedule": "Saturdays at 9:30 AM", "dateRange": "Oct 3, 2026 – Jun 5, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Oct 3 • 9:30 AM", "title": "The Percussion: Sounds from Ho", "meta": "", "performanceId": 28521, "productionSeasonId": 28519}, {"date": "Sat, Dec 12 • 9:30 AM", "title": "The Strings: Holiday String-Al", "meta": "", "performanceId": 28526, "productionSeasonId": 28524}, {"date": "Sat, Feb 6 • 9:30 AM", "title": "The Brass: Movie Magic", "meta": "", "performanceId": 28589, "productionSeasonId": 28587}, {"date": "Sat, Apr 17 • 9:30 AM", "title": "The Winds: Campfire Jams", "meta": "", "performanceId": 28594, "productionSeasonId": 28592}, {"date": "Sat, Jun 5 • 9:30 AM", "title": "Tiny Orchestra: M is for Music", "meta": "", "performanceId": 28599, "productionSeasonId": 28597}], "countLabel": "concerts"}, "27T3": {"name": "Sat 10:30 AM", "fullName": "Tiny Tots Series Sat 10:30am", "packageCode": "27T3", "packageId": 2920, "season": "2026-2027 Family", "count": 5, "schedule": "Saturdays at 10:30 AM", "dateRange": "Oct 3, 2026 – Jun 5, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Oct 3 • 10:30 AM", "title": "The Percussion: Sounds from Ho", "meta": "", "performanceId": 28522, "productionSeasonId": 28519}, {"date": "Sat, Dec 12 • 10:30 AM", "title": "The Strings: Holiday String-Al", "meta": "", "performanceId": 28527, "productionSeasonId": 28524}, {"date": "Sat, Feb 6 • 10:30 AM", "title": "The Brass: Movie Magic", "meta": "", "performanceId": 28590, "productionSeasonId": 28587}, {"date": "Sat, Apr 17 • 10:30 AM", "title": "The Winds: Campfire Jams", "meta": "", "performanceId": 28595, "productionSeasonId": 28592}, {"date": "Sat, Jun 5 • 10:30 AM", "title": "Tiny Orchestra: M is for Music", "meta": "", "performanceId": 28600, "productionSeasonId": 28597}], "countLabel": "concerts"}, "27T4": {"name": "Sat 11:30 AM", "fullName": "Tiny Tots Series Sat 11:30am", "packageCode": "27T4", "packageId": 2921, "season": "2026-2027 Family", "count": 5, "schedule": "Saturdays at 11:30 AM", "dateRange": "Oct 3, 2026 – Jun 5, 2027", "listLabel": "Included concerts", "events": [{"date": "Sat, Oct 3 • 11:30 AM", "title": "The Percussion: Sounds from Ho", "meta": "", "performanceId": 28523, "productionSeasonId": 28519}, {"date": "Sat, Dec 12 • 11:30 AM", "title": "The Strings: Holiday String-Al", "meta": "", "performanceId": 28528, "productionSeasonId": 28524}, {"date": "Sat, Feb 6 • 11:30 AM", "title": "The Brass: Movie Magic", "meta": "", "performanceId": 28591, "productionSeasonId": 28587}, {"date": "Sat, Apr 17 • 11:30 AM", "title": "The Winds: Campfire Jams", "meta": "", "performanceId": 28596, "productionSeasonId": 28592}, {"date": "Sat, Jun 5 • 11:30 AM", "title": "Tiny Orchestra: M is for Music", "meta": "", "performanceId": 28601, "productionSeasonId": 28597}], "countLabel": "concerts"}}}, "nglive": {"name": "National Geographic Live", "description": "Live presentations that bring National Geographic explorers, photographers and storytellers to the stage.", "packages": {"27NGM": {"name": "Matinee • Sundays", "fullName": "NG Live Matinee - Sundays", "packageCode": "27NGM", "packageId": 2957, "season": "2026-2027 NG Live", "count": 6, "schedule": "Sundays at 2:00 PM", "dateRange": "Nov 1, 2026 – May 16, 2027", "listLabel": "Included concerts", "events": [{"date": "Sun, Nov 1 • 2:00 PM", "title": "NGL: Battling Bloodsuckers", "meta": "", "performanceId": 28864, "productionSeasonId": 28863}, {"date": "Sun, Jan 10 • 2:00 PM", "title": "NGL: Beauty Beyond the...", "meta": "", "performanceId": 28867, "productionSeasonId": 28866}, {"date": "Sun, Feb 14 • 2:00 PM", "title": "NGL: Saving Nature's Symphony", "meta": "", "performanceId": 28871, "productionSeasonId": 28870}, {"date": "Sun, Mar 7 • 2:00 PM", "title": "NGL: The Ghosts of Pompeii", "meta": "", "performanceId": 28875, "productionSeasonId": 28874}, {"date": "Sun, Apr 11 • 2:00 PM", "title": "NGL: Weird World of Frogs", "meta": "", "performanceId": 28879, "productionSeasonId": 28878}, {"date": "Sun, May 16 • 2:00 PM", "title": "NGL: Death of the Dinosaurs", "meta": "", "performanceId": 28883, "productionSeasonId": 28882}], "countLabel": "concerts"}, "27NG1": {"name": "Series 1 • Mondays", "fullName": "NG Live Series 1 - Mondays", "packageCode": "27NG1", "packageId": 2958, "season": "2026-2027 NG Live", "count": 6, "schedule": "Mondays at 7:30 PM", "dateRange": "Nov 2, 2026 – May 17, 2027", "listLabel": "Included concerts", "events": [{"date": "Mon, Nov 2 • 7:30 PM", "title": "NGL: Battling Bloodsuckers", "meta": "", "performanceId": 28865, "productionSeasonId": 28863}, {"date": "Mon, Jan 11 • 7:30 PM", "title": "NGL: Beauty Beyond the...", "meta": "", "performanceId": 28868, "productionSeasonId": 28866}, {"date": "Mon, Feb 15 • 7:30 PM", "title": "NGL: Saving Nature's Symphony", "meta": "", "performanceId": 28872, "productionSeasonId": 28870}, {"date": "Mon, Mar 8 • 7:30 PM", "title": "NGL: The Ghosts of Pompeii", "meta": "", "performanceId": 28876, "productionSeasonId": 28874}, {"date": "Mon, Apr 12 • 7:30 PM", "title": "NGL: Weird World of Frogs", "meta": "", "performanceId": 28880, "productionSeasonId": 28878}, {"date": "Mon, May 17 • 7:30 PM", "title": "NGL: Death of the Dinosaurs", "meta": "", "performanceId": 28884, "productionSeasonId": 28882}], "countLabel": "concerts"}, "27NG2": {"name": "Series 2 • Tuesdays", "fullName": "NG Live Series 2 - Tuesdays", "packageCode": "27NG2", "packageId": 2959, "season": "2026-2027 NG Live", "count": 6, "schedule": "Tuesdays at 7:30 PM", "dateRange": "Nov 3, 2026 – May 18, 2027", "listLabel": "Included concerts", "events": [{"date": "Tue, Nov 3 • 7:30 PM", "title": "NGL: Battling Bloodsuckers", "meta": "", "performanceId": 28886, "productionSeasonId": 28863}, {"date": "Tue, Jan 12 • 7:30 PM", "title": "NGL: Beauty Beyond the...", "meta": "", "performanceId": 28869, "productionSeasonId": 28866}, {"date": "Tue, Feb 16 • 7:30 PM", "title": "NGL: Saving Nature's Symphony", "meta": "", "performanceId": 28873, "productionSeasonId": 28870}, {"date": "Tue, Mar 9 • 7:30 PM", "title": "NGL: The Ghosts of Pompeii", "meta": "", "performanceId": 28877, "productionSeasonId": 28874}, {"date": "Tue, Apr 13 • 7:30 PM", "title": "NGL: Weird World of Frogs", "meta": "", "performanceId": 28881, "productionSeasonId": 28878}, {"date": "Tue, May 18 • 7:30 PM", "title": "NGL: Death of the Dinosaurs", "meta": "", "performanceId": 28885, "productionSeasonId": 28882}], "countLabel": "concerts"}}}, "cyo": {"name": "Create Your Own", "description": "Build a more flexible subscription by choosing from eligible performances across the season.", "packages": {"27CYONEW": {"name": "Create Your Own", "fullName": "Create Your Own Series", "packageCode": "27CYONEW", "packageId": 2963, "season": "2026-2027 CYO", "count": 33, "schedule": "Choose from eligible performance dates", "dateRange": "Sep 24, 2026 – Jun 26, 2027", "listLabel": "Eligible events in source data", "events": [{"date": "3 eligible performances", "title": "Xian and James Ehnes", "meta": "Thu, Sep 24 • 7:30 PM | Sat, Sep 26 • 8:00 PM | Sun, Sep 27 • 2:00 PM", "performanceId": null, "productionSeasonId": 28415}, {"date": "3 eligible performances", "title": "Ennio Morricone: Official Symp", "meta": "Fri, Oct 2 • 8:00 PM | Sat, Oct 3 • 8:00 PM | Sun, Oct 4 • 2:00 PM", "performanceId": null, "productionSeasonId": 28484}, {"date": "2 eligible performances", "title": "Morlot Sounds of Spring", "meta": "Thu, Oct 22 • 7:30 PM | Sat, Oct 24 • 8:00 PM", "performanceId": null, "productionSeasonId": 28422}, {"date": "Tue, Oct 27 • 7:30 PM", "title": "Paul Lewis Plays Mozart Sonata", "meta": "Tue, Oct 27 • 7:30 PM", "performanceId": null, "productionSeasonId": 28675}, {"date": "3 eligible performances", "title": "NGL: Battling Bloodsuckers", "meta": "Sun, Nov 1 • 2:00 PM | Mon, Nov 2 • 7:30 PM | Tue, Nov 3 • 7:30 PM", "performanceId": null, "productionSeasonId": 28863}, {"date": "2 eligible performances", "title": "Leila Josefowicz Returns", "meta": "Thu, Nov 5 • 7:30 PM | Sat, Nov 7 • 8:00 PM", "performanceId": null, "productionSeasonId": 28701}, {"date": "3 eligible performances", "title": "Tchaikovsky and Zarathustra", "meta": "Thu, Nov 12 • 7:30 PM | Sat, Nov 14 • 8:00 PM | Sun, Nov 15 • 2:00 PM", "performanceId": null, "productionSeasonId": 28425}, {"date": "3 eligible performances", "title": "Mozart's Requiem with Xian", "meta": "Thu, Nov 19 • 7:30 PM | Sat, Nov 21 • 8:00 PM | Sun, Nov 22 • 2:00 PM", "performanceId": null, "productionSeasonId": 28429}, {"date": "3 eligible performances", "title": "Holiday Pops", "meta": "Fri, Dec 4 • 8:00 PM | Sat, Dec 5 • 8:00 PM | Sun, Dec 6 • 2:00 PM", "performanceId": null, "productionSeasonId": 28478}, {"date": "3 eligible performances", "title": "NGL: Beauty Beyond the...", "meta": "Sun, Jan 10 • 2:00 PM | Mon, Jan 11 • 7:30 PM | Tue, Jan 12 • 7:30 PM", "performanceId": null, "productionSeasonId": 28866}, {"date": "2 eligible performances", "title": "Xian and Emanuel Ax", "meta": "Thu, Jan 28 • 7:30 PM | Sat, Jan 30 • 8:00 PM", "performanceId": null, "productionSeasonId": 28433}, {"date": "3 eligible performances", "title": "Tchaikovsky's Manfred w/Xian", "meta": "Thu, Feb 4 • 7:30 PM | Sat, Feb 6 • 8:00 PM | Sun, Feb 7 • 2:00 PM", "performanceId": null, "productionSeasonId": 28438}, {"date": "2 eligible performances", "title": "Xian The Sounds of Spain", "meta": "Thu, Feb 11 • 7:30 PM | Sat, Feb 13 • 8:00 PM", "performanceId": null, "productionSeasonId": 28443}, {"date": "3 eligible performances", "title": "NGL: Saving Nature's Symphony", "meta": "Sun, Feb 14 • 2:00 PM | Mon, Feb 15 • 7:30 PM | Tue, Feb 16 • 7:30 PM", "performanceId": null, "productionSeasonId": 28870}, {"date": "3 eligible performances", "title": "The Music of John Williams", "meta": "Fri, Feb 19 • 8:00 PM | Sat, Feb 20 • 8:00 PM | Sun, Feb 21 • 2:00 PM", "performanceId": null, "productionSeasonId": 28488}, {"date": "Tue, Feb 23 • 7:30 PM", "title": "Vikingur Olafsson Debussy...", "meta": "Tue, Feb 23 • 7:30 PM", "performanceId": null, "productionSeasonId": 28678}, {"date": "3 eligible performances", "title": "Charlie Chaplin's Modern Times", "meta": "Thu, Feb 25 • 7:30 PM | Sat, Feb 27 • 8:00 PM | Sun, Feb 28 • 2:00 PM", "performanceId": null, "productionSeasonId": 28448}, {"date": "3 eligible performances", "title": "NGL: The Ghosts of Pompeii", "meta": "Sun, Mar 7 • 2:00 PM | Mon, Mar 8 • 7:30 PM | Tue, Mar 9 • 7:30 PM", "performanceId": null, "productionSeasonId": 28874}, {"date": "2 eligible performances", "title": "Xian Conducts Scheherazade", "meta": "Thu, Mar 11 • 7:30 PM | Sat, Mar 13 • 8:00 PM", "performanceId": null, "productionSeasonId": 28452}, {"date": "3 eligible performances", "title": "Berlioz's Romeo and Juliet", "meta": "Thu, Mar 18 • 7:30 PM | Sat, Mar 20 • 8:00 PM | Sun, Mar 21 • 2:00 PM", "performanceId": null, "productionSeasonId": 28723}, {"date": "Thu, Apr 1 • 7:30 PM", "title": "Yeol Eum Son Plays Rachmaninov", "meta": "Thu, Apr 1 • 7:30 PM", "performanceId": null, "productionSeasonId": 28682}, {"date": "2 eligible performances", "title": "Grieg's Peer Gynt with Xian", "meta": "Thu, Apr 8 • 7:30 PM | Sat, Apr 10 • 8:00 PM", "performanceId": null, "productionSeasonId": 28455}, {"date": "3 eligible performances", "title": "NGL: Weird World of Frogs", "meta": "Sun, Apr 11 • 2:00 PM | Mon, Apr 12 • 7:30 PM | Tue, Apr 13 • 7:30 PM", "performanceId": null, "productionSeasonId": 28878}, {"date": "3 eligible performances", "title": "Beethoven Pastoral Gil Shaham", "meta": "Thu, Apr 15 • 7:30 PM | Sat, Apr 17 • 8:00 PM | Sun, Apr 18 • 2:00 PM", "performanceId": null, "productionSeasonId": 28458}, {"date": "3 eligible performances", "title": "Pines & Fountains of Rome", "meta": "Thu, Apr 22 • 7:30 PM | Sat, Apr 24 • 8:00 PM | Sun, Apr 25 • 2:00 PM", "performanceId": null, "productionSeasonId": 28462}, {"date": "2 eligible performances", "title": "Shostakovich's 10th Symphony", "meta": "Thu, Apr 29 • 7:30 PM | Sat, May 1 • 8:00 PM", "performanceId": null, "productionSeasonId": 28729}, {"date": "2 eligible performances", "title": "Rachmaninov Second Piano Conc", "meta": "Thu, May 13 • 7:30 PM | Fri, May 14 • 8:00 PM", "performanceId": null, "productionSeasonId": 28466}, {"date": "Sat, May 15 • 8:00 PM", "title": "Alisa Weilerstein & Inon Barna", "meta": "Sat, May 15 • 8:00 PM", "performanceId": null, "productionSeasonId": 28686}, {"date": "3 eligible performances", "title": "NGL: Death of the Dinosaurs", "meta": "Sun, May 16 • 2:00 PM | Mon, May 17 • 7:30 PM | Tue, May 18 • 7:30 PM", "performanceId": null, "productionSeasonId": 28882}, {"date": "3 eligible performances", "title": "Mahler's Fourth Symphony", "meta": "Thu, Jun 3 • 7:30 PM | Sat, Jun 5 • 8:00 PM | Sun, Jun 6 • 2:00 PM", "performanceId": null, "productionSeasonId": 28704}, {"date": "3 eligible performances", "title": "Bear McCreary Conducts Bear Mc", "meta": "Fri, Jun 11 • 8:00 PM | Sat, Jun 12 • 8:00 PM | Sun, Jun 13 • 2:00 PM", "performanceId": null, "productionSeasonId": 28494}, {"date": "3 eligible performances", "title": "Xian Conducts Brahms", "meta": "Thu, Jun 17 • 7:30 PM | Sat, Jun 19 • 8:00 PM | Sun, Jun 20 • 2:00 PM", "performanceId": null, "productionSeasonId": 28469}, {"date": "2 eligible performances", "title": "Wagner's Ring Without Words", "meta": "Thu, Jun 24 • 7:30 PM | Sat, Jun 26 • 8:00 PM", "performanceId": null, "productionSeasonId": 28475}], "countLabel": "eligible events"}}}};
+    const seriesOrder = ["symphonic", "pops", "recital", "chamber", "octave9", "family", "tinytots", "nglive", "cyo"];
+    const DEFAULT_VISIBLE_EVENTS = 8;
+
+    const seriesOptions = document.getElementById("seriesOptions");
+    const packageOptions = document.getElementById("packageOptions");
+    const packageHelper = document.getElementById("packageHelper");
+    let expanded = false;
+
+    function firstPackageKey(seriesKey) {
+      return Object.keys(subscriptionData[seriesKey].packages)[0];
+    }
+
+    function getInitialState() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedSeries = params.get("series");
+      const requestedPackage = params.get("package");
+      const seriesKey = subscriptionData[requestedSeries] ? requestedSeries : "symphonic";
+      const packageKey = subscriptionData[seriesKey].packages[requestedPackage]
+        ? requestedPackage
+        : firstPackageKey(seriesKey);
+      return { seriesKey, packageKey };
+    }
+
+    let state = getInitialState();
+
+    function updateUrl(push = false) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("series", state.seriesKey);
+      url.searchParams.set("package", state.packageKey);
+      history[push ? "pushState" : "replaceState"]({}, "", url);
+    }
+
+    function renderSeriesOptions() {
+      seriesOptions.innerHTML = "";
+      seriesOrder.forEach(key => {
+        const series = subscriptionData[key];
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "series";
+        input.className = "radio-input";
+        input.id = `series-${key}`;
+        input.value = key;
+        input.checked = key === state.seriesKey;
+        input.addEventListener("change", () => {
+          state.seriesKey = key;
+          state.packageKey = firstPackageKey(key);
+          expanded = false;
+          render();
+          updateUrl(true);
+        });
+
+        const label = document.createElement("label");
+        label.className = "series-option";
+        label.htmlFor = input.id;
+        label.textContent = series.name;
+        seriesOptions.append(input, label);
+      });
+    }
+
+    function renderSeriesContext() {
+      const series = subscriptionData[state.seriesKey];
+      document.getElementById("seriesName").textContent = series.name;
+      document.getElementById("seriesDescription").textContent = series.description;
+      const n = Object.keys(series.packages).length;
+      if (state.seriesKey === "symphonic") {
+        packageHelper.textContent = "Choose your preferred concert day, then compare only the packages available on that schedule.";
+      } else {
+        packageHelper.textContent = n === 1
+          ? "This series currently has one package option in the supplied data."
+          : `Compare ${n} package options without leaving this page.`;
+      }
+    }
+
+    const symphonicFilter = document.getElementById("symphonicFilter");
+    const dayOptions = document.getElementById("dayOptions");
+
+    function symphonicDayForPackage(pkg) {
+      const name = (pkg.name || "").toLowerCase();
+      if (name.includes("sunday")) return "sunday";
+      if (name.includes("thursday")) return "thursday";
+      if (name.includes("saturday")) return "saturday";
+      return "other";
+    }
+
+    function currentSymphonicDay() {
+      const pkg = subscriptionData.symphonic.packages[state.packageKey];
+      return pkg ? symphonicDayForPackage(pkg) : "sunday";
+    }
+
+    function symphonicPackagesForDay(day) {
+      return Object.entries(subscriptionData.symphonic.packages)
+        .filter(([, pkg]) => symphonicDayForPackage(pkg) === day);
+    }
+
+    function renderSymphonicFilter() {
+      if (state.seriesKey !== "symphonic") {
+        symphonicFilter.hidden = true;
+        dayOptions.innerHTML = "";
+        return;
+      }
+
+      symphonicFilter.hidden = false;
+      dayOptions.innerHTML = "";
+
+      const selectedDay = currentSymphonicDay();
+      const groups = [
+        { key: "sunday", title: "Sunday afternoons", detail: "2:00 PM" },
+        { key: "thursday", title: "Thursday evenings", detail: "7:30 PM" },
+        { key: "saturday", title: "Saturday evenings", detail: "8:00 PM" }
+      ];
+
+      groups.forEach(group => {
+        const packages = symphonicPackagesForDay(group.key);
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "symphonic-day";
+        input.className = "radio-input";
+        input.id = `symphonic-day-${group.key}`;
+        input.value = group.key;
+        input.checked = group.key === selectedDay;
+
+        input.addEventListener("change", () => {
+          if (!packages.length) return;
+          state.packageKey = packages[0][0];
+          expanded = false;
+          renderSymphonicFilter();
+          renderPackageOptions();
+          renderDetails();
+          updateUrl(true);
+        });
+
+        const label = document.createElement("label");
+        label.className = "day-option";
+        label.htmlFor = input.id;
+        label.innerHTML = `
+          <span class="day-option__title">${group.title}</span>
+          <span class="day-option__meta">${group.detail} · ${packages.length} package${packages.length === 1 ? "" : "s"}</span>
+        `;
+
+        dayOptions.append(input, label);
+      });
+    }
+
+    function renderPackageOptions() {
+      packageOptions.innerHTML = "";
+      const series = subscriptionData[state.seriesKey];
+
+      const packageEntries = state.seriesKey === "symphonic"
+        ? symphonicPackagesForDay(currentSymphonicDay())
+        : Object.entries(series.packages);
+
+      packageEntries.forEach(([key, pkg]) => {
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "package";
+        input.className = "radio-input";
+        input.id = `package-${key}`;
+        input.value = key;
+        input.checked = key === state.packageKey;
+        input.addEventListener("change", () => {
+          state.packageKey = key;
+          expanded = false;
+          renderDetails();
+          updateUrl(true);
+        });
+
+        const label = document.createElement("label");
+        label.className = "package-option";
+        label.htmlFor = input.id;
+        const noun = pkg.countLabel || "concerts";
+        label.innerHTML = `
+          <span class="package-title">${pkg.name}</span>
+          <span class="package-meta">${pkg.count} ${noun}</span>
+          <span class="package-meta">${pkg.schedule}</span>
+          <span class="package-meta">${pkg.dateRange}</span>
+          <span class="selected-marker">Selected</span>
+        `;
+        packageOptions.append(input, label);
+      });
+    }
+
+    function renderDetails() {
+      const series = subscriptionData[state.seriesKey];
+      const pkg = series.packages[state.packageKey];
+      const noun = pkg.countLabel || "concerts";
+
+      document.getElementById("detailSeries").textContent = series.name;
+      document.getElementById("detailTitle").textContent = pkg.name;
+      document.getElementById("detailSubtitle").textContent = pkg.fullName;
+      document.getElementById("concertListLabel").textContent = pkg.listLabel || "Included concerts";
+      document.getElementById("concertCount").textContent = `${pkg.events.length} listed`;
+
+      document.getElementById("stats").innerHTML = `
+        <div class="stat">
+          <span class="stat-label">${noun}</span>
+          <span class="stat-value">${pkg.count}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Schedule</span>
+          <span class="stat-value">${pkg.schedule}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Season span</span>
+          <span class="stat-value">${pkg.dateRange}</span>
+        </div>
+      `;
+
+      const visible = expanded ? pkg.events : pkg.events.slice(0, DEFAULT_VISIBLE_EVENTS);
+      document.getElementById("concertList").innerHTML = visible.map(event => `
+        <article class="concert">
+          <div class="concert-date">${event.date}</div>
+          <div>
+            <p class="concert-title">${event.title}</p>
+            ${event.meta ? `<p class="concert-meta">${event.meta}</p>` : ""}
+          </div>
+        </article>
+      `).join("");
+
+      const moreButton = document.getElementById("moreButton");
+      if (pkg.events.length > DEFAULT_VISIBLE_EVENTS) {
+        moreButton.hidden = false;
+        moreButton.textContent = expanded
+          ? "Show fewer"
+          : `Show all ${pkg.events.length}`;
+        moreButton.onclick = () => {
+          expanded = !expanded;
+          renderDetails();
+        };
+      } else {
+        moreButton.hidden = true;
+      }
+
+      document.getElementById("summaryLines").innerHTML = `
+        <div class="summary-line"><span>Series</span><strong>${series.name}</strong></div>
+        <div class="summary-line"><span>Package</span><strong>${pkg.name}</strong></div>
+        <div class="summary-line"><span>${noun.charAt(0).toUpperCase() + noun.slice(1)}</span><strong>${pkg.count}</strong></div>
+        <div class="summary-line"><span>Schedule</span><strong>${pkg.schedule}</strong></div>
+      `;
+
+      document.getElementById("sourceDetails").innerHTML = `
+        <dt>Package code</dt><dd>${pkg.packageCode}</dd>
+        <dt>Package ID</dt><dd>${pkg.packageId}</dd>
+        <dt>Season</dt><dd>${pkg.season}</dd>
+        <dt>Source rows</dt><dd>${pkg.events.length}</dd>
+      `;
+
+      document.getElementById("purchaseButton").onclick = event => {
+        event.preventDefault();
+        alert(`Mock purchase action for ${series.name} – ${pkg.name} (${pkg.packageCode})`);
+      };
+    }
+
+    function render() {
+      renderSeriesOptions();
+      renderSeriesContext();
+      renderSymphonicFilter();
+      renderPackageOptions();
+      renderDetails();
+      updateUrl(false);
+    }
+
+    window.addEventListener("popstate", () => {
+      state = getInitialState();
+      expanded = false;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
