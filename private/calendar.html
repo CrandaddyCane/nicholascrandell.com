@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calendar Filter Sandbox | Seattle Symphony</title>
+  <script>
+    (function () {
+      const privateHosts = ['nicholascrandell.com', 'www.nicholascrandell.com'];
+      if (!privateHosts.includes(window.location.hostname)) {
+        document.documentElement.classList.add('preview-mode');
+      }
+    })();
+  </script>
   <style>
     :root {
       --ink: #111111;
@@ -224,7 +232,7 @@
     }
     .filter-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
     }
     .filter-field { position: relative; }
@@ -692,6 +700,10 @@
       .modal-taxonomy { grid-template-columns: 1fr; }
       .event-modal { padding: 20px; }
     }
+  
+    body { visibility: hidden; }
+    body.auth-ready,
+    html.preview-mode body { visibility: visible; }
   </style>
 </head>
 <body>
@@ -812,8 +824,9 @@
        FILTER TAXONOMY SANDBOX
 
        Change labels/options here to test alternate approaches.
-       The dropdowns, filter chips, calendar and list all update
-       automatically from this configuration.
+       Genre, Time, Series and Programs are always visible.
+       Series options depend on the All / SSO / BH radio selection.
+       Programs remain available for every radio selection.
        ========================================================== */
     const BASE_FILTER_CONFIG = [
       {
@@ -830,22 +843,40 @@
       }
     ];
 
-    const SSO_FILTER_CONFIG = [
-      {
+    const SSO_SERIES_OPTIONS = [
+      'Symphonic', 'Pops', 'Chamber', 'Recital', 'Family', 'Tiny Tots', 'Octave'
+    ];
+
+    const BH_SERIES_OPTIONS = [
+      'National Geographic Live', 'SCGS', 'Ensign'
+    ];
+
+    const PROGRAM_FILTER_CONFIG = {
+      key: 'program',
+      label: 'Programs',
+      placeholder: 'All Programs',
+      options: ['MySymphony', 'Campus Club', 'Youth Tickets', 'Teen Tix', 'Open Rehearsals', 'Symphony Club', 'Elevate Lounge']
+    };
+
+    function getSeriesFilterConfig() {
+      const brand = getSelectedBrand();
+
+      let options;
+      if (brand === 'Seattle Symphony') {
+        options = SSO_SERIES_OPTIONS;
+      } else if (brand === 'Benaroya Hall') {
+        options = BH_SERIES_OPTIONS;
+      } else {
+        options = [...SSO_SERIES_OPTIONS, ...BH_SERIES_OPTIONS];
+      }
+
+      return {
         key: 'series',
         label: 'Series',
         placeholder: 'All Series',
-        options: ['Symphonic', 'Pops', 'Chamber', 'Recital', 'Family', 'Tiny Tots', 'Octave']
-      },
-      {
-        key: 'program',
-        label: 'Programs',
-        placeholder: 'All Programs',
-        options: ['MySymphony', 'Campus Club', 'Youth Tickets', 'Teen Tix', 'Open rehearsals', 'Symphony Club', 'Elevate Lounge']
-      }
-    ];
-
-    const FILTER_CONFIG = [...BASE_FILTER_CONFIG, ...SSO_FILTER_CONFIG];
+        options
+      };
+    }
 
     /* ==========================================================
        MOCK EVENT DATA
@@ -867,13 +898,13 @@
       },
       {
         id: 3, date: '2026-09-03', time: '7:30 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
-        title: 'An Evening of Jazz', genre: ['Pops'], series: '', program: [],
-        tags: ['Pops', 'Jazz'], description: 'A late-summer jazz program in the intimate recital hall.',
+        title: 'SCGS Presents: Guitar Masters', genre: ['Chamber'], series: 'SCGS', program: ['Campus Club'],
+        tags: ['Chamber', 'SCGS', 'Campus Club'], description: 'A guest-presented guitar program in the intimate recital hall.',
         location: 'Illsley Ball Nordstrom Recital Hall, Benaroya Hall'
       },
       {
         id: 4, date: '2026-09-05', time: '11:00 AM', timeCategory: 'Matinee', brand: 'Seattle Symphony',
-        title: 'Open Rehearsal: Opening Night', genre: ['Classical'], series: 'Symphonic', program: ['Open rehearsals'],
+        title: 'Open Rehearsal: Opening Night', genre: ['Classical'], series: 'Symphonic', program: ['Open Rehearsals'],
         tags: ['Classical', 'Open Rehearsal'], description: 'Go behind the scenes as the orchestra prepares for Opening Night.',
         location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
       },
@@ -885,8 +916,8 @@
       },
       {
         id: 6, date: '2026-09-12', time: '8:00 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
-        title: 'Video Games Live', genre: ['Video Games & Anime', 'Pops'], series: '', program: [],
-        tags: ['Video Games & Anime', 'Pops'], description: 'Music from beloved video games performed in a large-scale concert experience.',
+        title: 'Video Games Live', genre: ['Video Games & Anime', 'Pops'], series: '', program: ['Teen Tix'],
+        tags: ['Video Games & Anime', 'Pops', 'Teen Tix'], description: 'Music from beloved video games performed in a large-scale concert experience.',
         location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
       },
       {
@@ -909,8 +940,8 @@
       },
       {
         id: 10, date: '2026-09-25', time: '8:00 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
-        title: 'Jeff Goldblum & the Mildred Snitzer Orchestra', genre: ['Pops'], series: '', program: [],
-        tags: ['Pops', 'Jazz'], description: 'Actor, pianist and entertainer Jeff Goldblum brings his jazz ensemble to Benaroya Hall for an evening of music and conversation.',
+        title: 'Ensign Symphony & Chorus', genre: ['Classical', 'Community'], series: 'Ensign', program: [],
+        tags: ['Classical', 'Community', 'Ensign'], description: 'A guest-presented orchestral and choral program at Benaroya Hall.',
         location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
       },
       {
@@ -933,8 +964,8 @@
       },
       {
         id: 14, date: '2026-09-30', time: '7:30 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
-        title: 'An Evening with David Sedaris', genre: ['Lectures'], series: '', program: [],
-        tags: ['Lectures'], description: 'Bestselling author and humorist David Sedaris returns to Benaroya Hall for readings and conversation.',
+        title: 'National Geographic Live: Into the Wild', genre: ['Lectures'], series: 'National Geographic Live', program: ['Campus Club'],
+        tags: ['Lectures', 'National Geographic Live', 'Campus Club'], description: 'A National Geographic Live presentation combining storytelling, photography and exploration.',
         location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
       },
       {
@@ -1043,9 +1074,11 @@
     }
 
     function getVisibleFilterConfig() {
-      return getSelectedBrand() === 'Seattle Symphony'
-        ? [...BASE_FILTER_CONFIG, ...SSO_FILTER_CONFIG]
-        : BASE_FILTER_CONFIG;
+      return [
+        ...BASE_FILTER_CONFIG,
+        getSeriesFilterConfig(),
+        PROGRAM_FILTER_CONFIG
+      ];
     }
 
     function buildFilters(preserveSelections = true) {
@@ -1304,9 +1337,18 @@
       modalMeta.textContent = `${longDateFormatter.format(dateObj)} · ${event.time} · ${event.location}`;
       modalDescription.textContent = event.description;
 
-      const modalConfig = event.brand === 'Seattle Symphony'
-        ? [...BASE_FILTER_CONFIG, ...SSO_FILTER_CONFIG]
-        : BASE_FILTER_CONFIG;
+      const modalSeriesConfig = {
+        key: 'series',
+        label: 'Series',
+        placeholder: 'All Series',
+        options: event.brand === 'Seattle Symphony' ? SSO_SERIES_OPTIONS : BH_SERIES_OPTIONS
+      };
+
+      const modalConfig = [
+        ...BASE_FILTER_CONFIG,
+        modalSeriesConfig,
+        PROGRAM_FILTER_CONFIG
+      ];
 
       modalTaxonomy.innerHTML = modalConfig.map(filter => {
         const rawValue = event[filter.key];
@@ -1384,5 +1426,35 @@
     setView('calendar');
     renderAll();
   </script>
+
+  <script type="module">
+    const privateHosts = ['nicholascrandell.com', 'www.nicholascrandell.com'];
+    const isPrivateHost = privateHosts.includes(window.location.hostname);
+
+    if (!isPrivateHost) {
+      document.body.classList.add('auth-ready');
+    } else {
+      try {
+        const { supabase } = await import('../auth.js');
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+          window.location.replace('/login.html');
+        } else {
+          document.body.classList.add('auth-ready');
+        }
+
+        supabase.auth.onAuthStateChange((event) => {
+          if (event === 'SIGNED_OUT') {
+            window.location.replace('/login.html');
+          }
+        });
+      } catch (error) {
+        console.error('Private-session verification failed:', error);
+        window.location.replace('/login.html');
+      }
+    }
+  </script>
+
 </body>
 </html>
