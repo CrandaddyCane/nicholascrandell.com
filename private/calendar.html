@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendar Filter Sandbox | Seattle Symphony</title>
+  <style>
+    :root {
+      --ink: #111111;
+      --muted: #66635f;
+      --line: #d9d6d0;
+      --paper: #ffffff;
+      --warm: #f4f1eb;
+      --warm-2: #ebe7df;
+      --accent: #c9a767;
+      --footer: #111111;
+      --max: 1380px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    button, input, select { font: inherit; }
+    button, select, input { border-radius: 0; }
+    a { color: inherit; text-decoration: none; }
+    button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    /* ---------------------------------------------------------
+       PAGE INTRO
+       --------------------------------------------------------- */
+    .page-shell {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+    .page-title-row { padding: 64px 0 36px; }
+    h1 {
+      margin: 0;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-weight: 400;
+      font-size: clamp(54px, 7vw, 104px);
+      line-height: .92;
+      letter-spacing: -.055em;
+    }
+
+    .calendar-toolbar {
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding: 22px 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+    .performance-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 22px;
+    }
+    .toolbar-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .radio-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .radio-pill input {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin: 0;
+    }
+    .radio-pill input::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ink);
+      transform: scale(0);
+      transition: transform .12s ease;
+    }
+    .radio-pill input:checked::after { transform: scale(1); }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-wrap {
+      width: min(330px, 32vw);
+      position: relative;
+    }
+    .search-wrap input {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--line);
+      padding: 0 42px 0 13px;
+      background: #fff;
+      outline: none;
+    }
+    .search-wrap input:focus { border-color: var(--ink); }
+    .search-icon {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 17px;
+      pointer-events: none;
+    }
+    .filter-toggle {
+      min-height: 44px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: #fff;
+      padding: 0 19px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .055em;
+      cursor: pointer;
+    }
+    .filter-toggle:hover { background: #2b2b2b; }
+
+    /* ---------------------------------------------------------
+       FILTERS
+       --------------------------------------------------------- */
+    .filter-panel {
+      background: var(--warm);
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .28s ease;
+    }
+    .filter-panel.open { max-height: 560px; }
+    .filter-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .filter-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+    .filter-heading strong {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .filter-heading-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .accessibility-link-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .accessibility-link {
+      color: var(--ink);
+      font-size: 12px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .accessibility-tooltip {
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + 10px);
+      width: 300px;
+      padding: 10px 12px;
+      background: var(--ink);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.45;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(4px);
+      transition: opacity .15s ease, transform .15s ease, visibility .15s ease;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .accessibility-link-wrap:hover .accessibility-tooltip,
+    .accessibility-link-wrap:focus-within .accessibility-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .clear-filters {
+      appearance: none;
+      border: 0;
+      background: none;
+      padding: 0;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .filter-field { position: relative; }
+    .filter-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+    .filter-field select {
+      width: 100%;
+      height: 52px;
+      appearance: none;
+      border: 1px solid #aaa59d;
+      background: #fff;
+      padding: 0 44px 0 14px;
+      cursor: pointer;
+      outline: none;
+    }
+    .filter-field::after {
+      content: '⌄';
+      position: absolute;
+      right: 16px;
+      bottom: 13px;
+      pointer-events: none;
+      font-size: 19px;
+    }
+
+    .active-filters-wrap {
+      display: none;
+      margin-top: 18px;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .active-filters-wrap.show { display: flex; }
+    .active-label {
+      margin-right: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .filter-chip {
+      border: 1px solid #8e8981;
+      background: #fff;
+      min-height: 32px;
+      padding: 5px 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .filter-chip span:last-child { font-size: 15px; line-height: 1; }
+
+    /* ---------------------------------------------------------
+       MONTH CONTROLS
+       --------------------------------------------------------- */
+    .results-shell {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 28px 80px;
+    }
+    .month-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: end;
+      gap: 24px;
+      padding: 48px 0 17px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .month-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 6px;
+    }
+    .month-nav button,
+    .view-toggle button {
+      min-width: 44px;
+      min-height: 40px;
+      border: 1px solid var(--ink);
+      background: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .month-nav .today-btn { padding: 0 14px; }
+    .month-title {
+      margin: 0;
+      text-align: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(36px, 4.4vw, 64px);
+      font-weight: 400;
+      letter-spacing: -.04em;
+    }
+    .month-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+      padding-bottom: 6px;
+    }
+    .result-count {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .view-toggle {
+      display: inline-flex;
+      align-items: center;
+    }
+    .view-toggle button + button { border-left: 0; }
+    .view-toggle button.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    /* ---------------------------------------------------------
+       CALENDAR GRID
+       --------------------------------------------------------- */
+    .calendar-view { padding-top: 18px; }
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      border-left: 1px solid var(--line);
+      border-top: 1px solid var(--line);
+    }
+    .weekday {
+      padding: 10px 10px 9px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      border-left: 1px solid var(--line);
+    }
+    .calendar-day {
+      min-height: 155px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 8px;
+      background: #fff;
+      min-width: 0;
+    }
+    .calendar-day.outside { background: #faf9f7; color: #aaa59d; }
+    .calendar-day.today { box-shadow: inset 0 0 0 2px var(--ink); }
+    .day-number {
+      display: inline-grid;
+      place-items: center;
+      width: 27px;
+      height: 27px;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .calendar-day.today .day-number {
+      background: var(--ink);
+      color: #fff;
+      border-radius: 50%;
+    }
+    .calendar-events {
+      display: grid;
+      gap: 5px;
+    }
+    .calendar-event {
+      width: 100%;
+      border: 1px solid #bcb8b1;
+      background: var(--warm);
+      text-align: left;
+      padding: 6px 7px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .calendar-event:hover { border-color: var(--ink); }
+    .calendar-event-time {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .calendar-event-title {
+      display: block;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+    .more-events {
+      border: 0;
+      background: none;
+      padding: 2px 0 0;
+      text-align: left;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 10px;
+    }
+
+    /* ---------------------------------------------------------
+       EVENT LIST
+       --------------------------------------------------------- */
+    .list-view { display: none; }
+    .list-view.active { display: block; }
+    .calendar-view.hidden { display: none; }
+    .event-list { width: 100%; }
+    .event-card {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr) 210px;
+      gap: 34px;
+      padding: 31px 0 34px;
+      border-bottom: 1px solid var(--line);
+      align-items: start;
+    }
+    .event-date {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      line-height: 1.45;
+    }
+    .event-date strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 15px;
+    }
+    .event-brand {
+      margin-bottom: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .085em;
+      color: var(--muted);
+    }
+    .event-title {
+      margin: 0 0 10px;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(24px, 2.4vw, 35px);
+      line-height: 1.08;
+      font-weight: 400;
+      letter-spacing: -.025em;
+    }
+    .event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px 10px;
+      margin-bottom: 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .045em;
+    }
+    .event-meta span:not(:last-child)::after {
+      content: ' /';
+      color: #908c85;
+    }
+    .event-description {
+      margin: 0 0 12px;
+      max-width: 830px;
+      color: #3c3a37;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .event-location {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .event-actions {
+      display: grid;
+      gap: 8px;
+      padding-top: 1px;
+    }
+    .event-btn {
+      min-height: 43px;
+      border: 1px solid var(--ink);
+      display: grid;
+      place-items: center;
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      cursor: pointer;
+      background: #fff;
+    }
+    .event-btn.primary { background: var(--ink); color: #fff; }
+
+    .empty-state {
+      display: none;
+      padding: 60px 0;
+      border-bottom: 1px solid var(--line);
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 28px;
+    }
+
+    /* ---------------------------------------------------------
+       MODAL
+       --------------------------------------------------------- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .event-modal {
+      width: min(680px, 100%);
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+      background: #fff;
+      border: 1px solid var(--ink);
+      padding: 28px;
+    }
+    .modal-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--ink);
+      background: #fff;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+    .modal-title {
+      margin: 5px 0 12px;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 34px;
+      line-height: 1.05;
+      font-weight: 400;
+    }
+    .modal-meta {
+      margin: 0 0 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .modal-description { margin: 0 0 20px; }
+    .modal-taxonomy {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+    }
+    .modal-taxonomy strong {
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    /* ---------------------------------------------------------
+       FOOTER
+       --------------------------------------------------------- */
+    .site-footer {
+      background: var(--footer);
+      color: #fff;
+      padding: 54px 0 26px;
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr .9fr;
+      gap: 60px;
+      padding-bottom: 52px;
+    }
+    .footer-brand {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 31px;
+      letter-spacing: -.03em;
+      margin-bottom: 20px;
+    }
+    .footer-copy,
+    .footer-links {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #ddd;
+    }
+    .footer-links strong {
+      display: block;
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .footer-bottom {
+      border-top: 1px solid #444;
+      padding-top: 18px;
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    @media (max-width: 980px) {
+      .calendar-toolbar { grid-template-columns: 1fr; }
+      .toolbar-actions { justify-content: space-between; }
+      .search-wrap { width: 100%; }
+      .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .month-header { grid-template-columns: 1fr; align-items: start; }
+      .month-title { text-align: left; order: -1; }
+      .month-right { justify-content: space-between; }
+      .calendar-day { min-height: 125px; }
+      .event-card { grid-template-columns: 130px 1fr; }
+      .event-actions {
+        grid-column: 2;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .calendar-weekdays, .calendar-grid {
+        grid-template-columns: repeat(7, minmax(96px, 1fr));
+        min-width: 672px;
+      }
+      .calendar-scroll { overflow-x: auto; padding-bottom: 5px; }
+    }
+
+    @media (max-width: 650px) {
+      .page-shell, .results-shell, .footer-inner { padding-left: 17px; padding-right: 17px; }
+      .page-title-row { padding: 42px 0 28px; }
+      .calendar-toolbar { padding: 16px 0; }
+      .performance-group { gap: 13px 18px; }
+      .toolbar-label { width: 100%; }
+      .toolbar-actions { align-items: stretch; flex-direction: column; }
+      .search-wrap { width: 100%; }
+      .filter-inner { padding: 20px 17px; }
+      .filter-heading { align-items: flex-start; }
+      .filter-heading-actions { justify-content: flex-start; gap: 12px 18px; }
+      .accessibility-tooltip { left: 0; right: auto; width: min(300px, calc(100vw - 34px)); }
+      .filter-panel.open { max-height: 900px; }
+      .filter-grid { grid-template-columns: 1fr; }
+      .month-header { padding-top: 34px; }
+      .month-right { align-items: flex-start; flex-direction: column; gap: 9px; }
+      .event-card { grid-template-columns: 1fr; gap: 15px; padding: 25px 0 28px; }
+      .event-actions { grid-column: auto; grid-template-columns: 1fr 1fr; }
+      .event-date { display: flex; gap: 5px; }
+      .event-date strong { margin: 0; }
+      .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+      .modal-taxonomy { grid-template-columns: 1fr; }
+      .event-modal { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <div class="page-shell">
+      <div class="page-title-row">
+        <h1>Calendar</h1>
+      </div>
+
+      <section class="calendar-toolbar" aria-label="Calendar controls">
+        <div class="performance-group">
+          <span class="toolbar-label">Performances:</span>
+          <label class="radio-pill"><input type="radio" name="brand" value="all" checked /> All</label>
+          <label class="radio-pill"><input type="radio" name="brand" value="Seattle Symphony" /> Seattle Symphony</label>
+          <label class="radio-pill"><input type="radio" name="brand" value="Benaroya Hall" /> Benaroya Hall</label>
+        </div>
+
+        <div class="toolbar-actions">
+          <div class="search-wrap">
+            <input id="searchInput" type="search" placeholder="Search events" aria-label="Search events" />
+            <span class="search-icon">⌕</span>
+          </div>
+          <button id="filterToggle" class="filter-toggle" type="button" aria-expanded="true">Hide Filters</button>
+        </div>
+      </section>
+    </div>
+
+    <section id="filterPanel" class="filter-panel open" aria-hidden="false">
+      <div class="filter-inner">
+        <div class="filter-heading">
+          <strong>Filter By:</strong>
+          <div class="filter-heading-actions">
+            <span class="accessibility-link-wrap">
+              <a class="accessibility-link" href="https://sso-staging.jixaw.com/meet-the-symphony/about-us/accessibility/">Accessibility Information</a>
+              <span class="accessibility-tooltip" role="tooltip">For a complete list of accessibility services available by request, visit our Accessibility page.</span>
+            </span>
+            <button id="clearFilters" class="clear-filters" type="button">Clear all filters</button>
+          </div>
+        </div>
+        <div id="filterGrid" class="filter-grid"></div>
+        <div id="activeFilters" class="active-filters-wrap" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="results-shell">
+      <div class="month-header">
+        <div class="month-nav" aria-label="Month navigation">
+          <button id="prevMonth" type="button" aria-label="Previous month">‹</button>
+          <button id="todayBtn" class="today-btn" type="button">Today</button>
+          <button id="nextMonth" type="button" aria-label="Next month">›</button>
+        </div>
+        <h2 id="monthTitle" class="month-title">September 2026</h2>
+        <div class="month-right">
+          <span id="resultCount" class="result-count">0 events</span>
+          <div class="view-toggle" aria-label="Calendar view">
+            <button id="calendarViewBtn" class="active" type="button">Calendar</button>
+            <button id="listViewBtn" type="button">List</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="calendarView" class="calendar-view">
+        <div class="calendar-scroll">
+          <div class="calendar-weekdays" aria-hidden="true">
+            <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
+            <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+        </div>
+      </div>
+
+      <div id="listView" class="list-view">
+        <div id="eventList" class="event-list"></div>
+      </div>
+
+      <div id="emptyState" class="empty-state">No events match the current filters in this month.</div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">Seattle Symphony</div>
+          <div class="footer-copy">Benaroya Hall<br />200 University Street<br />Seattle, Washington</div>
+        </div>
+        <div class="footer-links">
+          <strong>Tickets</strong>
+          Local: 206.215.4747<br />Toll-free: 866.933.4747<br />Donor Relations: 206.215.4832<br />General: 206.215.4700
+        </div>
+        <div class="footer-links">
+          <strong>More</strong>
+          Directions &amp; Parking<br />Contact Us<br />Recordings<br />Rent Benaroya Hall<br />Newsletter
+        </div>
+      </div>
+      <div class="footer-bottom">Copyright and Privacy Policy &nbsp; | &nbsp; Terms of Use &nbsp; | &nbsp; © Benaroya Hall / Seattle Symphony Orchestra</div>
+    </div>
+  </footer>
+
+  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+    <section class="event-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-top">
+        <div>
+          <div id="modalBrand" class="event-brand"></div>
+          <h2 id="modalTitle" class="modal-title"></h2>
+        </div>
+        <button id="modalClose" class="modal-close" type="button" aria-label="Close event details">×</button>
+      </div>
+      <div id="modalMeta" class="modal-meta"></div>
+      <p id="modalDescription" class="modal-description"></p>
+      <div id="modalTaxonomy" class="modal-taxonomy"></div>
+    </section>
+  </div>
+
+  <script>
+    /* ==========================================================
+       FILTER TAXONOMY SANDBOX
+
+       Change labels/options here to test alternate approaches.
+       The dropdowns, filter chips, calendar and list all update
+       automatically from this configuration.
+       ========================================================== */
+    const BASE_FILTER_CONFIG = [
+      {
+        key: 'genre',
+        label: 'Genre',
+        placeholder: 'All Genres',
+        options: ['Classical', 'Pops', 'Movies', 'Holidays', 'Family', 'Chamber', 'Video Games & Anime', 'Community', 'Lectures']
+      },
+      {
+        key: 'timeCategory',
+        label: 'Time',
+        placeholder: 'All Times',
+        options: ['Matinee', 'Evening']
+      }
+    ];
+
+    const SSO_FILTER_CONFIG = [
+      {
+        key: 'series',
+        label: 'Series',
+        placeholder: 'All Series',
+        options: ['Symphonic', 'Pops', 'Chamber', 'Recital', 'Family', 'Tiny Tots', 'Octave']
+      },
+      {
+        key: 'program',
+        label: 'Programs',
+        placeholder: 'All Programs',
+        options: ['MySymphony', 'Campus Club', 'Youth Tickets', 'Teen Tix', 'Open rehearsals', 'Symphony Club', 'Elevate Lounge']
+      }
+    ];
+
+    const FILTER_CONFIG = [...BASE_FILTER_CONFIG, ...SSO_FILTER_CONFIG];
+
+    /* ==========================================================
+       MOCK EVENT DATA
+       Dates use YYYY-MM-DD so the calendar is fully functional.
+       Add/edit events here to stress-test your taxonomy.
+       ========================================================== */
+    const EVENTS = [
+      {
+        id: 1, date: '2026-08-15', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Summer Classics: Beethoven & Brahms', genre: ['Classical'], series: 'Symphonic', program: [],
+        tags: ['Classical', 'Symphonic'], description: 'A summer program pairing two pillars of the orchestral repertoire.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 2, date: '2026-08-22', time: '2:00 PM', timeCategory: 'Matinee', brand: 'Seattle Symphony',
+        title: 'Tiny Tots: Sounds of Summer', genre: ['Family'], series: 'Tiny Tots', program: ['Youth Tickets'],
+        tags: ['Family', 'Tiny Tots'], description: 'A short, welcoming concert created for Seattle Symphony’s youngest listeners.',
+        location: 'Illsley Ball Nordstrom Recital Hall, Benaroya Hall'
+      },
+      {
+        id: 3, date: '2026-09-03', time: '7:30 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
+        title: 'An Evening of Jazz', genre: ['Pops'], series: '', program: [],
+        tags: ['Pops', 'Jazz'], description: 'A late-summer jazz program in the intimate recital hall.',
+        location: 'Illsley Ball Nordstrom Recital Hall, Benaroya Hall'
+      },
+      {
+        id: 4, date: '2026-09-05', time: '11:00 AM', timeCategory: 'Matinee', brand: 'Seattle Symphony',
+        title: 'Open Rehearsal: Opening Night', genre: ['Classical'], series: 'Symphonic', program: ['Open rehearsals'],
+        tags: ['Classical', 'Open Rehearsal'], description: 'Go behind the scenes as the orchestra prepares for Opening Night.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 5, date: '2026-09-10', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'New Music at Octave 9', genre: ['Chamber'], series: 'Octave', program: ['Campus Club'],
+        tags: ['Chamber', 'Octave'], description: 'An adventurous program featuring contemporary chamber works and immersive sound.',
+        location: 'Octave 9: Raisbeck Music Center'
+      },
+      {
+        id: 6, date: '2026-09-12', time: '8:00 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
+        title: 'Video Games Live', genre: ['Video Games & Anime', 'Pops'], series: '', program: [],
+        tags: ['Video Games & Anime', 'Pops'], description: 'Music from beloved video games performed in a large-scale concert experience.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 7, date: '2026-09-19', time: '6:00 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Opening Night Concert & Gala', genre: ['Classical'], series: 'Symphonic', program: ['Elevate Lounge'],
+        tags: ['Classical', 'Opening Night'], description: 'Celebrate the start of the 2026/2027 season with Music Director Xian Zhang and a one-night-only opening celebration.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 8, date: '2026-09-20', time: '2:00 PM', timeCategory: 'Matinee', brand: 'Seattle Symphony',
+        title: 'Sensory-Friendly Concert', genre: ['Family'], series: 'Family', program: ['MySymphony'],
+        tags: ['Family', 'MySymphony'], description: 'A relaxed and welcoming concert experience designed with sensory needs in mind.',
+        location: 'Illsley Ball Nordstrom Recital Hall, Benaroya Hall'
+      },
+      {
+        id: 9, date: '2026-09-24', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Xian Zhang Conducts the Seattle Symphony', genre: ['Classical'], series: 'Symphonic', program: [],
+        tags: ['Classical', 'Symphonic'], description: 'Music Director Xian Zhang leads the orchestra in a program showcasing the color, power and detail of the full Seattle Symphony.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 10, date: '2026-09-25', time: '8:00 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
+        title: 'Jeff Goldblum & the Mildred Snitzer Orchestra', genre: ['Pops'], series: '', program: [],
+        tags: ['Pops', 'Jazz'], description: 'Actor, pianist and entertainer Jeff Goldblum brings his jazz ensemble to Benaroya Hall for an evening of music and conversation.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 11, date: '2026-09-26', time: '2:00 PM', timeCategory: 'Matinee', brand: 'Seattle Symphony',
+        title: 'Family Concert: Music in Motion', genre: ['Family'], series: 'Family', program: ['Youth Tickets'],
+        tags: ['Family', 'Youth Tickets'], description: 'A lively introduction to orchestral music designed for families and young listeners.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 12, date: '2026-09-27', time: '4:00 PM', timeCategory: 'Matinee', brand: 'Benaroya Hall',
+        title: 'Attack on Titan: Symphony from Paradis', genre: ['Video Games & Anime'], series: '', program: [],
+        tags: ['Video Games & Anime'], description: 'A dramatic symphonic presentation bringing music from the acclaimed series to the concert hall.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 13, date: '2026-09-29', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Chamber Music at Benaroya Hall', genre: ['Chamber'], series: 'Chamber', program: ['Symphony Club'],
+        tags: ['Chamber', 'Symphony Club'], description: 'Seattle Symphony musicians perform an intimate program of chamber works.',
+        location: 'Illsley Ball Nordstrom Recital Hall, Benaroya Hall'
+      },
+      {
+        id: 14, date: '2026-09-30', time: '7:30 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
+        title: 'An Evening with David Sedaris', genre: ['Lectures'], series: '', program: [],
+        tags: ['Lectures'], description: 'Bestselling author and humorist David Sedaris returns to Benaroya Hall for readings and conversation.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 15, date: '2026-10-02', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Mozart & Mahler', genre: ['Classical'], series: 'Symphonic', program: [],
+        tags: ['Classical', 'Symphonic'], description: 'A program spanning Classical elegance and late-Romantic scale.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 16, date: '2026-10-09', time: '8:00 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'The Nightmare Before Christmas in Concert', genre: ['Movies', 'Holidays'], series: 'Pops', program: ['Teen Tix'],
+        tags: ['Movies', 'Holidays'], description: 'The complete film with its score performed live by orchestra.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 17, date: '2026-10-17', time: '11:00 AM', timeCategory: 'Matinee', brand: 'Seattle Symphony',
+        title: 'Tiny Tots: Meet the Strings', genre: ['Family'], series: 'Tiny Tots', program: ['Youth Tickets'],
+        tags: ['Family', 'Tiny Tots'], description: 'A playful introduction to the string family for young children and caregivers.',
+        location: 'Illsley Ball Nordstrom Recital Hall, Benaroya Hall'
+      },
+      {
+        id: 18, date: '2026-10-21', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Seattle Symphony Chorale: Voices Together', genre: ['Classical'], series: 'Symphonic', program: [],
+        tags: ['Classical', 'Chorale'], description: 'The Seattle Symphony Chorale joins the orchestra for a large-scale choral program.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 19, date: '2026-10-24', time: '7:30 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
+        title: 'Organ After Dark', genre: ['Holidays'], series: '', program: [],
+        tags: ['Holidays', 'Organ'], description: 'A theatrical Halloween-season evening built around the Watjen Concert Organ.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 20, date: '2026-10-31', time: '8:00 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
+        title: 'Halloween at Benaroya Hall', genre: ['Holidays', 'Pops'], series: '', program: [],
+        tags: ['Holidays', 'Pops'], description: 'A Halloween night of orchestral favorites, film music and theatrical surprises.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 21, date: '2026-11-06', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Rachmaninov Piano Concerto No. 2', genre: ['Classical'], series: 'Recital', program: [],
+        tags: ['Classical', 'Recital'], description: 'A sweeping Romantic program centered on Rachmaninov.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 22, date: '2026-11-14', time: '2:00 PM', timeCategory: 'Matinee', brand: 'Seattle Symphony',
+        title: 'Family Concert: Heroes & Adventures', genre: ['Family'], series: 'Family', program: ['Youth Tickets'],
+        tags: ['Family', 'Youth Tickets'], description: 'Music of heroes, journeys and adventure for families.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      },
+      {
+        id: 23, date: '2026-11-20', time: '7:30 PM', timeCategory: 'Evening', brand: 'Benaroya Hall',
+        title: 'Community Voices Celebration', genre: ['Community'], series: '', program: [],
+        tags: ['Community'], description: 'A community-centered evening bringing local artists and ensembles together at Benaroya Hall.',
+        location: 'Benaroya Hall'
+      },
+      {
+        id: 24, date: '2026-11-27', time: '7:30 PM', timeCategory: 'Evening', brand: 'Seattle Symphony',
+        title: 'Holiday Pops', genre: ['Pops', 'Holidays'], series: 'Pops', program: [],
+        tags: ['Pops', 'Holidays'], description: 'A festive kickoff to the holiday season featuring orchestra and chorus.',
+        location: 'S. Mark Taper Foundation Auditorium, Benaroya Hall'
+      }
+    ];
+
+    const filterGrid = document.getElementById('filterGrid');
+    const activeFilters = document.getElementById('activeFilters');
+    const eventList = document.getElementById('eventList');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const calendarView = document.getElementById('calendarView');
+    const listView = document.getElementById('listView');
+    const calendarViewBtn = document.getElementById('calendarViewBtn');
+    const listViewBtn = document.getElementById('listViewBtn');
+    const searchInput = document.getElementById('searchInput');
+    const filterPanel = document.getElementById('filterPanel');
+    const filterToggle = document.getElementById('filterToggle');
+    const clearFilters = document.getElementById('clearFilters');
+    const emptyState = document.getElementById('emptyState');
+    const monthTitle = document.getElementById('monthTitle');
+    const resultCount = document.getElementById('resultCount');
+    const prevMonth = document.getElementById('prevMonth');
+    const nextMonth = document.getElementById('nextMonth');
+    const todayBtn = document.getElementById('todayBtn');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalClose = document.getElementById('modalClose');
+    const modalBrand = document.getElementById('modalBrand');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMeta = document.getElementById('modalMeta');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalTaxonomy = document.getElementById('modalTaxonomy');
+
+    // Start the prototype on September 2026, the launch-period month.
+    let currentYear = 2026;
+    let currentMonth = 8; // 0 = January
+    let currentView = 'calendar';
+
+    const monthFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
+    const longDateFormatter = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+    function parseDateParts(dateString) {
+      const [year, month, day] = dateString.split('-').map(Number);
+      return { year, month: month - 1, day };
+    }
+
+    function dateKey(year, month, day) {
+      return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    function getVisibleFilterConfig() {
+      return getSelectedBrand() === 'Seattle Symphony'
+        ? [...BASE_FILTER_CONFIG, ...SSO_FILTER_CONFIG]
+        : BASE_FILTER_CONFIG;
+    }
+
+    function buildFilters(preserveSelections = true) {
+      const previous = preserveSelections ? getActiveFilters() : {};
+      const visibleConfig = getVisibleFilterConfig();
+
+      filterGrid.innerHTML = visibleConfig.map(filter => `
+        <div class="filter-field">
+          <label for="filter-${filter.key}">${escapeHtml(filter.label)}</label>
+          <select id="filter-${filter.key}" data-filter="${filter.key}" aria-label="${escapeHtml(filter.label)}">
+            <option value="">${escapeHtml(filter.placeholder || `All ${filter.label}`)}</option>
+            ${filter.options.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}
+          </select>
+        </div>
+      `).join('');
+
+      filterGrid.querySelectorAll('select').forEach(select => {
+        const key = select.dataset.filter;
+        if (previous[key] && [...select.options].some(option => option.value === previous[key])) {
+          select.value = previous[key];
+        }
+        select.addEventListener('change', renderAll);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function getSelectedBrand() {
+      return document.querySelector('input[name="brand"]:checked')?.value || 'all';
+    }
+
+    function getActiveFilters() {
+      const active = {};
+      filterGrid.querySelectorAll('select').forEach(select => {
+        if (select.value) active[select.dataset.filter] = select.value;
+      });
+      return active;
+    }
+
+    function eventMatchesFilters(event) {
+      const brand = getSelectedBrand();
+      const query = searchInput.value.trim().toLowerCase();
+      const active = getActiveFilters();
+
+      if (brand !== 'all' && event.brand !== brand) return false;
+
+      if (query) {
+        const haystack = [
+          event.title,
+          event.description,
+          event.location,
+          event.brand,
+          ...(Array.isArray(event.genre) ? event.genre : [event.genre || '']),
+          event.timeCategory,
+          event.series,
+          ...(Array.isArray(event.program) ? event.program : [event.program || '']),
+          ...(event.tags || [])
+        ].join(' ').toLowerCase();
+        if (!haystack.includes(query)) return false;
+      }
+
+      for (const [key, value] of Object.entries(active)) {
+        const eventValue = event[key];
+        if (Array.isArray(eventValue)) {
+          if (!eventValue.includes(value)) return false;
+        } else if ((eventValue || '') !== value) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function getVisibleEvents() {
+      return EVENTS
+        .filter(eventMatchesFilters)
+        .filter(event => {
+          const parts = parseDateParts(event.date);
+          return parts.year === currentYear && parts.month === currentMonth;
+        })
+        .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+    }
+
+    function renderActiveFilters() {
+      const chips = [];
+      const brand = getSelectedBrand();
+      const active = getActiveFilters();
+      const query = searchInput.value.trim();
+
+      if (brand !== 'all') chips.push({ kind: 'brand', key: 'brand', label: `Performances: ${brand}` });
+      if (query) chips.push({ kind: 'search', key: 'search', label: `Search: ${query}` });
+
+      getVisibleFilterConfig().forEach(filter => {
+        if (active[filter.key]) chips.push({ kind: 'filter', key: filter.key, label: `${filter.label}: ${active[filter.key]}` });
+      });
+
+      if (!chips.length) {
+        activeFilters.classList.remove('show');
+        activeFilters.innerHTML = '';
+        return;
+      }
+
+      activeFilters.classList.add('show');
+      activeFilters.innerHTML = `<span class="active-label">Active:</span>${chips.map(chip => `
+        <button type="button" class="filter-chip" data-kind="${chip.kind}" data-key="${chip.key}" aria-label="Remove ${escapeHtml(chip.label)}">
+          <span>${escapeHtml(chip.label)}</span><span aria-hidden="true">×</span>
+        </button>
+      `).join('')}`;
+
+      activeFilters.querySelectorAll('.filter-chip').forEach(button => {
+        button.addEventListener('click', () => {
+          const { kind, key } = button.dataset;
+          if (kind === 'brand') {
+            document.querySelector('input[name="brand"][value="all"]').checked = true;
+            buildFilters(true);
+          }
+          if (kind === 'search') searchInput.value = '';
+          if (kind === 'filter') {
+            const select = filterGrid.querySelector(`select[data-filter="${key}"]`);
+            if (select) select.value = '';
+          }
+          renderAll();
+        });
+      });
+    }
+
+    function renderCalendar(visibleEvents) {
+      monthTitle.textContent = monthFormatter.format(new Date(currentYear, currentMonth, 1));
+
+      const firstWeekday = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const daysInPreviousMonth = new Date(currentYear, currentMonth, 0).getDate();
+      const totalCells = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
+      const eventsByDate = new Map();
+
+      visibleEvents.forEach(event => {
+        if (!eventsByDate.has(event.date)) eventsByDate.set(event.date, []);
+        eventsByDate.get(event.date).push(event);
+      });
+
+      const today = new Date();
+      const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
+      const cells = [];
+
+      for (let index = 0; index < totalCells; index++) {
+        let year = currentYear;
+        let month = currentMonth;
+        let day;
+        let outside = false;
+
+        if (index < firstWeekday) {
+          outside = true;
+          day = daysInPreviousMonth - firstWeekday + index + 1;
+          month = currentMonth - 1;
+          if (month < 0) { month = 11; year -= 1; }
+        } else if (index >= firstWeekday + daysInMonth) {
+          outside = true;
+          day = index - (firstWeekday + daysInMonth) + 1;
+          month = currentMonth + 1;
+          if (month > 11) { month = 0; year += 1; }
+        } else {
+          day = index - firstWeekday + 1;
+        }
+
+        const key = dateKey(year, month, day);
+        const dayEvents = outside ? [] : (eventsByDate.get(key) || []);
+        const maxVisible = 3;
+        const visibleDayEvents = dayEvents.slice(0, maxVisible);
+        const overflow = dayEvents.length - visibleDayEvents.length;
+
+        cells.push(`
+          <div class="calendar-day${outside ? ' outside' : ''}${key === todayKey ? ' today' : ''}" data-date="${key}">
+            <span class="day-number">${day}</span>
+            <div class="calendar-events">
+              ${visibleDayEvents.map(event => `
+                <button type="button" class="calendar-event" data-event-id="${event.id}">
+                  <span class="calendar-event-time">${escapeHtml(event.time)}</span>
+                  <span class="calendar-event-title">${escapeHtml(event.title)}</span>
+                </button>
+              `).join('')}
+              ${overflow > 0 ? `<button type="button" class="more-events" data-date-more="${key}">+${overflow} more</button>` : ''}
+            </div>
+          </div>
+        `);
+      }
+
+      calendarGrid.innerHTML = cells.join('');
+
+      calendarGrid.querySelectorAll('[data-event-id]').forEach(button => {
+        button.addEventListener('click', () => openEventModal(Number(button.dataset.eventId)));
+      });
+
+      calendarGrid.querySelectorAll('[data-date-more]').forEach(button => {
+        button.addEventListener('click', () => {
+          const targetDate = button.dataset.dateMore;
+          const matching = visibleEvents.filter(event => event.date === targetDate);
+          if (matching[0]) openEventModal(matching[0].id);
+        });
+      });
+    }
+
+    function renderList(visibleEvents) {
+      eventList.innerHTML = visibleEvents.map(event => {
+        const parts = parseDateParts(event.date);
+        const dateObj = new Date(parts.year, parts.month, parts.day);
+        return `
+          <article class="event-card">
+            <div class="event-date">
+              <strong>${escapeHtml(longDateFormatter.format(dateObj))}</strong>
+              <span>${escapeHtml(event.time)}</span>
+            </div>
+            <div class="event-content">
+              <div class="event-brand">${escapeHtml(event.brand)}</div>
+              <h3 class="event-title">${escapeHtml(event.title)}</h3>
+              <div class="event-meta">${(event.tags || []).map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}</div>
+              <p class="event-description">${escapeHtml(event.description)}</p>
+              <div class="event-location">${escapeHtml(event.location)}</div>
+            </div>
+            <div class="event-actions">
+              <button class="event-btn primary" type="button" data-event-id="${event.id}">Buy Tickets</button>
+              <button class="event-btn" type="button" data-event-id="${event.id}">View Details</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      eventList.querySelectorAll('[data-event-id]').forEach(button => {
+        button.addEventListener('click', () => openEventModal(Number(button.dataset.eventId)));
+      });
+    }
+
+    function renderAll() {
+      const visibleEvents = getVisibleEvents();
+      renderActiveFilters();
+      renderCalendar(visibleEvents);
+      renderList(visibleEvents);
+      resultCount.textContent = `${visibleEvents.length} ${visibleEvents.length === 1 ? 'event' : 'events'}`;
+      emptyState.style.display = visibleEvents.length ? 'none' : 'block';
+    }
+
+    function openEventModal(eventId) {
+      const event = EVENTS.find(item => item.id === eventId);
+      if (!event) return;
+      const parts = parseDateParts(event.date);
+      const dateObj = new Date(parts.year, parts.month, parts.day);
+
+      modalBrand.textContent = event.brand;
+      modalTitle.textContent = event.title;
+      modalMeta.textContent = `${longDateFormatter.format(dateObj)} · ${event.time} · ${event.location}`;
+      modalDescription.textContent = event.description;
+
+      const modalConfig = event.brand === 'Seattle Symphony'
+        ? [...BASE_FILTER_CONFIG, ...SSO_FILTER_CONFIG]
+        : BASE_FILTER_CONFIG;
+
+      modalTaxonomy.innerHTML = modalConfig.map(filter => {
+        const rawValue = event[filter.key];
+        const displayValue = Array.isArray(rawValue) ? rawValue.join(', ') : (rawValue || 'None');
+        return `<div><strong>${escapeHtml(filter.label)}:</strong> ${escapeHtml(displayValue)}</div>`;
+      }).join('');
+
+      modalBackdrop.classList.add('open');
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+      modalClose.focus();
+    }
+
+    function closeEventModal() {
+      modalBackdrop.classList.remove('open');
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    function changeMonth(delta) {
+      currentMonth += delta;
+      if (currentMonth < 0) { currentMonth = 11; currentYear -= 1; }
+      if (currentMonth > 11) { currentMonth = 0; currentYear += 1; }
+      renderAll();
+    }
+
+    function setView(view) {
+      currentView = view;
+      const calendarActive = currentView === 'calendar';
+      calendarView.classList.toggle('hidden', !calendarActive);
+      listView.classList.toggle('active', !calendarActive);
+      calendarViewBtn.classList.toggle('active', calendarActive);
+      listViewBtn.classList.toggle('active', !calendarActive);
+      calendarViewBtn.setAttribute('aria-pressed', String(calendarActive));
+      listViewBtn.setAttribute('aria-pressed', String(!calendarActive));
+    }
+
+    filterToggle.addEventListener('click', () => {
+      const open = filterPanel.classList.toggle('open');
+      filterToggle.textContent = open ? 'Hide Filters' : 'Show Filters';
+      filterToggle.setAttribute('aria-expanded', String(open));
+      filterPanel.setAttribute('aria-hidden', String(!open));
+    });
+
+    clearFilters.addEventListener('click', () => {
+      filterGrid.querySelectorAll('select').forEach(select => { select.value = ''; });
+      searchInput.value = '';
+      document.querySelector('input[name="brand"][value="all"]').checked = true;
+      buildFilters(false);
+      renderAll();
+    });
+
+    searchInput.addEventListener('input', renderAll);
+    document.querySelectorAll('input[name="brand"]').forEach(radio => radio.addEventListener('change', () => {
+      buildFilters(true);
+      renderAll();
+    }));
+    prevMonth.addEventListener('click', () => changeMonth(-1));
+    nextMonth.addEventListener('click', () => changeMonth(1));
+    todayBtn.addEventListener('click', () => {
+      const today = new Date();
+      currentYear = today.getFullYear();
+      currentMonth = today.getMonth();
+      renderAll();
+    });
+    calendarViewBtn.addEventListener('click', () => setView('calendar'));
+    listViewBtn.addEventListener('click', () => setView('list'));
+    modalClose.addEventListener('click', closeEventModal);
+    modalBackdrop.addEventListener('click', event => {
+      if (event.target === modalBackdrop) closeEventModal();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && modalBackdrop.classList.contains('open')) closeEventModal();
+    });
+
+    buildFilters();
+    setView('calendar');
+    renderAll();
+  </script>
+</body>
+</html>
