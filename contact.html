@@ -1,39 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <!-- Google Tag Manager -->
+  <script>
+  (function(w,d,s,l,i){
+    w[l]=w[l]||[];
+    w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+    var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),
+        dl=l!='dataLayer'?'&l='+l:'';
+    j.async=true;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+    f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-NWT4WV8V');
+  </script>
+  <!-- End Google Tag Manager -->
+
+  <meta name="robots" content="noindex, nofollow">
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Contact | Nick Crandell</title>
 
   <link rel="stylesheet" href="/css/styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
 </head>
 
 <body>
 
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe
+      src="https://www.googletagmanager.com/ns.html?id=GTM-NWT4WV8V"
+      height="0"
+      width="0"
+      style="display:none;visibility:hidden">
+    </iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
   <div id="siteHeader"></div>
 
   <main class="main">
+
     <section class="hero contact-page">
+
       <div class="contact-container">
-        <h1 class="section-title">Contact Nick</h1>
+
+        <h1 class="section-title">
+          Contact Nick
+        </h1>
 
         <p class="section-body">
           Have a project, opportunity, or just want to say hello? Send me a message.
         </p>
 
-        <form id="contactForm" class="contact-form">
-          <input type="text" id="name" name="name" placeholder="Your name" required>
-          <input type="email" id="email" name="email" placeholder="Your email" required>
-          <textarea id="message" name="message" placeholder="Your message" required></textarea>
+        <form
+          id="contactForm"
+          class="contact-form">
 
-          <button type="submit" class="btn-primary">Send Message</button>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Your name"
+            required
+          >
+
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Your email"
+            required
+          >
+
+          <textarea
+            id="message"
+            name="message"
+            placeholder="Your message"
+            required>
+          </textarea>
+
+          <button
+            type="submit"
+            class="btn-primary">
+            Send Message
+          </button>
+
         </form>
 
-        <p id="status" class="form-status"></p>
+        <p
+          id="status"
+          class="form-status">
+        </p>
+
       </div>
+
     </section>
+
   </main>
 
   <script>
@@ -55,28 +127,42 @@
       };
 
       try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/contact_messages`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "apikey": SUPABASE_KEY,
-            "Authorization": `Bearer ${SUPABASE_KEY}`,
-            "Prefer": "return=minimal"
-          },
-          body: JSON.stringify(payload)
-        });
+
+        const response = await fetch(
+          `${SUPABASE_URL}/rest/v1/contact_messages`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_KEY,
+              "Authorization": `Bearer ${SUPABASE_KEY}`,
+              "Prefer": "return=minimal"
+            },
+
+            body: JSON.stringify(payload)
+          }
+        );
 
         if (response.ok) {
-  window.location.href = "/thank-you.html";
-} else {
+
+          window.location.href = "/thank-you.html";
+
+        } else {
+
           status.textContent = "Something went wrong.";
+
         }
+
       } catch (error) {
+
         status.textContent = "Unable to send message.";
+
       }
     });
   </script>
 
   <script src="/js/header.js"></script>
+
 </body>
 </html>
