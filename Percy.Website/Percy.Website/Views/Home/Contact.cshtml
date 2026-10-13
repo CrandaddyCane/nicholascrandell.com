@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+
+<section aria-labelledby="contact-heading">
+
+    <header class="mb-4">
+        <h1 id="contact-heading">Contact</h1>
+
+        <p class="lead">
+            Have a question, professional opportunity,
+            or project you'd like to discuss?
+        </p>
+
+        <p>
+            Use the form below to get in touch.
+        </p>
+    </header>
+
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <form id="contactForm">
+
+                <div class="mb-3">
+                    <label for="contactName" class="form-label">
+                        Name
+                    </label>
+
+                    <input type="text"
+                           class="form-control"
+                           id="contactName"
+                           name="Name"
+                           autocomplete="name"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactEmail" class="form-label">
+                        Email Address
+                    </label>
+
+                    <input type="email"
+                           class="form-control"
+                           id="contactEmail"
+                           name="Email"
+                           autocomplete="email"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactSubject" class="form-label">
+                        Subject
+                    </label>
+
+                    <input type="text"
+                           class="form-control"
+                           id="contactSubject"
+                           name="Subject"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactMessage" class="form-label">
+                        Message
+                    </label>
+
+                    <textarea class="form-control"
+                              id="contactMessage"
+                              name="Message"
+                              rows="6"
+                              required></textarea>
+                </div>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        disabled>
+                    Send Message
+                </button>
+
+                <p class="text-muted small mt-3" role="status">
+                    Message submission is currently under development.
+                </p>
+
+            </form>
+
+        </div>
+    </div>
+
+</section>

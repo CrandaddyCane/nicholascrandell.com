@@ -1,8 +1,189 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Professional Introduction -->
+<section aria-labelledby="introduction-heading" class="mb-5">
+
+    <header>
+        <h1 id="introduction-heading" class="display-4">
+            Nick Crandell
+        </h1>
+
+        <p class="lead">
+            Digital Project Management | Technology |
+            Web Development
+        </p>
+    </header>
+
+    <p>
+        I like to solve problems.
+    </p>
+
+    <p>
+        I'm particularly interested in web application development,
+        systems integration, data management, and building
+        technology that solves meaningful problems.
+    </p>
+
+    <a asp-controller="Home"
+       asp-action="Portfolio"
+       class="btn btn-primary">
+        Explore My Portfolio
+    </a>
+
+</section>
+
+
+<!-- Career Overview -->
+<section aria-labelledby="career-heading" class="mb-5">
+
+    <h2 id="career-heading">
+        Career Overview
+    </h2>
+
+    <p>
+        My professional background combines digital project
+        management, platform administration, technical
+        implementation, and stakeholder collaboration.
+    </p>
+
+    <article class="mb-4">
+
+        <h3 class="h5">
+            Seattle Symphony
+        </h3>
+
+        <p class="text-muted">
+            Digital Project and Client Relations Manager
+        </p>
+
+        <p>
+            Responsible for coordinating digital projects,
+            supporting website operations, collaborating
+            with technical vendors, and helping maintain
+            the organization's digital platforms.
+        </p>
+
+        <p>
+            My work includes website implementation,
+            content management systems, ticketing integrations,
+            analytics, technical troubleshooting,
+            and cross-departmental coordination.
+        </p>
+
+    </article>
+
+</section>
+
+
+<!-- About Me -->
+<section aria-labelledby="about-heading" class="mb-5">
+
+    <h2 id="about-heading">
+        About Me
+    </h2>
+
+    <p>
+        I'm a technology-focused professional with a background
+        in data management, business analysis, and digital
+        project management.
+    </p>
+
+    <p>
+        I enjoy understanding how complex systems work,
+        finding opportunities to improve them,
+        and expanding my technical capabilities
+        through hands-on development projects.
+    </p>
+
+    <p>
+        This website serves as both a professional portfolio
+        and an ongoing learning environment where I can
+        document and demonstrate my work.
+    </p>
+
+</section>
+
+
+<!-- Technical Skills -->
+<section aria-labelledby="skills-heading" class="mb-5">
+
+    <h2 id="skills-heading">
+        Technical Skills
+    </h2>
+
+    <p>
+        My professional experience and ongoing technical
+        development span several areas.
+    </p>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-md-6">
+
+            <h3 class="h5">
+                Web & Application Development
+            </h3>
+
+            <ul>
+                <li>HTML, CSS, and JavaScript</li>
+                <li>ASP.NET Core MVC and C# (Developing)</li>
+                <li>Bootstrap</li>
+                <li>Content Management Systems</li>
+                <li>REST API Integration (Developing)</li>
+            </ul>
+
+        </div>
+
+        <div class="col-12 col-md-6">
+
+            <h3 class="h5">
+                Data & Analytics
+            </h3>
+
+            <ul>
+                <li>SQL and Relational Databases</li>
+                <li>Data Management and Analysis</li>
+                <li>Google Analytics 4</li>
+                <li>Google Tag Manager</li>
+                <li>Business Intelligence and Reporting</li>
+            </ul>
+
+        </div>
+
+        <div class="col-12 col-md-6">
+
+            <h3 class="h5">
+                Platforms & Integrations
+            </h3>
+
+            <ul>
+                <li>Sitecore CMS</li>
+                <li>Umbraco CMS</li>
+                <li>Tessitura</li>
+                <li>Third-Party System Integrations</li>
+                <li>Website Operations and Troubleshooting</li>
+            </ul>
+
+        </div>
+
+        <div class="col-12 col-md-6">
+
+            <h3 class="h5">
+                Project & Technical Management
+            </h3>
+
+            <ul>
+                <li>Digital Project Management</li>
+                <li>Agile and Scrum Methodologies</li>
+                <li>Technical Requirements Analysis</li>
+                <li>Vendor and Stakeholder Coordination</li>
+                <li>Git and GitHub</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</section>
