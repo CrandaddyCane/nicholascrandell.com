@@ -22,3 +22,16 @@ Thumbs.db
 .env
 .env.*
 appsettings.Development.json
+appsettings.*.local.json
+secrets.json
+
+# Visual Studio publishing profiles and credentials
+**/Properties/PublishProfiles/
+*.publishsettings
+*.pubxml
+*.pubxml.user
+
+# Deployment packages
+*.publish.zip
+*.deploy.cmd
+*.SetParameters.xml

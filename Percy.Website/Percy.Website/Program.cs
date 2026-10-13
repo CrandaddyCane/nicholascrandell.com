@@ -1,6 +1,7 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Register MVC services.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -9,11 +10,33 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+
+    // Enable HTTP Strict Transport Security in production.
     app.UseHsts();
+
+    // Permanently redirect WWW to the canonical non-WWW domain.
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Host.Host.Equals(
+            "www.nicholascrandell.com",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            var destination = "https://nicholascrandell.com"
+                + context.Request.PathBase
+                + context.Request.Path
+                + context.Request.QueryString;
+
+            context.Response.Redirect(destination, permanent: true);
+            return;
+        }
+
+        await next(context);
+    });
 }
 
+// Redirect HTTP requests to HTTPS.
 app.UseHttpsRedirection();
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -24,6 +47,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
