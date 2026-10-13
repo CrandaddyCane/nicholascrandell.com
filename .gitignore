@@ -1,0 +1,24 @@
+
+# Visual Studio temporary files
+.vs/
+
+# .NET build output
+bin/
+obj/
+
+# User-specific settings
+*.user
+*.suo
+
+# Operating system files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.log
+
+# Local environment files and secrets
+.env
+.env.*
+appsettings.Development.json
