@@ -1,0 +1,9 @@
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\Percy.Website.exe
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\web.config
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\appsettings.Development.json
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\appsettings.json
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\dotnet-tools.json
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\Percy.Website.dll
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\Percy.Website.deps.json
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\Percy.Website.runtimeconfig.json
+C:\Users\nicho\AppData\Local\Temp\PercyPublishCheck\Percy.Website.pdb

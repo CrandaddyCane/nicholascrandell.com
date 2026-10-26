@@ -1,0 +1,398 @@
+
+/* ==========================================
+   Percy.Website
+   Global styles
+   ========================================== */
+
+:root {
+    --color-background: #f4f4f4;
+    --color-text: #111111;
+    --color-muted: #808080;
+    --color-primary: #146184;
+    --color-primary-hover: #0e4b67;
+    --color-border: #9a9a9a;
+    /* Navigation colors */
+    --color-nav: #333333;
+    --color-nav-text: #ffffff;
+    --color-nav-active: #a8c7a0;
+    --color-nav-hover: #ffffff;
+    --content-width: 960px;
+}
+
+/* ==========================================
+   Document
+   ========================================== */
+
+html {
+    font-size: 16px;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-background);
+    /*
+       Background photograph:
+       - Centered within the browser
+       - Approximately 1150px wide on desktop
+       - Maintains original image proportions
+       - White overlay preserves readability
+    */
+
+    background-image: linear-gradient( rgba(255, 255, 255, 0.60), rgba(255, 255, 255, 0.60) ), url("/images/Background1.jpeg");
+    background-position: center top, center top;
+    background-size: 100% 100%, min(1150px, 100%) auto;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--color-text);
+    font-family: "Open Sans", Arial, sans-serif;
+    line-height: 1.5;
+}
+
+/* ==========================================
+   Layout
+   ========================================== */
+
+.container {
+    width: 100%;
+    max-width: var(--content-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+main {
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+    text-align: left;
+}
+
+/* ==========================================
+   Typography
+   ========================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-text);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+h2 {
+    font-size: 1.75rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+.text-muted,
+.text-body-secondary {
+    color: var(--color-muted) !important;
+}
+
+/* ==========================================
+   Navigation
+   ========================================== */
+
+.navbar {
+    background: transparent !important;
+    padding: 1rem 0;
+    width: 100%;
+}
+
+    /* Center navigation relative to the viewport */
+
+    .navbar > .container,
+    .navbar > .container-fluid {
+        display: flex;
+        justify-content: center !important;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.navbar-nav {
+    background: var(--color-nav);
+    border-radius: 999px;
+    padding: 0.35rem 1.25rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: max-content;
+    max-width: 100%;
+}
+
+    /* Default navigation links */
+
+    .navbar-nav .nav-link {
+        color: var(--color-nav-text) !important;
+        font-size: 0.9rem;
+        padding: 0.45rem 1rem !important;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+        /* Hovered navigation links */
+
+        .navbar-nav .nav-link:hover {
+            color: var(--color-nav-text) !important;
+            border-bottom-color: var(--color-nav-hover);
+        }
+
+        /* Current page */
+
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link[aria-current="page"] {
+            color: var(--color-nav-text) !important;
+            border-bottom-color: var(--color-nav-active);
+        }
+
+            /* Keep active color when hovering over current page */
+
+            .navbar-nav .nav-link.active:hover,
+            .navbar-nav .nav-link[aria-current="page"]:hover {
+                border-bottom-color: var(--color-nav-active);
+            }
+
+        /* Keyboard navigation */
+
+        .navbar-nav .nav-link:focus-visible {
+            color: var(--color-nav-text) !important;
+            border-bottom-color: var(--color-nav-hover);
+            outline: 2px solid var(--color-nav-hover);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+
+        /* Preserve active underline when keyboard-focused */
+
+        .navbar-nav .nav-link.active:focus-visible,
+        .navbar-nav .nav-link[aria-current="page"]:focus-visible {
+            border-bottom-color: var(--color-nav-active);
+        }
+
+/* ==========================================
+   Sections
+   ========================================== */
+
+section {
+    margin-bottom: 3rem;
+    text-align: left;
+}
+
+    section > header {
+        margin-bottom: 1.5rem;
+    }
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    opacity: 1;
+}
+
+/* ==========================================
+   Cards
+   ========================================== */
+
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    box-shadow: none !important;
+    text-align: left;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card h3 {
+    font-weight: 600;
+}
+
+/* ==========================================
+   Technology tags
+   ========================================== */
+
+.tech-tag {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   Buttons
+   ========================================== */
+
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+    .btn-primary:hover,
+    .btn-primary:focus-visible {
+        background-color: var(--color-primary-hover);
+        border-color: var(--color-primary-hover);
+    }
+
+.btn-outline-primary {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+/* ==========================================
+   Accessibility
+   ========================================== */
+
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* ==========================================
+   Homepage hero
+   ========================================== */
+
+.hero-section {
+    padding: 2rem 0 1rem;
+}
+
+.hero-content {
+    max-width: 900px;
+    text-align: left;
+}
+
+.hero-name {
+    color: var(--color-muted);
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+}
+
+.hero-title {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    margin-bottom: 1.5rem;
+}
+
+.hero-description {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 680px;
+}
+
+/* ==========================================
+   Professional experience cards
+   ========================================== */
+
+.experience-card {
+    width: 100%;
+    max-width: 700px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+    .experience-card .card-body {
+        padding: 1rem 1.25rem;
+    }
+
+    .experience-card h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+.experience-logo {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.experience-dates {
+    color: var(--color-text);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.experience-description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+/* ==========================================
+   Responsive layout
+   ========================================== */
+
+@media (max-width: 767px) {
+    main {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    .navbar-nav {
+        padding: 0.3rem 0.75rem;
+        gap: 0;
+    }
+
+        .navbar-nav .nav-link {
+            padding: 0.4rem 0.65rem !important;
+            font-size: 0.85rem;
+        }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .hero-section {
+        padding: 2.5rem 0 3rem;
+    }
+
+    .hero-name {
+        font-size: 1.25rem;
+    }
+
+    body {
+        background-attachment: scroll;
+    }
+}
+
+@media (max-width: 575px) {
+    .experience-dates {
+        white-space: normal;
+    }
+}
+
+/* ==========================================
+   Reduced motion preference
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .navbar-nav .nav-link {
+        transition: none;
+    }
+}
