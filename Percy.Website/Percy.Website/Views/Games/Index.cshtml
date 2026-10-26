@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Video Game Trackers";
+}
+
+<div class="container py-5">
+
+    <nav aria-label="Breadcrumb" class="mb-4">
+        <a asp-controller="Workspace"
+           asp-action="Index">
+            Workspace
+        </a>
+        <span class="mx-2">/</span>
+        <span>Video Game Trackers</span>
+    </nav>
+
+    <header class="mb-5">
+        <h1>Video Game Trackers</h1>
+
+        <p class="lead">
+            Track progress, accomplishments, and activities
+            across individual games.
+        </p>
+    </header>
+
+    <hr />
+
+    <section class="mt-5" aria-labelledby="games-heading">
+
+        <h2 id="games-heading" class="mb-4">
+            My Games
+        </h2>
+
+        <div class="row g-4">
+
+            <!-- Animal Crossing -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+
+                        <h3 class="h5">Animal Crossing</h3>
+
+                        <p class="text-muted">
+                            Planned
+                        </p>
+
+                        <p>
+                            Track collections, museum donations,
+                            villagers, and island progress.
+                        </p>
+
+                        <div class="mt-auto pt-3">
+                            <button class="btn btn-outline-secondary"
+                                    disabled>
+                                Coming Soon
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pokemon -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+
+                        <h3 class="h5">Pokémon</h3>
+
+                        <p class="text-muted">
+                            Planned
+                        </p>
+
+                        <p>
+                            Track Pokédex completion, collections,
+                            achievements, and game progress.
+                        </p>
+
+                        <div class="mt-auto pt-3">
+                            <button class="btn btn-outline-secondary"
+                                    disabled>
+                                Coming Soon
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Satisfactory -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+
+                        <h3 class="h5">Satisfactory</h3>
+
+                        <p class="text-muted">
+                            Planned
+                        </p>
+
+                        <p>
+                            Track factory milestones, production
+                            objectives, resources, and progression.
+                        </p>
+
+                        <div class="mt-auto pt-3">
+                            <button class="btn btn-outline-secondary"
+                                    disabled>
+                                Coming Soon
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Percy.IdentityProvisioner/Percy.IdentityProvisioner.csproj" Id="5215e9e9-e2ea-4f92-b374-8fac8d7ecc2c" />
   <Project Path="Percy.Website/Percy.Website.csproj" />
 </Solution>

@@ -1,0 +1,89 @@
+﻿@model Percy.Website.Models.EmployerViewModel
+
+<article class="card employer-card">
+
+    <!-- Employer header -->
+    <header class="employer-header">
+
+        @if (!string.IsNullOrWhiteSpace(Model.LogoUrl))
+        {
+            <img src="@Url.Content(Model.LogoUrl)"
+                 alt=""
+                 class="employer-logo"
+                 width="56"
+                 height="56"
+                 loading="lazy" />
+        }
+
+        <div class="employer-info">
+            <h3 class="employer-name">
+                @if (!string.IsNullOrWhiteSpace(Model.WebsiteUrl))
+                {
+                    <a href="@Model.WebsiteUrl"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        @Model.Company
+                    </a>
+                }
+                else
+                {
+                    @Model.Company
+                }
+            </h3>
+
+            @if (Model.Positions.Count > 1)
+            {
+                <span class="employer-role-count">
+                    @Model.Positions.Count positions
+                </span>
+            }
+        </div>
+
+        <span class="employer-dates">
+            @Model.DateRange
+        </span>
+    </header>
+
+    <!-- Positions timeline -->
+    <div class="employer-positions">
+
+        @foreach (var position in Model.Positions)
+        {
+            <section class="employer-position">
+
+                <div class="position-header">
+                    <h4 class="position-title">
+                        @position.JobTitle
+                    </h4>
+
+                    <span class="position-dates">
+                        @position.DateRange
+                    </span>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(position.Description))
+                {
+                    <p class="position-description">
+                        @position.Description
+                    </p>
+                }
+
+                @if (position.Technologies.Count > 0)
+                {
+                    <div class="position-technologies"
+                         aria-label="Technologies and skills">
+
+                        @foreach (var technology in position.Technologies)
+                        {
+                            <span class="tech-tag">
+                                @technology
+                            </span>
+                        }
+                    </div>
+                }
+
+            </section>
+        }
+
+    </div>
+</article>

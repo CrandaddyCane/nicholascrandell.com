@@ -2,188 +2,297 @@
     ViewData["Title"] = "Home";
 }
 
-<!-- Professional Introduction -->
-<section aria-labelledby="introduction-heading" class="mb-5">
+<!-- Hero -->
+<partial name="_Hero" />
 
-    <header>
-        <h1 id="introduction-heading" class="display-4">
-            Nick Crandell
-        </h1>
+<!-- Professional Experience -->
+<section class="py-4 mb-5"
+         aria-labelledby="experience-heading">
 
-        <p class="lead">
-            Digital Project Management | Technology |
-            Web Development
-        </p>
-    </header>
-
-    <p>
-        I like to solve problems.
-    </p>
-
-    <p>
-        I'm particularly interested in web application development,
-        systems integration, data management, and building
-        technology that solves meaningful problems.
-    </p>
-
-    <a asp-controller="Home"
-       asp-action="Portfolio"
-       class="btn btn-primary">
-        Explore My Portfolio
-    </a>
-
-</section>
-
-
-<!-- Career Overview -->
-<section aria-labelledby="career-heading" class="mb-5">
-
-    <h2 id="career-heading">
-        Career Overview
+    <h2 id="experience-heading" class="display-6 fw-bold mb-4">
+        Experience
     </h2>
 
-    <p>
-        My professional background combines digital project
-        management, platform administration, technical
-        implementation, and stakeholder collaboration.
-    </p>
+    <div class="d-flex flex-column gap-3">
 
-    <article class="mb-4">
+        <partial name="_ExperienceCard"
+                 model='new Percy.Website.Models.ExperienceViewModel
+                 {
+                     Company = "Seattle Symphony",
+                     LogoUrl = "~/images/sso-logo.png",
+                     JobTitle = "Digital Project Manager",
+                     DateRange = "2023 – Present",
+                     Description = "Leading and supporting digital platform operations, website implementations, systems integrations, and cross-functional technical projects.",
+                     Technologies = new List<string>
+                     {
+                         "Tessitura",
+                         "Umbraco",
+                         "Sitecore",
+                         "Analytics"
+                     }
+                 }' />
 
-        <h3 class="h5">
-            Seattle Symphony
-        </h3>
+<partial name="_ExperienceCard"
+         model='new Percy.Website.Models.ExperienceViewModel
+         {
+             Company = "Seattle Symphony",
+             LogoUrl = "~/images/sso-logo.png",
+             JobTitle = "Client Relations Manager",
+             DateRange = "2022 – 2023",
+             Description = "Leading and supporting digital platform operations, website implementations, systems integrations, and cross-functional technical projects.",
+             Technologies = new List<string>
+                     {
+                         "Tessitura",
+                         "Umbraco",
+                         "Sitecore",
+                         "Analytics"
+                     }
+         }' />
+<partial name="_ExperienceCard"
+         model='new Percy.Website.Models.ExperienceViewModel
+         {
+             Company = "Dynafios, Inc",
+             LogoUrl = "~/images/trdy.jpeg",
+             JobTitle = "Technical Account Manager",
+             DateRange = "2019 – 2021",
+             Description = "Leading and supporting digital platform operations, website implementations, systems integrations, and cross-functional technical projects.",
+             Technologies = new List<string>
+                     {
+                         "Tessitura",
+                         "Umbraco",
+                         "Sitecore",
+                         "Analytics"
+                     }
+         }' />
 
-        <p class="text-muted">
-            Digital Project and Client Relations Manager
-        </p>
-
-        <p>
-            Responsible for coordinating digital projects,
-            supporting website operations, collaborating
-            with technical vendors, and helping maintain
-            the organization's digital platforms.
-        </p>
-
-        <p>
-            My work includes website implementation,
-            content management systems, ticketing integrations,
-            analytics, technical troubleshooting,
-            and cross-departmental coordination.
-        </p>
-
-    </article>
-
+</div>
 </section>
 
+<!-- Expertise -->
+<section class="py-4 mb-5"
+         aria-labelledby="expertise-heading">
 
-<!-- About Me -->
-<section aria-labelledby="about-heading" class="mb-5">
+    <div class="mb-4">
+        <p class="text-uppercase text-primary fw-semibold"
+           style="letter-spacing: 0.12em;">
+            What I Do
+        </p>
 
-    <h2 id="about-heading">
-        About Me
-    </h2>
+        <h2 id="expertise-heading"
+            class="display-6 fw-bold">
+            Areas of Expertise
+        </h2>
 
-    <p>
-        I'm a technology-focused professional with a background
-        in data management, business analysis, and digital
-        project management.
-    </p>
-
-    <p>
-        I enjoy understanding how complex systems work,
-        finding opportunities to improve them,
-        and expanding my technical capabilities
-        through hands-on development projects.
-    </p>
-
-    <p>
-        This website serves as both a professional portfolio
-        and an ongoing learning environment where I can
-        document and demonstrate my work.
-    </p>
-
-</section>
-
-
-<!-- Technical Skills -->
-<section aria-labelledby="skills-heading" class="mb-5">
-
-    <h2 id="skills-heading">
-        Technical Skills
-    </h2>
-
-    <p>
-        My professional experience and ongoing technical
-        development span several areas.
-    </p>
-
-    <div class="row g-4">
-
-        <div class="col-12 col-md-6">
-
-            <h3 class="h5">
-                Web & Application Development
-            </h3>
-
-            <ul>
-                <li>HTML, CSS, and JavaScript</li>
-                <li>ASP.NET Core MVC and C# (Developing)</li>
-                <li>Bootstrap</li>
-                <li>Content Management Systems</li>
-                <li>REST API Integration (Developing)</li>
-            </ul>
-
-        </div>
-
-        <div class="col-12 col-md-6">
-
-            <h3 class="h5">
-                Data & Analytics
-            </h3>
-
-            <ul>
-                <li>SQL and Relational Databases</li>
-                <li>Data Management and Analysis</li>
-                <li>Google Analytics 4</li>
-                <li>Google Tag Manager</li>
-                <li>Business Intelligence and Reporting</li>
-            </ul>
-
-        </div>
-
-        <div class="col-12 col-md-6">
-
-            <h3 class="h5">
-                Platforms & Integrations
-            </h3>
-
-            <ul>
-                <li>Sitecore CMS</li>
-                <li>Umbraco CMS</li>
-                <li>Tessitura</li>
-                <li>Third-Party System Integrations</li>
-                <li>Website Operations and Troubleshooting</li>
-            </ul>
-
-        </div>
-
-        <div class="col-12 col-md-6">
-
-            <h3 class="h5">
-                Project & Technical Management
-            </h3>
-
-            <ul>
-                <li>Digital Project Management</li>
-                <li>Agile and Scrum Methodologies</li>
-                <li>Technical Requirements Analysis</li>
-                <li>Vendor and Stakeholder Coordination</li>
-                <li>Git and GitHub</li>
-            </ul>
-
-        </div>
-
+        <p class="text-body-secondary">
+            A multidisciplinary approach to building,
+            managing, and improving digital systems.
+        </p>
     </div>
 
+    <div class="row g-4">
+        <div class="col-md-6 col-xl-4">
+            <article class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="h5 fw-bold mb-3">
+                        Web &amp; Application Development
+                    </h3>
+
+                    <p class="text-body-secondary">
+                        Developing modern web applications
+                        and working across frontend,
+                        backend, and CMS technologies.
+                    </p>
+
+                    <p class="small mb-0">
+                        HTML · CSS · JavaScript · C# ·
+                        ASP.NET Core MVC · Bootstrap
+                    </p>
+                </div>
+            </article>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <article class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="h5 fw-bold mb-3">
+                        Systems &amp; Integration
+                    </h3>
+
+                    <p class="text-body-secondary">
+                        Connecting platforms, troubleshooting
+                        complex workflows, and coordinating
+                        technical implementations.
+                    </p>
+
+                    <p class="small mb-0">
+                        Sitecore · Umbraco · Tessitura ·
+                        APIs · Technical Operations
+                    </p>
+                </div>
+            </article>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <article class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="h5 fw-bold mb-3">
+                        Data &amp; Analytics
+                    </h3>
+
+                    <p class="text-body-secondary">
+                        Translating data into useful insights
+                        through analysis, measurement,
+                        and reporting.
+                    </p>
+
+                    <p class="small mb-0">
+                        SQL · Business Intelligence ·
+                        GA4 · GTM · Data Management
+                    </p>
+                </div>
+            </article>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <article class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="h5 fw-bold mb-3">
+                        Technical Project Management
+                    </h3>
+
+                    <p class="text-body-secondary">
+                        Bridging technical teams and
+                        business stakeholders to define
+                        requirements, coordinate delivery,
+                        and solve implementation challenges.
+                    </p>
+
+                    <p class="small mb-0">
+                        Agile · Requirements ·
+                        Vendor Coordination · Delivery
+                    </p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Work -->
+<section class="py-4 mb-5"
+         aria-labelledby="work-heading">
+
+    <div class="mb-4">
+        <p class="text-uppercase text-primary fw-semibold"
+           style="letter-spacing: 0.12em;">
+            Selected Experience
+        </p>
+
+        <h2 id="work-heading"
+            class="display-6 fw-bold">
+            Featured Work
+        </h2>
+
+        <p class="text-body-secondary">
+            Professional projects and technical development
+            experience.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <article class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <p class="small text-primary fw-semibold mb-2">
+                        PROFESSIONAL EXPERIENCE
+                    </p>
+
+                    <h3 class="h4 fw-bold">
+                        Seattle Symphony
+                    </h3>
+
+                    <p class="text-body-secondary">
+                        Digital Project &amp; Client Relations Management
+                    </p>
+
+                    <p>
+                        Supporting digital platform operations,
+                        website implementations, ticketing
+                        integrations, and cross-functional
+                        technical initiatives.
+                    </p>
+                </div>
+            </article>
+        </div>
+
+        <div class="col-lg-6">
+            <article class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <p class="small text-primary fw-semibold mb-2">
+                        PERSONAL DEVELOPMENT
+                    </p>
+
+                    <h3 class="h4 fw-bold">
+                        Percy.Website
+                    </h3>
+
+                    <p class="text-body-secondary">
+                        ASP.NET Core MVC · C# · Razor
+                    </p>
+
+                    <p>
+                        Building and deploying a full-stack
+                        personal portfolio application while
+                        developing practical experience with
+                        modern web technologies.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Home"
+           asp-action="Portfolio"
+           class="btn btn-outline-primary">
+            View Portfolio
+        </a>
+    </div>
+</section>
+
+<!-- About -->
+<section class="py-5 mb-4"
+         aria-labelledby="about-heading">
+
+    <div class="row">
+        <div class="col-lg-9">
+            <p class="text-uppercase text-primary fw-semibold"
+               style="letter-spacing: 0.12em;">
+                About Me
+            </p>
+
+            <h2 id="about-heading"
+                class="display-6 fw-bold mb-4">
+                Curious by nature.
+                Technical by inclination.
+            </h2>
+
+            <p class="lead">
+                I like understanding how things work,
+                why they break, and how they can be better.
+            </p>
+
+            <p class="text-body-secondary">
+                My background spans digital project management,
+                data management and analysis, content management
+                systems, and web platform implementation.
+            </p>
+
+            <p class="text-body-secondary">
+                I'm particularly interested in opportunities
+                that combine technical problem-solving,
+                systems architecture, application development,
+                and collaboration with people.
+            </p>
+        </div>
+    </div>
 </section>

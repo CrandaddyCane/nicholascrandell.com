@@ -1,0 +1,56 @@
+﻿@model Percy.Website.Models.ExperienceViewModel
+
+<article class="card experience-card mb-3">
+    <div class="card-body">
+
+        <div class="d-flex flex-column flex-sm-row
+            justify-content-between gap-3 mb-3">
+
+            <div class="d-flex align-items-center gap-3">
+
+                @if (!string.IsNullOrWhiteSpace(Model.LogoUrl))
+                {
+                    <img src="@Url.Content(Model.LogoUrl)"
+                         alt=""
+                         class="experience-logo"
+                         width="56"
+                         height="56"
+                         loading="lazy" />
+                }
+
+                <div>
+                    <h3 class="h5 mb-1">
+                        @Model.Company
+                    </h3>
+
+                    <p class="mb-0">
+                        @Model.JobTitle
+                    </p>
+                </div>
+            </div>
+
+            <span class="experience-dates">
+                @Model.DateRange
+            </span>
+        </div>
+
+        <p class="experience-description">
+            @Model.Description
+        </p>
+
+        @if (Model.Technologies?.Any() == true)
+        {
+            <div class="d-flex flex-wrap gap-2"
+                 aria-label="Technologies and skills">
+
+                @foreach (var technology in Model.Technologies)
+                {
+                    <span class="tech-tag">
+                        @technology
+                    </span>
+                }
+            </div>
+        }
+
+    </div>
+</article>
