@@ -2,297 +2,193 @@
     ViewData["Title"] = "Home";
 }
 
-<!-- Hero -->
 <partial name="_Hero" />
 
-<!-- Professional Experience -->
-<section class="py-4 mb-5"
-         aria-labelledby="experience-heading">
+<section class="home-career" aria-labelledby="career-heading">
 
-    <h2 id="experience-heading" class="display-6 fw-bold mb-4">
-        Experience
+    <h2 id="career-heading" class="home-career-heading">
+        Career
     </h2>
 
-    <div class="d-flex flex-column gap-3">
+    <div class="row g-3 home-dashboard">
 
-        <partial name="_ExperienceCard"
-                 model='new Percy.Website.Models.ExperienceViewModel
-                 {
-                     Company = "Seattle Symphony",
-                     LogoUrl = "~/images/sso-logo.png",
-                     JobTitle = "Digital Project Manager",
-                     DateRange = "2023 – Present",
-                     Description = "Leading and supporting digital platform operations, website implementations, systems integrations, and cross-functional technical projects.",
-                     Technologies = new List<string>
-                     {
-                         "Tessitura",
-                         "Umbraco",
-                         "Sitecore",
-                         "Analytics"
-                     }
-                 }' />
+        <!-- Highlight -->
+        <div class="col-12 col-md-6">
+            <section class="home-panel h-100"
+                     aria-labelledby="highlight-heading">
 
-<partial name="_ExperienceCard"
-         model='new Percy.Website.Models.ExperienceViewModel
-         {
-             Company = "Seattle Symphony",
-             LogoUrl = "~/images/sso-logo.png",
-             JobTitle = "Client Relations Manager",
-             DateRange = "2022 – 2023",
-             Description = "Leading and supporting digital platform operations, website implementations, systems integrations, and cross-functional technical projects.",
-             Technologies = new List<string>
-                     {
-                         "Tessitura",
-                         "Umbraco",
-                         "Sitecore",
-                         "Analytics"
-                     }
-         }' />
-<partial name="_ExperienceCard"
-         model='new Percy.Website.Models.ExperienceViewModel
-         {
-             Company = "Dynafios, Inc",
-             LogoUrl = "~/images/trdy.jpeg",
-             JobTitle = "Technical Account Manager",
-             DateRange = "2019 – 2021",
-             Description = "Leading and supporting digital platform operations, website implementations, systems integrations, and cross-functional technical projects.",
-             Technologies = new List<string>
-                     {
-                         "Tessitura",
-                         "Umbraco",
-                         "Sitecore",
-                         "Analytics"
-                     }
-         }' />
+                <h3 id="highlight-heading" class="home-panel-heading">
+                    Highlight
+                </h3>
 
-</div>
-</section>
+                <a href="https://benaroyahall.org"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Visit Benaroya Hall website">
 
-<!-- Expertise -->
-<section class="py-4 mb-5"
-         aria-labelledby="expertise-heading">
+                    <div class="home-highlight-image">
+                        <img src="~/images/sso-full.jpg"
+                             alt="Seattle Symphony performing at Benaroya Hall"
+                             loading="lazy" />
+                    </div>
 
-    <div class="mb-4">
-        <p class="text-uppercase text-primary fw-semibold"
-           style="letter-spacing: 0.12em;">
-            What I Do
-        </p>
+                </a>
 
-        <h2 id="expertise-heading"
-            class="display-6 fw-bold">
-            Areas of Expertise
-        </h2>
+                <h4 class="home-highlight-title">
+                    The Seattle Symphony Orchestra &amp; Benaroya Hall
+                </h4>
 
-        <p class="text-body-secondary">
-            A multidisciplinary approach to building,
-            managing, and improving digital systems.
-        </p>
-    </div>
+                <p class="home-highlight-description">
+                    Led project management for the development and
+                    deployment of a unified website for the Seattle
+                    Symphony and Benaroya Hall, integrating Tessitura
+                    CRM and Umbraco CMS to optimize user experience
+                    and ensure secure data integration.
+                </p>
 
-    <div class="row g-4">
-        <div class="col-md-6 col-xl-4">
-            <article class="card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <h3 class="h5 fw-bold mb-3">
-                        Web &amp; Application Development
-                    </h3>
-
-                    <p class="text-body-secondary">
-                        Developing modern web applications
-                        and working across frontend,
-                        backend, and CMS technologies.
-                    </p>
-
-                    <p class="small mb-0">
-                        HTML · CSS · JavaScript · C# ·
-                        ASP.NET Core MVC · Bootstrap
-                    </p>
+                <div class="home-tags">
+                    <span>Agile Project Management</span>
+                    <span>Website Implementation</span>
+                    <span>Tessitura</span>
+                    <span>Umbraco</span>
+                    <span>ASP.NET</span>
                 </div>
-            </article>
+
+            </section>
         </div>
 
-        <div class="col-md-6 col-xl-4">
-            <article class="card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <h3 class="h5 fw-bold mb-3">
-                        Systems &amp; Integration
-                    </h3>
+        <!-- Experience -->
+        <div class="col-12 col-md-6">
+            <section class="home-panel h-100"
+                     aria-labelledby="experience-heading">
 
-                    <p class="text-body-secondary">
-                        Connecting platforms, troubleshooting
-                        complex workflows, and coordinating
-                        technical implementations.
-                    </p>
+                <h3 id="experience-heading" class="home-panel-heading">
+                    Experience
+                </h3>
 
-                    <p class="small mb-0">
-                        Sitecore · Umbraco · Tessitura ·
-                        APIs · Technical Operations
-                    </p>
+                <div class="home-experience-list">
+
+                    <article class="home-experience-entry">
+                        <div class="home-experience-item">
+                            <img src="~/images/sso-logo.png"
+                                 alt=""
+                                 class="home-experience-logo" />
+
+                            <div class="home-experience-details">
+                                <h4>Seattle Symphony Orchestra</h4>
+                                <p>Digital Project Manager</p>
+                                <span>2022–Present</span>
+                            </div>
+                        </div>
+
+                        <div class="home-tags">
+                            <span>GA4 &amp; GTM</span>
+                            <span>Tessitura</span>
+                            <span>Umbraco</span>
+                            <span>Sitecore</span>
+                            <span>SQL Server</span>
+                            <span>API Integration</span>
+                            <span>Vendor Coordination</span>
+                            <span>Website Delivery</span>
+                            <span>Analytics &amp; SEO</span>
+                            <span>Cross-functional Projects</span>
+                        </div>
+                    </article>
+
+                    <article class="home-experience-entry">
+                        <div class="home-experience-item">
+                            <img src="~/images/trdy.jpeg"
+                                 alt=""
+                                 class="home-experience-logo" />
+
+                            <div class="home-experience-details">
+                                <h4>Dynafios, Inc.</h4>
+                                <p>Technical Account Manager</p>
+                                <span>2020–2022</span>
+                            </div>
+                        </div>
+
+                        <div class="home-tags">
+                            <span>Client Onboarding &amp; Training</span>
+                            <span>BI Software Configuration</span>
+                            <span>Reporting &amp; Analytics</span>
+                            <span>Translating Client Business Needs</span>
+                        </div>
+                    </article>
+
+                    <article class="home-experience-entry">
+                        <div class="home-experience-item">
+                            <img src="~/images/sfb-logo.png"
+                                 alt=""
+                                 class="home-experience-logo" />
+
+                            <div class="home-experience-details">
+                                <h4>Snoqualmie Falls Brewery &amp; Restaurant</h4>
+                                <p>Business Manager</p>
+                                <span>2018–2020</span>
+                            </div>
+                        </div>
+
+                        <div class="home-tags">
+                            <span>QuickBooks</span>
+                            <span>ERP Systems</span>
+                            <span>POS Systems</span>
+                            <span>Cash Flow</span>
+                            <span>Labor Cost Management</span>
+                        </div>
+                    </article>
+
                 </div>
-            </article>
+
+            </section>
         </div>
 
-        <div class="col-md-6 col-xl-4">
-            <article class="card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <h3 class="h5 fw-bold mb-3">
-                        Data &amp; Analytics
-                    </h3>
+        <!-- Fun Projects: entire panel links to Portfolio -->
+        <div class="col-12 col-md-6">
+            <a asp-controller="Home"
+               asp-action="Portfolio"
+               class="home-panel home-panel-link h-100"
+               aria-label="View portfolio and fun projects">
 
-                    <p class="text-body-secondary">
-                        Translating data into useful insights
-                        through analysis, measurement,
-                        and reporting.
-                    </p>
+                <h3 class="home-panel-heading">
+                    Fun Projects
+                </h3>
 
-                    <p class="small mb-0">
-                        SQL · Business Intelligence ·
-                        GA4 · GTM · Data Management
-                    </p>
+                <div class="home-tags home-project-tags">
+                    <span>Python</span>
+                    <span>SQL Server</span>
+                    <span>SSIS</span>
+                    <span>SSRS</span>
+                    <span>HTML5/CSS/JS</span>
+                    <span>C#</span>
+                    <span>Java</span>
+                    <span>React</span>
+                    <span>ASP.NET</span>
                 </div>
-            </article>
+
+            </a>
         </div>
 
-        <div class="col-md-6 col-xl-4">
-            <article class="card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <h3 class="h5 fw-bold mb-3">
-                        Technical Project Management
-                    </h3>
+        <!-- Education -->
+        <div class="col-12 col-md-6">
+            <section class="home-panel h-100"
+                     aria-labelledby="education-heading">
 
-                    <p class="text-body-secondary">
-                        Bridging technical teams and
-                        business stakeholders to define
-                        requirements, coordinate delivery,
-                        and solve implementation challenges.
-                    </p>
+                <h3 id="education-heading" class="home-panel-heading">
+                    Education
+                </h3>
 
-                    <p class="small mb-0">
-                        Agile · Requirements ·
-                        Vendor Coordination · Delivery
-                    </p>
-                </div>
-            </article>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Work -->
-<section class="py-4 mb-5"
-         aria-labelledby="work-heading">
-
-    <div class="mb-4">
-        <p class="text-uppercase text-primary fw-semibold"
-           style="letter-spacing: 0.12em;">
-            Selected Experience
-        </p>
-
-        <h2 id="work-heading"
-            class="display-6 fw-bold">
-            Featured Work
-        </h2>
-
-        <p class="text-body-secondary">
-            Professional projects and technical development
-            experience.
-        </p>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <article class="card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <p class="small text-primary fw-semibold mb-2">
-                        PROFESSIONAL EXPERIENCE
-                    </p>
-
-                    <h3 class="h4 fw-bold">
-                        Seattle Symphony
-                    </h3>
-
-                    <p class="text-body-secondary">
-                        Digital Project &amp; Client Relations Management
-                    </p>
-
+                <div class="home-education-item">
+                    <h4>Bellevue College</h4>
                     <p>
-                        Supporting digital platform operations,
-                        website implementations, ticketing
-                        integrations, and cross-functional
-                        technical initiatives.
+                        Data Management &amp; Analysis,
+                        Business Intelligence, B.A.S.
                     </p>
+                    <p>Accounting, A.A.S.</p>
                 </div>
-            </article>
+
+            </section>
         </div>
 
-        <div class="col-lg-6">
-            <article class="card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <p class="small text-primary fw-semibold mb-2">
-                        PERSONAL DEVELOPMENT
-                    </p>
-
-                    <h3 class="h4 fw-bold">
-                        Percy.Website
-                    </h3>
-
-                    <p class="text-body-secondary">
-                        ASP.NET Core MVC · C# · Razor
-                    </p>
-
-                    <p>
-                        Building and deploying a full-stack
-                        personal portfolio application while
-                        developing practical experience with
-                        modern web technologies.
-                    </p>
-                </div>
-            </article>
-        </div>
-    </div>
-
-    <div class="mt-4">
-        <a asp-controller="Home"
-           asp-action="Portfolio"
-           class="btn btn-outline-primary">
-            View Portfolio
-        </a>
-    </div>
-</section>
-
-<!-- About -->
-<section class="py-5 mb-4"
-         aria-labelledby="about-heading">
-
-    <div class="row">
-        <div class="col-lg-9">
-            <p class="text-uppercase text-primary fw-semibold"
-               style="letter-spacing: 0.12em;">
-                About Me
-            </p>
-
-            <h2 id="about-heading"
-                class="display-6 fw-bold mb-4">
-                Curious by nature.
-                Technical by inclination.
-            </h2>
-
-            <p class="lead">
-                I like understanding how things work,
-                why they break, and how they can be better.
-            </p>
-
-            <p class="text-body-secondary">
-                My background spans digital project management,
-                data management and analysis, content management
-                systems, and web platform implementation.
-            </p>
-
-            <p class="text-body-secondary">
-                I'm particularly interested in opportunities
-                that combine technical problem-solving,
-                systems architecture, application development,
-                and collaboration with people.
-            </p>
-        </div>
     </div>
 </section>

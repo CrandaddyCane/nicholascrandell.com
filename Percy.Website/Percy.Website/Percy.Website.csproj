@@ -9,8 +9,7 @@
 
   <!-- Keep production configuration on the hosting server. -->
   <ItemGroup>
-    <Content Update="appsettings.Production.json"
-             CopyToPublishDirectory="Never" />
+    <Content Update="appsettings.Production.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

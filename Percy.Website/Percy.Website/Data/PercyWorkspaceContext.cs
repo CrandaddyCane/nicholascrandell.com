@@ -27,6 +27,10 @@ namespace Percy.Website.Data
         public DbSet<FishSpawnLocation> FishSpawnLocations
             => Set<FishSpawnLocation>();
 
+        // Fish monthly and hourly availability.
+        public DbSet<FishAvailability> FishAvailabilities
+            => Set<FishAvailability>();
+
         protected override void OnModelCreating(
             ModelBuilder modelBuilder)
         {
@@ -105,6 +109,34 @@ namespace Percy.Website.Data
                     .WithMany()
                     .HasForeignKey(e => e.LocationID);
             });
+
+            // Fish availability.
+            modelBuilder.Entity<FishAvailability>(entity =>
+            {
+                entity.ToTable("FishAvailability", "ac");
+
+                entity.HasKey(e => e.AvailabilityID);
+
+                entity.Property(e => e.AvailabilityID)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.StartTime)
+                    .HasColumnType("time");
+
+                entity.Property(e => e.EndTime)
+                    .HasColumnType("time");
+
+                entity.Property(e => e.WeatherCondition)
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                entity.Property(e => e.LastUpdated)
+                    .HasColumnType("datetime2");
+
+                entity.HasOne<MuseumItem>()
+                    .WithMany()
+                    .HasForeignKey(e => e.MuseumItemID);
+            });
         }
     }
 
@@ -159,5 +191,26 @@ namespace Percy.Website.Data
         public int MuseumItemID { get; set; }
 
         public int LocationID { get; set; }
+    }
+
+    public class FishAvailability
+    {
+        public int AvailabilityID { get; set; }
+
+        public int MuseumItemID { get; set; }
+
+        public byte Month { get; set; }
+
+        public TimeSpan StartTime { get; set; }
+
+        public TimeSpan EndTime { get; set; }
+
+        public bool IsAllDay { get; set; }
+
+        public string WeatherCondition { get; set; } = string.Empty;
+
+        public int? SourceID { get; set; }
+
+        public DateTime LastUpdated { get; set; }
     }
 }

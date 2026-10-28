@@ -1,0 +1,94 @@
+﻿@model Percy.Website.Models.CardCollectionViewModel
+
+@{
+    var displayVariant =
+        Model.DisplayVariant == "horizontal"
+            ? "horizontal"
+            : "compact";
+}
+
+<div class="percy-card-collection percy-card-collection--@displayVariant"
+     id="@Model.CollectionId">
+
+    <div class="percy-card-collection-track">
+
+        @foreach (var card in Model.Cards)
+        {
+            <article class="percy-project-card">
+
+                @if (!string.IsNullOrWhiteSpace(card.ImageUrl))
+                {
+                    <div class="percy-project-card-image">
+                        <img src="@Url.Content(card.ImageUrl)"
+                             alt=""
+                             loading="lazy" />
+                    </div>
+                }
+
+                <div class="percy-project-card-content">
+
+                    @if (!string.IsNullOrWhiteSpace(card.Title))
+                    {
+                        <h3>@card.Title</h3>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(card.Status))
+                    {
+                        <p class="percy-project-card-status">
+                            @card.Status
+                        </p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(card.Description))
+                    {
+                        <p class="percy-project-card-description">
+                            @card.Description
+                        </p>
+                    }
+
+                    <div class="percy-project-card-actions">
+
+                        @if (card.IsEnabled &&
+                             !string.IsNullOrWhiteSpace(card.Url))
+                        {
+                            <a href="@Url.Content(card.Url)"
+                               class="percy-project-card-button">
+                                @card.ButtonText
+                            </a>
+                        }
+                        else
+                        {
+                            <button type="button"
+                                    class="percy-project-card-button"
+                                    disabled>
+                                @card.ButtonText
+                            </button>
+                        }
+
+                    </div>
+
+                </div>
+
+            </article>
+        }
+
+    </div>
+
+    @if (Model.ShowNavigation && Model.Cards.Count > 1)
+    {
+        <div class="percy-card-collection-navigation">
+            <button type="button"
+                    class="percy-card-nav-prev"
+                    aria-label="Scroll cards left">
+                &#10094;
+            </button>
+
+            <button type="button"
+                    class="percy-card-nav-next"
+                    aria-label="Scroll cards right">
+                &#10095;
+            </button>
+        </div>
+    }
+
+</div>

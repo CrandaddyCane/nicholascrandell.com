@@ -1,84 +1,119 @@
-﻿@{
+﻿@using Percy.Website.Models
+
+@{
     ViewData["Title"] = "Portfolio";
+
+    var projectManagement = new CardCollectionViewModel
+    {
+        CollectionId = "portfolio-project-management-cards",
+        DisplayVariant = "horizontal",
+        ShowNavigation = false,
+        Cards = new List<ProjectCardViewModel>
+        {
+            new ProjectCardViewModel
+            {
+                Description = "A unified platform for project management, collaboration, tasks, documents, and workflows.",
+                ButtonText = "Coming Soon",
+                IsEnabled = false
+            }
+        }
+    };
+
+    var housingTools = new CardCollectionViewModel
+    {
+        CollectionId = "portfolio-housing-tools-cards",
+        DisplayVariant = "horizontal",
+        ShowNavigation = false,
+        Cards = new List<ProjectCardViewModel>
+        {
+            new ProjectCardViewModel
+            {
+                Description = "Explore housing market data, property trends, and analytical tools.",
+                ButtonText = "Coming Soon",
+                IsEnabled = false
+            }
+        }
+    };
+
+    var gameTrackers = new CardCollectionViewModel
+    {
+        CollectionId = "portfolio-video-game-cards",
+        DisplayVariant = "compact",
+        ShowNavigation = true,
+        Cards = new List<ProjectCardViewModel>
+        {
+             new ProjectCardViewModel
+            {
+                Title = "Animal Crossing",
+                Description = "First one goes to Blathers",
+                ImageUrl = "/images/games/card-ac.jpg",
+                ButtonText = "Open",
+                Url = "/workspace/animal-crossing/fish",
+                IsEnabled = true,
+            },
+            new ProjectCardViewModel
+            {
+                Title = "Satisfactory",
+                Description = "The factory must grow",
+                ImageUrl = "/images/games/card-satisfactory.jpg",
+                ButtonText = "Coming Soon",
+                IsEnabled = false,
+            },
+            new ProjectCardViewModel
+            {
+                Title = "Pokemans",
+                Description = "Gotta catch 'em all",
+                ImageUrl = "/images/games/card-pokeemans.jpg",
+                ButtonText = "Coming Soon",
+                IsEnabled = false,
+            },
+        }
+    };
 }
 
-<section aria-labelledby="portfolio-heading">
+<div class="container py-4">
 
-    <header class="mb-5">
-        <h1 id="portfolio-heading">Portfolio</h1>
-
-        <p class="lead">
-            A collection of technical projects, applications,
-            and professional case studies.
-        </p>
-
-        <p>
-            Explore my work in web application development,
-            data management, systems integration,
-            and digital technology.
-        </p>
+    <header class="mb-4">
+        <h1>Portfolio</h1>
     </header>
 
-    <section aria-labelledby="projects-heading">
+    <section class="card p-4 mb-4"
+             aria-labelledby="project-management-heading">
 
-        <h2 id="projects-heading" class="mb-4">
-            Featured Projects
+        <h2 id="project-management-heading" class="mb-3">
+            Project Management Software
         </h2>
 
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-
-            <!-- F1Archive -->
-            <div class="col">
-                <article class="card h-100">
-                    <div class="card-body">
-
-                        <h3 class="card-title h5">
-                            F1Archive
-                        </h3>
-
-                        <p class="card-text">
-                            An ASP.NET Core MVC application exploring
-                            Formula 1 historical data through
-                            third-party API integration.
-                        </p>
-
-                        <p class="small text-muted">
-                            C# | ASP.NET Core MVC | REST API
-                        </p>
-
-                        <span class="badge bg-secondary">
-                            In Development
-                        </span>
-
-                    </div>
-                </article>
-            </div>
-
-            <!-- Future Projects -->
-            <div class="col">
-                <article class="card h-100">
-                    <div class="card-body">
-
-                        <h3 class="card-title h5">
-                            Additional Projects
-                        </h3>
-
-                        <p class="card-text">
-                            Future applications and technical
-                            demonstrations will be featured here
-                            as development progresses.
-                        </p>
-
-                        <span class="badge bg-secondary">
-                            Planned
-                        </span>
-
-                    </div>
-                </article>
-            </div>
-
-        </div>
+        @await Component.InvokeAsync(
+            "CardCollection",
+            new { model = projectManagement })
 
     </section>
 
-</section>
+    <section class="card p-4 mb-4"
+             aria-labelledby="housing-heading">
+
+        <h2 id="housing-heading" class="mb-3">
+            Housing Market Tool
+        </h2>
+
+        @await Component.InvokeAsync(
+            "CardCollection",
+            new { model = housingTools })
+
+    </section>
+
+    <section class="card p-4 mb-4"
+             aria-labelledby="games-heading">
+
+        <h2 id="games-heading" class="mb-3">
+            Video Game Trackers &amp; Assistants
+        </h2>
+
+        @await Component.InvokeAsync(
+            "CardCollection",
+            new { model = gameTrackers })
+
+    </section>
+
+</div>
