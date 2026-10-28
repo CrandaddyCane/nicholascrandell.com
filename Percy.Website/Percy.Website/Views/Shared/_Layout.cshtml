@@ -46,7 +46,7 @@
           asp-append-version="true" />
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <!-- Primary navigation -->
     <header class="site-header">
@@ -124,7 +124,7 @@
 
     <!-- Main content -->
     <main id="main-content"
-          class="container"
+          class="container flex-grow-1"
           role="main">
 
         @RenderBody()
@@ -132,12 +132,13 @@
     </main>
 
     <!-- Footer -->
-    <footer class="site-footer border-top py-4 mt-5">
+    <footer class="site-footer border-top py-4 mt-auto">
         <div class="container">
 
             <nav aria-label="Footer navigation">
                 <ul class="nav justify-content-center">
 
+                    <!-- Contact -->
                     <li class="nav-item">
                         <a class="nav-link"
                            asp-controller="Home"
@@ -146,23 +147,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="~/documents/Nicholas_Crandell_Resume.pdf"
-                           download="Nicholas_Crandell_Resume.pdf">
-                            Download Resume
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="https://github.com/CrandaddyCane"
-                           target="_blank"
-                           rel="noopener noreferrer">
-                            GitHub
-                        </a>
-                    </li>
-
+                    <!-- LinkedIn -->
                     <li class="nav-item">
                         <a class="nav-link"
                            href="https://www.linkedin.com/in/nick-crandell-7361a62b4"

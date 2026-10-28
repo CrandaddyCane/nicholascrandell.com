@@ -969,3 +969,40 @@ button:focus-visible,
         transition: none;
     }
 }
+
+/* ==========================================
+   Footer
+   ========================================== */
+
+.site-footer {
+    background-color: #333333;
+    border-top: 1px solid #555555 !important;
+    color: #ffffff;
+}
+
+    .site-footer .nav-link {
+        color: #ffffff;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+        .site-footer .nav-link:hover {
+            color: #a8c7a0;
+        }
+
+        .site-footer .nav-link:focus-visible {
+            color: #ffffff;
+            outline: 2px solid #a8c7a0;
+            outline-offset: 3px;
+        }
+
+    .site-footer .text-muted {
+        color: #c5c5c5 !important;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .site-footer .nav-link {
+        transition: none;
+    }
+}

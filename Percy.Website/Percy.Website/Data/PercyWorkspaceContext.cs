@@ -31,6 +31,10 @@ namespace Percy.Website.Data
         public DbSet<FishAvailability> FishAvailabilities
             => Set<FishAvailability>();
 
+        // Insect monthly and hourly availability.
+        public DbSet<InsectAvailability> InsectAvailabilities
+            => Set<InsectAvailability>();
+
         protected override void OnModelCreating(
             ModelBuilder modelBuilder)
         {
@@ -137,6 +141,38 @@ namespace Percy.Website.Data
                     .WithMany()
                     .HasForeignKey(e => e.MuseumItemID);
             });
+
+            // Insect availability, including island-only species.
+            modelBuilder.Entity<InsectAvailability>(entity =>
+            {
+                entity.ToTable("InsectAvailability", "ac");
+
+                entity.HasKey(e => e.AvailabilityID);
+
+                entity.Property(e => e.AvailabilityID)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.StartTime)
+                    .HasColumnType("time");
+
+                entity.Property(e => e.EndTime)
+                    .HasColumnType("time");
+
+                entity.Property(e => e.WeatherCondition)
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                entity.Property(e => e.LastUpdated)
+                    .HasColumnType("datetime2");
+
+                entity.HasOne<MuseumItem>()
+                    .WithMany()
+                    .HasForeignKey(e => e.MuseumItemID);
+
+                entity.HasOne<SpawnLocation>()
+                    .WithMany()
+                    .HasForeignKey(e => e.LocationID);
+            });
         }
     }
 
@@ -207,10 +243,37 @@ namespace Percy.Website.Data
 
         public bool IsAllDay { get; set; }
 
-        public string WeatherCondition { get; set; } = string.Empty;
+        public string WeatherCondition { get; set; }
+            = string.Empty;
 
         public int? SourceID { get; set; }
 
         public DateTime LastUpdated { get; set; }
+    }
+
+    public class InsectAvailability
+    {
+        public int AvailabilityID { get; set; }
+
+        public int MuseumItemID { get; set; }
+
+        public int LocationID { get; set; }
+
+        public byte Month { get; set; }
+
+        public TimeSpan StartTime { get; set; }
+
+        public TimeSpan EndTime { get; set; }
+
+        public bool IsAllDay { get; set; }
+
+        public string WeatherCondition { get; set; }
+            = string.Empty;
+
+        public int? SourceID { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public bool IsIslandOnly { get; set; }
     }
 }
