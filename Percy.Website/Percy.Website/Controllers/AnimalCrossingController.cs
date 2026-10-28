@@ -21,22 +21,146 @@ namespace Percy.Website.Controllers
         private const int TownID = 1;
         private const int PlayerID = 1;
 
+        private const string SpriteDirectory =
+            "/images/animal-crossing/sprites/";
+
+        // Original GameCube and Doubutsu no Mori e+ fish sprites.
+        private static readonly IReadOnlyDictionary<int, string>
+            FishSpriteFiles = new Dictionary<int, string>
+            {
+                [1] = "Angelfish_PG_Icon.png",
+                [2] = "Arapaima_PG_Icon.png",
+                [3] = "Arowana_PG_Icon.png",
+                [4] = "Barbel_Steed_PG_Icon.png",
+                [5] = "Barred_Knifejaw_PG_Icon.png",
+                [6] = "Bass_PG_Inv_Icon.png",
+                [7] = "Bitterling_PG_Icon.png",
+                [8] = "Blue_Marlin_DnMe+_Icon.png",
+                [9] = "Bluegill_PG_Icon.png",
+                [10] = "Brook_Trout_PG_Icon.png",
+                [11] = "Carp_PG_Icon.png",
+                [12] = "Catfish_PG_Icon.png",
+                [13] = "Cherry_Salmon_PG_Icon.png",
+                [14] = "Coelacanth_PG_Icon.png",
+                [15] = "Crawfish_PG_Icon.png",
+                [16] = "Crucian_Carp_PG_Icon.png",
+                [17] = "Dab_DnMe+_Icon.png",
+                [18] = "Dace_PG_Icon.png",
+                [19] = "Eel_PG_Icon.png",
+                [20] = "Freshwater_Goby_PG_Icon.png",
+                [21] = "Frog_PG_Icon.png",
+                [22] = "Giant_Catfish_PG_Icon.png",
+                [23] = "Giant_Snakehead_PG_Icon.png",
+                [24] = "Goldfish_PG_Icon.png",
+                [25] = "Guppy_PG_Icon.png",
+                [26] = "Horse_Mackerel_DnMe+_Icon.png",
+                [27] = "Jellyfish_PG_Icon.png",
+                [28] = "Killifish_PG_Icon.png",
+                [29] = "Koi_PG_Icon.png",
+                [30] = "Large_Bass_PG_Icon.png",
+                [31] = "Large_Char_PG_Icon.png",
+                [32] = "Loach_PG_Icon.png",
+                [33] = "Octopus_DnMe+_Icon.png",
+                [34] = "Olive_Flounder_DnMe+_Icon.png",
+                [35] = "Pale_Chub_PG_Icon.png",
+                [36] = "Piranha_PG_Icon.png",
+                [37] = "Pond_Smelt_PG_Icon.png",
+                [38] = "Popeyed_Goldfish_PG_Icon.png",
+                [39] = "Balloonfish_DnMe+_Icon.png",
+                [40] = "Rainbow_Trout_PG_Icon.png",
+                [41] = "Red_Snapper_PG_Icon.png",
+                [42] = "Salmon_PG_Icon.png",
+                [43] = "Sea_Bass_PG_Icon.png",
+                [44] = "Seahorse_DnMe+_Icon.png",
+                [45] = "Small_Bass_PG_Icon.png",
+                [46] = "Squid_DnMe+_Icon.png",
+                [47] = "Stringfish_PG_Icon.png",
+                [48] = "Sweetfish_PG_Icon.png"
+            };
+
+        // Original GameCube and Doubutsu no Mori e+ insect sprites.
+        private static readonly IReadOnlyDictionary<int, string>
+            InsectSpriteFiles = new Dictionary<int, string>
+            {
+                [119] = "Alexandra's_Swallowtail_Butterfly_DnMe+_Icon.png",
+                [120] = "Ant_PG_Icon.png",
+                [121] = "Bagworm_PG_Icon.png",
+                [122] = "Banded_Dragonfly_PG_Icon.png",
+                [123] = "Bee_PG_Icon.png",
+                [124] = "Bell_Cricket_PG_Icon.png",
+                [125] = "Brown_Cicada_PG_Icon.png",
+                [126] = "Cockroach_PG_Icon.png",
+                [127] = "Coconut_Crab_DnMe+_Icon.png",
+                [128] = "Common_Butterfly_PG_Icon.png",
+                [129] = "Common_Dragonfly_PG_Icon.png",
+                [130] = "Crab_DnMe+_Icon.png",
+                [131] = "Cricket_PG_Icon.png",
+                [132] = "Darner_Dragonfly_PG_Icon.png",
+                [133] = "Diving_Beetle_DnMe+_Icon.png",
+                [134] = "Drone_Beetle_PG_Icon.png",
+                [135] = "Dung_Beetle_DnMe+_Icon.png",
+                [136] = "Dynastid_Beetle_PG_Icon.png",
+                [137] = "Evening_Cicada_PG_Icon.png",
+                [138] = "Firefly_PG_Icon.png",
+                [139] = "Flat_Stag_Beetle_PG_Icon.png",
+                [140] = "Flea_DnMe+_Icon.png",
+                [141] = "Giant_Beetle_PG_Icon.png",
+                [142] = "Grasshopper_PG_Icon.png",
+                [143] = "Hercules_Beetle_DnMe+_Icon.png",
+                [144] = "Hermit_Crab_DnMe+_Icon.png",
+                [145] = "Jewel_Beetle_PG_Icon.png",
+                [146] = "Ladybug_PG_Icon.png",
+                [147] = "Long_Locust_PG_Icon.png",
+                [148] = "Longhorn_Beetle_PG_Icon.png",
+                [149] = "Mantis_PG_Icon.png",
+                [150] = "Migratory_Locust_PG_Icon.png",
+                [151] = "Mole_Cricket_PG_Icon.png",
+                [152] = "Mosquito_PG_Icon.png",
+                [153] = "Mountain_Beetle_PG_Icon.png",
+                [154] = "Pill_Bug_PG_Icon.png",
+                [155] = "Pine_Cricket_PG_Icon.png",
+                [156] = "Pond_Skater_PG_Icon.png",
+                [157] = "Purple_Butterfly_PG_Icon.png",
+                [158] = "Red_Dragonfly_PG_Icon.png",
+                [159] = "Robust_Cicada_PG_Icon.png",
+                [160] = "Saw_Stag_Beetle_PG_Icon.png",
+                [161] = "Snail_PG_Icon.png",
+                [162] = "Spider_PG_Icon.png",
+                [163] = "Spotted_Ladybug_PG_Icon.png",
+                [164] = "Tiger_Butterfly_PG_Icon.png",
+                [165] = "Walker_Cicada_PG_Icon.png",
+                [166] = "Yellow_Butterfly_PG_Icon.png"
+            };
+
         public AnimalCrossingController(
             PercyWorkspaceContext context)
         {
             _context = context;
         }
 
-        // Read-only dashboard data endpoint.
-        // The visual dashboard will be implemented separately.
+        // Render the visual dashboard.
         [HttpGet("")]
-        public async Task<IActionResult> Dashboard(
+        public IActionResult Dashboard()
+        {
+            var model = new AnimalCrossingDashboardViewModel
+            {
+                TownName = "Maple",
+                SelectedDate = DateOnly.FromDateTime(DateTime.Now),
+                SelectedTime = TimeOnly.FromDateTime(DateTime.Now),
+                Weather = "Unknown",
+                IsManualDateTime = false
+            };
+
+            return View("Dashboard", model);
+        }
+
+        // Read-only dashboard data endpoint.
+        [HttpGet("data")]
+        public async Task<IActionResult> DashboardData(
             string? date,
             string? time,
             string? weather)
         {
-            // Initial testing uses server time.
-            // The browser will supply local time in the final UI.
             var now = DateTime.Now;
             var selectedDate = DateOnly.FromDateTime(now);
             var selectedTime = TimeOnly.FromDateTime(now);
@@ -65,21 +189,15 @@ namespace Percy.Website.Controllers
 
             var validWeather = new[]
             {
-                "Unknown",
-                "Sunny",
-                "Cloudy",
-                "Rain",
-                "Snow"
+                "Unknown", "Sunny", "Cloudy", "Rain", "Snow"
             };
 
-            var requestedWeather =
-                (weather ?? "Unknown").Trim();
+            var requestedWeather = (weather ?? "Unknown").Trim();
 
-            var selectedWeather = validWeather
-                .FirstOrDefault(x =>
-                    x.Equals(
-                        requestedWeather,
-                        StringComparison.OrdinalIgnoreCase));
+            var selectedWeather = validWeather.FirstOrDefault(x =>
+                x.Equals(
+                    requestedWeather,
+                    StringComparison.OrdinalIgnoreCase));
 
             if (selectedWeather == null)
             {
@@ -91,9 +209,7 @@ namespace Percy.Website.Controllers
 
             var items = await _context.MuseumItems
                 .AsNoTracking()
-                .Where(x =>
-                    x.GameID == GameID &&
-                    x.IsActive)
+                .Where(x => x.GameID == GameID && x.IsActive)
                 .ToListAsync();
 
             var donatedIds = (await _context.MuseumDonations
@@ -106,9 +222,6 @@ namespace Percy.Website.Controllers
             var currentMonth = selectedDate.Month;
             var previousMonth = previousDate.Month;
 
-            // Include the prior month's schedule so that
-            // overnight availability crossing a month boundary
-            // can be evaluated correctly.
             var fishSchedules = await _context.FishAvailabilities
                 .AsNoTracking()
                 .Where(x =>
@@ -124,8 +237,7 @@ namespace Percy.Website.Controllers
                 .ToListAsync();
 
             var fish = BuildSpecies(
-                items.Where(x =>
-                    x.CategoryID == FishCategoryID),
+                items.Where(x => x.CategoryID == FishCategoryID),
                 fishSchedules.Select(x => new AvailabilityRule
                 {
                     MuseumItemID = x.MuseumItemID,
@@ -142,8 +254,7 @@ namespace Percy.Website.Controllers
                 selectedWeather);
 
             var insects = BuildSpecies(
-                items.Where(x =>
-                    x.CategoryID == InsectCategoryID),
+                items.Where(x => x.CategoryID == InsectCategoryID),
                 insectSchedules.Select(x => new AvailabilityRule
                 {
                     MuseumItemID = x.MuseumItemID,
@@ -194,11 +305,7 @@ namespace Percy.Website.Controllers
                     }
                 },
 
-                species = new
-                {
-                    fish,
-                    insects
-                }
+                species = new { fish, insects }
             });
         }
 
@@ -212,12 +319,9 @@ namespace Percy.Website.Controllers
         {
             var groupedSchedules = schedules
                 .GroupBy(x => x.MuseumItemID)
-                .ToDictionary(
-                    x => x.Key,
-                    x => x.ToList());
+                .ToDictionary(x => x.Key, x => x.ToList());
 
             var previousDate = selectedDate.AddDays(-1);
-
             var result = new List<DashboardSpecies>();
 
             foreach (var item in items)
@@ -234,22 +338,15 @@ namespace Percy.Website.Controllers
                         weather))
                     .ToList();
 
-                // A species is available today if at least
-                // one eligible window overlaps the selected date.
                 var availableToday = eligibleRules.Any(x =>
-                    IsAvailableDuringDate(
-                        x,
-                        selectedDate));
+                    IsAvailableDuringDate(x, selectedDate));
 
-                // A species is available now if at least one
-                // eligible window includes the selected time.
                 var availableNow = eligibleRules.Any(x =>
                     IsAvailableAtTime(
                         x,
                         selectedDate,
                         selectedTime));
 
-                // Show schedules that overlap the selected day.
                 var applicableRules = eligibleRules
                     .Where(x =>
                         x.Month == selectedDate.Month ||
@@ -261,12 +358,30 @@ namespace Percy.Website.Controllers
                         selectedDate))
                     .ToList();
 
+                string imagePath = string.Empty;
+
+                if (item.CategoryID == FishCategoryID &&
+                    FishSpriteFiles.TryGetValue(
+                        item.MuseumItemID,
+                        out var fishSprite))
+                {
+                    imagePath = SpriteDirectory + fishSprite;
+                }
+                else if (item.CategoryID == InsectCategoryID &&
+                    InsectSpriteFiles.TryGetValue(
+                        item.MuseumItemID,
+                        out var insectSprite))
+                {
+                    imagePath = SpriteDirectory + insectSprite;
+                }
+
                 result.Add(new DashboardSpecies
                 {
                     MuseumItemID = item.MuseumItemID,
                     Name = item.ItemName,
                     CategoryID = item.CategoryID,
                     SellPrice = item.SellPrice,
+                    ImagePath = imagePath,
 
                     IsDonated = donatedIds.Contains(
                         item.MuseumItemID),
@@ -288,15 +403,13 @@ namespace Percy.Website.Controllers
                 });
             }
 
-            // Undonated species first, then alphabetical.
             return result
                 .OrderBy(x => x.IsDonated)
                 .ThenBy(x => x.Name)
                 .ToList();
         }
 
-        private static bool IsOvernight(
-            AvailabilityRule rule)
+        private static bool IsOvernight(AvailabilityRule rule)
         {
             return !rule.IsAllDay &&
                    rule.StartTime > rule.EndTime;
@@ -308,7 +421,6 @@ namespace Percy.Website.Controllers
         {
             var previousDate = selectedDate.AddDays(-1);
 
-            // Windows beginning on the selected date.
             if (rule.Month == selectedDate.Month)
             {
                 if (rule.IsAllDay)
@@ -316,18 +428,14 @@ namespace Percy.Website.Controllers
                     return true;
                 }
 
-                // Ordinary daytime window.
                 if (!IsOvernight(rule))
                 {
                     return rule.EndTime > rule.StartTime;
                 }
 
-                // Overnight window starts on this date.
                 return true;
             }
 
-            // An overnight window beginning yesterday may
-            // continue into today.
             return IsOvernight(rule) &&
                    rule.Month == previousDate.Month &&
                    rule.EndTime > TimeSpan.Zero;
@@ -340,13 +448,11 @@ namespace Percy.Website.Controllers
         {
             var previousDate = selectedDate.AddDays(-1);
 
-            // All-day schedule for the selected date.
             if (rule.IsAllDay)
             {
                 return rule.Month == selectedDate.Month;
             }
 
-            // Ordinary window: start inclusive, end exclusive.
             if (!IsOvernight(rule))
             {
                 return rule.Month == selectedDate.Month &&
@@ -354,14 +460,10 @@ namespace Percy.Website.Controllers
                        selectedTime < rule.EndTime;
             }
 
-            // Evening portion starting on the selected date.
             var eveningAvailable =
                 rule.Month == selectedDate.Month &&
                 selectedTime >= rule.StartTime;
 
-            // Morning portion from a window starting yesterday.
-            // This uses the actual previous calendar date,
-            // including at month and year boundaries.
             var morningAvailable =
                 rule.Month == previousDate.Month &&
                 selectedTime < rule.EndTime;
@@ -373,7 +475,6 @@ namespace Percy.Website.Controllers
             string requiredWeather,
             string selectedWeather)
         {
-            // Unknown means potentially catchable.
             if (selectedWeather.Equals(
                 "Unknown",
                 StringComparison.OrdinalIgnoreCase))
@@ -582,6 +683,10 @@ namespace Percy.Website.Controllers
             public string Name { get; set; } = string.Empty;
             public int CategoryID { get; set; }
             public int? SellPrice { get; set; }
+
+            public string ImagePath { get; set; }
+                = string.Empty;
+
             public bool IsDonated { get; set; }
             public bool AvailableNow { get; set; }
             public bool AvailableToday { get; set; }

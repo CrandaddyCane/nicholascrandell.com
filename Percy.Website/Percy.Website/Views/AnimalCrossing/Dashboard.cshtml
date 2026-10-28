@@ -1,5 +1,953 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Percy.Website.Models.AnimalCrossingDashboardViewModel
+
 @{
+    ViewData["Title"] = "Animal Crossing Dashboard";
 }
+
+<style>
+    .ac-dashboard {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 16px 48px;
+        color: #172b3d;
+        font-family: "Open Sans", Arial, sans-serif;
+    }
+
+        .ac-dashboard *,
+        .ac-dashboard *::before,
+        .ac-dashboard *::after {
+            box-sizing: border-box;
+        }
+
+    .ac-header {
+        margin-bottom: 20px;
+    }
+
+        .ac-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+    .ac-muted {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .ac-panel {
+        background: #fff;
+        border: 1px solid #e1e5e9;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 18px;
+    }
+
+    .ac-section-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 14px;
+    }
+
+    .ac-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .ac-date {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .ac-time {
+        margin-top: 4px;
+        color: #475569;
+    }
+
+    .ac-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+        align-items: center;
+    }
+
+    .ac-dashboard button,
+    .ac-dashboard select,
+    .ac-dashboard input {
+        font: inherit;
+    }
+
+    .ac-dashboard button {
+        cursor: pointer;
+    }
+
+    .ac-button {
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        background: white;
+        padding: 8px 12px;
+        color: #172b3d;
+    }
+
+        .ac-button.active {
+            background: #1769aa;
+            border-color: #1769aa;
+            color: white;
+        }
+
+    .ac-select,
+    .ac-input {
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        background: white;
+        color: #172b3d;
+        padding: 8px;
+        max-width: 100%;
+    }
+
+    .ac-hidden {
+        display: none !important;
+    }
+
+    .ac-stats {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .ac-stats th,
+        .ac-stats td {
+            padding: 11px 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .ac-stats th {
+            text-align: center;
+        }
+
+            .ac-stats th:first-child,
+            .ac-stats td:first-child {
+                text-align: left;
+            }
+
+        .ac-stats td:not(:first-child) {
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+    .ac-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .ac-toolbar {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .ac-card-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .ac-species-card {
+        border: 1px solid #dce2e7;
+        border-radius: 11px;
+        padding: 12px;
+        min-width: 0;
+        background: #fff;
+        position: relative;
+        padding-bottom: 36px;
+    }
+
+        .ac-species-card.donated {
+            opacity: 0.58;
+        }
+
+    .ac-sprite {
+        height: 92px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f7f8;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .ac-sprite-image {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        image-rendering: pixelated;
+    }
+
+    .ac-sprite-placeholder {
+        color: #94a3b8;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .ac-species-name {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        overflow-wrap: anywhere;
+    }
+
+    .ac-species-meta {
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .ac-species-checkbox {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .ac-status {
+        display: inline-block;
+        font-size: 11px;
+        padding: 4px 9px;
+        border-radius: 20px;
+        background: #d9e9f8;
+        color: #184b78;
+    }
+
+        .ac-status.now {
+            background: #d7f2dc;
+            color: #216039;
+        }
+
+    .ac-island-icon {
+        position: absolute;
+        right: 10px;
+        bottom: 9px;
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+    }
+
+    .ac-other-collections {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .ac-collection-card {
+        border: 1px solid #dce2e7;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .ac-collection-value {
+        font-size: 27px;
+        font-weight: 700;
+        margin-top: 8px;
+    }
+
+    .ac-progress {
+        width: 100%;
+        height: 7px;
+        background: #e5eaf0;
+        border-radius: 8px;
+        margin-top: 12px;
+        overflow: hidden;
+    }
+
+    .ac-progress-fill {
+        height: 100%;
+        background: #1769aa;
+        width: 0;
+    }
+
+    .ac-message {
+        padding: 16px;
+        color: #64748b;
+        text-align: center;
+    }
+
+    @@media (max-width: 900px) {
+        .ac-card-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .ac-card-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .ac-other-collections {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 380px) {
+        .ac-card-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="ac-dashboard">
+
+    <header class="ac-header">
+        <h1>@Model.TownName</h1>
+        <div class="ac-muted">
+            Animal Crossing Deluxe | Museum Dashboard
+        </div>
+    </header>
+
+    <section class="ac-panel">
+        <div class="ac-row">
+            <div>
+                <div id="ac-date-display" class="ac-date">
+                    Loading date...
+                </div>
+                <div id="ac-time-display" class="ac-time">
+                    Loading time...
+                </div>
+            </div>
+
+            <button type="button"
+                    id="ac-override-button"
+                    class="ac-button">
+                Adjust Date & Time
+            </button>
+        </div>
+
+        <div id="ac-manual-controls"
+             class="ac-controls ac-hidden">
+            <label>
+                Date
+                <input type="date"
+                       id="ac-date-input"
+                       class="ac-input" />
+            </label>
+
+            <label>
+                Time
+                <input type="time"
+                       id="ac-time-input"
+                       class="ac-input" />
+            </label>
+
+            <button type="button"
+                    id="ac-reset-button"
+                    class="ac-button">
+                Use Current Time
+            </button>
+        </div>
+
+        <div class="ac-controls">
+            <label for="ac-weather">Weather</label>
+
+            <select id="ac-weather" class="ac-select">
+                <option value="Unknown">Unknown</option>
+                <option value="Sunny">Sunny</option>
+                <option value="Cloudy">Cloudy</option>
+                <option value="Rain">Rain</option>
+                <option value="Snow">Snow</option>
+            </select>
+        </div>
+    </section>
+
+    <section class="ac-panel">
+        <h2 class="ac-section-title">Collection Overview</h2>
+
+        <div class="ac-muted">
+            Donated / Total eligible
+        </div>
+
+        <table class="ac-stats">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Fish</th>
+                    <th>Insects</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total</td>
+                    <td id="ac-fish-total">...</td>
+                    <td id="ac-insect-total">...</td>
+                </tr>
+                <tr>
+                    <td>Right Now</td>
+                    <td id="ac-fish-now">...</td>
+                    <td id="ac-insect-now">...</td>
+                </tr>
+                <tr>
+                    <td>Total Day</td>
+                    <td id="ac-fish-day">...</td>
+                    <td id="ac-insect-day">...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="ac-panel">
+        <h2 class="ac-section-title">
+            Today's Catchable Species
+        </h2>
+
+        <div class="ac-toolbar">
+            <div class="ac-filters" id="ac-category-filters">
+                <button type="button"
+                        class="ac-button active"
+                        data-category="all">
+                    All
+                </button>
+                <button type="button"
+                        class="ac-button"
+                        data-category="fish">
+                    Fish
+                </button>
+                <button type="button"
+                        class="ac-button"
+                        data-category="insects">
+                    Insects
+                </button>
+            </div>
+
+            <label>
+                Sort
+                <select id="ac-sort" class="ac-select">
+                    <option value="donation">
+                        Undonated First
+                    </option>
+                    <option value="name">
+                        Name
+                    </option>
+                    <option value="price">
+                        Sell Price
+                    </option>
+                    <option value="availability">
+                        Available Now First
+                    </option>
+                </select>
+            </label>
+        </div>
+
+        <div class="ac-filters" id="ac-time-filters">
+            <button type="button"
+                    class="ac-button active"
+                    data-period="all">
+                All Day
+            </button>
+            <button type="button"
+                    class="ac-button"
+                    data-period="now">
+                Right Now
+            </button>
+            <button type="button"
+                    class="ac-button"
+                    data-period="other">
+                Other Hours
+            </button>
+        </div>
+
+        <div id="ac-species-count" class="ac-muted"></div>
+
+        <div id="ac-species-grid" class="ac-card-grid">
+            <div class="ac-message">Loading species...</div>
+        </div>
+
+        <p class="ac-muted" style="margin-top:14px">
+            Donation checkboxes are read-only during initial
+            development. Editing permissions will be added
+            before public deployment.
+        </p>
+    </section>
+
+    <section class="ac-panel">
+        <h2 class="ac-section-title">
+            Other Museum Collections
+        </h2>
+
+        <div class="ac-other-collections">
+            <div class="ac-collection-card">
+                <strong>Fossils</strong>
+                <div id="ac-fossil-total"
+                     class="ac-collection-value">
+                    ...
+                </div>
+                <div class="ac-muted">Donated / Total</div>
+                <div class="ac-progress">
+                    <div id="ac-fossil-progress"
+                         class="ac-progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="ac-collection-card">
+                <strong>Art</strong>
+                <div id="ac-art-total"
+                     class="ac-collection-value">
+                    ...
+                </div>
+                <div class="ac-muted">Donated / Total</div>
+                <div class="ac-progress">
+                    <div id="ac-art-progress"
+                         class="ac-progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ac-panel">
+        <h2 class="ac-section-title">
+            Holidays & Notable Days
+        </h2>
+
+        <p class="ac-muted">
+            The event calendar will be connected after
+            we complete the species availability interface.
+        </p>
+    </section>
+
+</div>
+
+<script>
+    (() => {
+        "use strict";
+
+        const endpoint = "/workspace/animal-crossing/data";
+
+        let manualMode = false;
+        let selectedDate = "";
+        let selectedTime = "";
+        let selectedWeather = "Unknown";
+
+        let categoryFilter = "all";
+        let periodFilter = "all";
+        let sortMode = "donation";
+
+        let dashboardData = null;
+
+        const byId = id => document.getElementById(id);
+
+        function localDate(value) {
+            const year = value.getFullYear();
+            const month = String(value.getMonth() + 1)
+                .padStart(2, "0");
+            const day = String(value.getDate())
+                .padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function localTime(value) {
+            return `${String(value.getHours()).padStart(2, "0")}:` +
+                `${String(value.getMinutes()).padStart(2, "0")}`;
+        }
+
+        function getCurrentValues() {
+            const now = new Date();
+            return {
+                date: localDate(now),
+                time: localTime(now)
+            };
+        }
+
+        function weatherStorageKey() {
+            return "ac-weather-" + selectedDate;
+        }
+
+        function restoreWeather() {
+            selectedWeather =
+                sessionStorage.getItem(weatherStorageKey())
+                || "Unknown";
+
+            byId("ac-weather").value = selectedWeather;
+        }
+
+        function updateDateDisplay() {
+            const parts = selectedDate.split("-").map(Number);
+
+            const day = new Date(
+                parts[0], parts[1] - 1, parts[2]);
+
+            byId("ac-date-display").textContent =
+                day.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+                });
+
+            const timeParts = selectedTime.split(":");
+            const hours = Number(timeParts[0]);
+            const minutes = timeParts[1];
+
+            const hour12 = (hours % 12) || 12;
+            const period = hours >= 12 ? "PM" : "AM";
+
+            byId("ac-time-display").textContent =
+                `${hour12}:${minutes} ${period}` +
+                (manualMode ? " · Manual" : " · Automatic");
+
+            byId("ac-date-input").value = selectedDate;
+            byId("ac-time-input").value = selectedTime;
+        }
+
+        function setText(id, value) {
+            byId(id).textContent = value;
+        }
+
+        function updateStatistics(data) {
+            const fish = data.collections.fish;
+            const insects = data.collections.insects;
+
+            setText("ac-fish-total",
+                `${fish.total.donated}/${fish.total.available}`);
+
+            setText("ac-insect-total",
+                `${insects.total.donated}/${insects.total.available}`);
+
+            setText("ac-fish-now",
+                `${fish.rightNow.donated}/${fish.rightNow.available}`);
+
+            setText("ac-insect-now",
+                `${insects.rightNow.donated}/${insects.rightNow.available}`);
+
+            setText("ac-fish-day",
+                `${fish.totalDay.donated}/${fish.totalDay.available}`);
+
+            setText("ac-insect-day",
+                `${insects.totalDay.donated}/${insects.totalDay.available}`);
+
+            const fossils = data.collections.fossils;
+            const art = data.collections.art;
+
+            setText("ac-fossil-total",
+                `${fossils.donated}/${fossils.total}`);
+
+            setText("ac-art-total",
+                `${art.donated}/${art.total}`);
+
+            byId("ac-fossil-progress").style.width =
+                (fossils.total
+                    ? fossils.donated / fossils.total * 100
+                    : 0) + "%";
+
+            byId("ac-art-progress").style.width =
+                (art.total
+                    ? art.donated / art.total * 100
+                    : 0) + "%";
+        }
+
+        function createSpeciesCard(species) {
+            const card = document.createElement("article");
+            card.className = "ac-species-card";
+
+            if (species.isDonated) {
+                card.classList.add("donated");
+            }
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "ac-species-checkbox";
+            checkbox.checked = species.isDonated;
+            checkbox.disabled = true;
+            checkbox.title = "Donation editing not enabled yet";
+
+            const sprite = document.createElement("div");
+            sprite.className = "ac-sprite";
+            if (species.imagePath) {
+                const image = document.createElement("img");
+                image.className = "ac-sprite-image";
+                image.src = species.imagePath;
+                image.alt = species.name + " inventory sprite";
+                image.loading = "lazy";
+
+                image.addEventListener("error", () => {
+                    const fallback = document.createElement("span");
+                    fallback.className = "ac-sprite-placeholder";
+                    fallback.textContent = "Image unavailable";
+                    sprite.replaceChildren(fallback);
+                }, { once: true });
+
+                sprite.appendChild(image);
+            } else {
+                const placeholder = document.createElement("span");
+                placeholder.className = "ac-sprite-placeholder";
+                placeholder.textContent = "Image coming soon";
+                sprite.appendChild(placeholder);
+            }
+
+            const name = document.createElement("div");
+            name.className = "ac-species-name";
+            name.textContent = species.name;
+
+            const meta = document.createElement("div");
+            meta.className = "ac-species-meta";
+
+            const windows = species.availabilityWindows || [];
+
+            meta.textContent = windows.length
+                ? windows.join(", ")
+                : "Schedule unavailable";
+
+            const status = document.createElement("span");
+            status.className = "ac-status";
+
+            if (species.availableNow) {
+                status.classList.add("now");
+                status.textContent = "Available now";
+            } else {
+                status.textContent = "Other hours";
+            }
+
+            card.append(
+                checkbox,
+                sprite,
+                name,
+                meta,
+                status
+            );
+
+            if (species.isIslandOnly) {
+                const island = document.createElement("img");
+                island.className = "ac-island-icon";
+                island.src = "/images/animal-crossing/island.png";
+                island.alt = "Animal Island";
+                island.title = "Animal Island";
+                island.loading = "lazy";
+                card.appendChild(island);
+            }
+
+            return card;
+        }
+
+        function renderSpecies() {
+            if (!dashboardData) return;
+
+            let species = [];
+
+            if (categoryFilter !== "insects") {
+                species.push(...dashboardData.species.fish);
+            }
+
+            if (categoryFilter !== "fish") {
+                species.push(...dashboardData.species.insects);
+            }
+
+            species = species.filter(x => x.availableToday);
+
+            if (periodFilter === "now") {
+                species = species.filter(x => x.availableNow);
+            }
+
+            if (periodFilter === "other") {
+                species = species.filter(x => !x.availableNow);
+            }
+
+            species.sort((a, b) => {
+                if (sortMode === "name") {
+                    return a.name.localeCompare(b.name);
+                }
+
+                if (sortMode === "price") {
+                    return (b.sellPrice || 0) -
+                        (a.sellPrice || 0) ||
+                        a.name.localeCompare(b.name);
+                }
+
+                if (sortMode === "availability") {
+                    return Number(b.availableNow) -
+                        Number(a.availableNow) ||
+                        a.name.localeCompare(b.name);
+                }
+
+                return Number(a.isDonated) -
+                    Number(b.isDonated) ||
+                    a.name.localeCompare(b.name);
+            });
+
+            const grid = byId("ac-species-grid");
+            grid.replaceChildren();
+
+            setText(
+                "ac-species-count",
+                `${species.length} species shown`
+            );
+
+            if (!species.length) {
+                const empty = document.createElement("p");
+                empty.className = "ac-message";
+                empty.textContent =
+                    "No species match the selected filters.";
+
+                grid.appendChild(empty);
+                return;
+            }
+
+            species.forEach(item => {
+                grid.appendChild(createSpeciesCard(item));
+            });
+        }
+
+        async function loadDashboard() {
+            updateDateDisplay();
+
+            const parameters = new URLSearchParams({
+                date: selectedDate,
+                time: selectedTime,
+                weather: selectedWeather
+            });
+
+            try {
+                const response = await fetch(
+                    endpoint + "?" + parameters.toString(),
+                    { cache: "no-store" }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Dashboard request failed: ${response.status}`
+                    );
+                }
+
+                dashboardData = await response.json();
+
+                updateStatistics(dashboardData);
+                renderSpecies();
+            } catch (error) {
+                console.error(error);
+
+                const grid = byId("ac-species-grid");
+                grid.replaceChildren();
+
+                const message = document.createElement("p");
+                message.className = "ac-message";
+                message.textContent =
+                    "Unable to load dashboard data.";
+
+                grid.appendChild(message);
+            }
+        }
+
+        function initializeFilters(containerId, attribute, callback) {
+            const container = byId(containerId);
+
+            container.querySelectorAll("button")
+                .forEach(button => {
+                    button.addEventListener("click", () => {
+                        container.querySelectorAll("button")
+                            .forEach(x =>
+                                x.classList.remove("active"));
+
+                        button.classList.add("active");
+
+                        callback(button.dataset[attribute]);
+                        renderSpecies();
+                    });
+                });
+        }
+
+        function initialize() {
+            const current = getCurrentValues();
+
+            selectedDate = current.date;
+            selectedTime = current.time;
+
+            restoreWeather();
+
+            byId("ac-weather").addEventListener("change", e => {
+                selectedWeather = e.target.value;
+
+                sessionStorage.setItem(
+                    weatherStorageKey(),
+                    selectedWeather
+                );
+
+                loadDashboard();
+            });
+
+            byId("ac-override-button")
+                .addEventListener("click", () => {
+                    manualMode = !manualMode;
+
+                    byId("ac-manual-controls")
+                        .classList.toggle(
+                            "ac-hidden",
+                            !manualMode
+                        );
+
+                    updateDateDisplay();
+                });
+
+            byId("ac-date-input")
+                .addEventListener("change", e => {
+                    if (!e.target.value) return;
+
+                    selectedDate = e.target.value;
+                    manualMode = true;
+
+                    restoreWeather();
+                    loadDashboard();
+                });
+
+            byId("ac-time-input")
+                .addEventListener("change", e => {
+                    if (!e.target.value) return;
+
+                    selectedTime = e.target.value;
+                    manualMode = true;
+
+                    loadDashboard();
+                });
+
+            byId("ac-reset-button")
+                .addEventListener("click", () => {
+                    const now = getCurrentValues();
+
+                    selectedDate = now.date;
+                    selectedTime = now.time;
+                    manualMode = false;
+
+                    byId("ac-manual-controls")
+                        .classList.add("ac-hidden");
+
+                    restoreWeather();
+                    loadDashboard();
+                });
+
+            initializeFilters(
+                "ac-category-filters",
+                "category",
+                value => categoryFilter = value
+            );
+
+            initializeFilters(
+                "ac-time-filters",
+                "period",
+                value => periodFilter = value
+            );
+
+            byId("ac-sort").addEventListener("change", e => {
+                sortMode = e.target.value;
+                renderSpecies();
+            });
+
+            loadDashboard();
+        }
+
+        initialize();
+    })();
+</script>
