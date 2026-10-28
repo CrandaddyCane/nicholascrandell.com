@@ -16,6 +16,11 @@
     --color-nav-text: #ffffff;
     --color-nav-active: #a8c7a0;
     --color-nav-hover: #ffffff;
+    /* Workspace cards */
+    --color-workspace-card: rgba(244, 244, 244, 0.92);
+    --color-workspace-border: #222222;
+    --color-workspace-button: #ffb347;
+    --color-workspace-button-hover: #ed9a24;
     --content-width: 960px;
 }
 
@@ -32,14 +37,6 @@ body {
     margin: 0;
     min-height: 100vh;
     background-color: var(--color-background);
-    /*
-       Background photograph:
-       - Centered within the browser
-       - Approximately 1150px wide on desktop
-       - Maintains original image proportions
-       - White overlay preserves readability
-    */
-
     background-image: linear-gradient( rgba(255, 255, 255, 0.60), rgba(255, 255, 255, 0.60) ), url("/images/Background1.jpeg");
     background-position: center top, center top;
     background-size: 100% 100%, min(1150px, 100%) auto;
@@ -104,8 +101,6 @@ p {
     width: 100%;
 }
 
-    /* Center navigation relative to the viewport */
-
     .navbar > .container,
     .navbar > .container-fluid {
         display: flex;
@@ -132,8 +127,6 @@ p {
     max-width: 100%;
 }
 
-    /* Default navigation links */
-
     .navbar-nav .nav-link {
         color: var(--color-nav-text) !important;
         font-size: 0.9rem;
@@ -142,14 +135,10 @@ p {
         transition: border-color 0.2s ease, color 0.2s ease;
     }
 
-        /* Hovered navigation links */
-
         .navbar-nav .nav-link:hover {
             color: var(--color-nav-text) !important;
             border-bottom-color: var(--color-nav-hover);
         }
-
-        /* Current page */
 
         .navbar-nav .nav-link.active,
         .navbar-nav .nav-link[aria-current="page"] {
@@ -157,14 +146,10 @@ p {
             border-bottom-color: var(--color-nav-active);
         }
 
-            /* Keep active color when hovering over current page */
-
             .navbar-nav .nav-link.active:hover,
             .navbar-nav .nav-link[aria-current="page"]:hover {
                 border-bottom-color: var(--color-nav-active);
             }
-
-        /* Keyboard navigation */
 
         .navbar-nav .nav-link:focus-visible {
             color: var(--color-nav-text) !important;
@@ -173,8 +158,6 @@ p {
             outline-offset: 3px;
             border-radius: 2px;
         }
-
-        /* Preserve active underline when keyboard-focused */
 
         .navbar-nav .nav-link.active:focus-visible,
         .navbar-nav .nav-link[aria-current="page"]:focus-visible {
@@ -201,7 +184,7 @@ hr {
 }
 
 /* ==========================================
-   Cards
+   Standard Bootstrap cards
    ========================================== */
 
 .card {
@@ -219,6 +202,163 @@ hr {
 .card h3 {
     font-weight: 600;
 }
+
+/* ==========================================
+   Reusable Percy Card Collection
+   ========================================== */
+
+.percy-card-collection {
+    width: 100%;
+    min-width: 0;
+    position: relative;
+}
+
+/* Horizontal scrolling track */
+
+.percy-card-collection-track {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.25rem;
+    scroll-behavior: smooth;
+    padding: 0.25rem 0.25rem 0.85rem;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+}
+
+/* Individual reusable card */
+
+.percy-project-card {
+    flex: 0 0 220px;
+    width: 220px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-workspace-card);
+    border: 1px solid var(--color-workspace-border);
+    border-radius: 0.8rem;
+    overflow: hidden;
+    scroll-snap-align: start;
+    text-align: left;
+}
+
+/* Optional card image */
+
+.percy-project-card-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #e5e5e5;
+}
+
+    .percy-project-card-image img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+/* Card content */
+
+.percy-project-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.5rem;
+    padding: 0.9rem;
+}
+
+    .percy-project-card-content h3 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.3;
+        margin: 0;
+    }
+
+.percy-project-card-status {
+    font-size: 0.8rem;
+    color: #595959;
+    margin: 0;
+}
+
+.percy-project-card-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.percy-project-card-actions {
+    margin-top: auto;
+    padding-top: 0.75rem;
+}
+
+/* Orange project button */
+
+.percy-project-card-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    min-height: 34px;
+    padding: 0.35rem 0.9rem;
+    background: var(--color-workspace-button);
+    border: 1px solid #222222;
+    border-radius: 0.35rem;
+    color: #111111;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .percy-project-card-button:hover:not(:disabled) {
+        background: var(--color-workspace-button-hover);
+        color: #111111;
+        text-decoration: none;
+    }
+
+    .percy-project-card-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+/* Collection navigation */
+
+.percy-card-collection-navigation {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.percy-card-nav-prev,
+.percy-card-nav-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #111111;
+    border: 1px solid var(--color-workspace-border);
+    border-radius: 50%;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+    .percy-card-nav-prev:hover,
+    .percy-card-nav-next:hover {
+        background: #e5e5e5;
+    }
 
 /* ==========================================
    Technology tags
@@ -379,6 +519,17 @@ button:focus-visible,
     body {
         background-attachment: scroll;
     }
+
+    /* Show one primary card at a time on mobile. */
+
+    .percy-project-card {
+        flex-basis: calc(100% - 2rem);
+        width: calc(100% - 2rem);
+    }
+
+    .percy-card-collection-track {
+        gap: 0.75rem;
+    }
 }
 
 @media (max-width: 575px) {
@@ -393,6 +544,428 @@ button:focus-visible,
 
 @media (prefers-reduced-motion: reduce) {
     .navbar-nav .nav-link {
+        transition: none;
+    }
+
+    .percy-card-collection-track {
+        scroll-behavior: auto;
+    }
+}
+
+
+/* ==========================================
+   Card Collection display variants
+   Option B: wide application cards without
+   reserved icon space
+   ========================================== */
+
+/* Wide application cards fill the section, unlike compact game cards. */
+.percy-card-collection--horizontal .percy-project-card {
+    flex: 0 0 calc(100% - 0.5rem);
+    width: calc(100% - 0.5rem);
+    box-sizing: border-box;
+    flex-direction: row;
+    align-items: center;
+    min-height: 100px;
+}
+
+.percy-card-collection--horizontal .percy-project-card-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-width: 0;
+    padding: 1.25rem;
+}
+
+.percy-card-collection--horizontal .percy-project-card-description {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 620px;
+    font-size: 0.95rem;
+}
+
+.percy-card-collection--horizontal .percy-project-card-actions {
+    flex: 0 0 auto;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Images are optional: no blank area is reserved when absent. */
+.percy-card-collection--horizontal .percy-project-card-image {
+    flex: 0 0 64px;
+    width: 64px;
+    height: 64px;
+    aspect-ratio: 1;
+    margin-left: 1rem;
+    border-radius: 0.35rem;
+}
+
+/* Compact cards retain the existing 16:9 artwork and horizontal scroll. */
+.percy-card-collection--compact .percy-project-card {
+    flex: 0 0 220px;
+    width: 220px;
+}
+
+.percy-card-collection-navigation {
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+.percy-card-nav-prev:disabled,
+.percy-card-nav-next:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+    .percy-card-collection--horizontal .percy-project-card {
+        flex-basis: calc(100% - 0.5rem);
+        width: calc(100% - 0.5rem);
+    }
+
+    .percy-card-collection--horizontal .percy-project-card-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .percy-card-collection--horizontal .percy-project-card-actions {
+        width: 100%;
+    }
+
+    /* One predominantly visible game card with a peek of the next. */
+    .percy-card-collection--compact .percy-project-card {
+        flex-basis: calc(100% - 2rem);
+        width: calc(100% - 2rem);
+    }
+}
+
+
+/* ==========================================
+   Home page
+   Simplified two-by-two portfolio layout
+   ========================================== */
+
+.home-career {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.home-career-heading {
+    width: fit-content;
+    min-width: 220px;
+    margin: 0 auto 1.25rem;
+    padding: 0.55rem 2rem;
+    border-radius: 999px;
+    background: #284b55;
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+    text-align: center;
+}
+
+.home-dashboard > div {
+    min-width: 0;
+}
+
+.home-panel {
+    height: 100%;
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid #aebdc0;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.84);
+}
+
+.home-panel-heading {
+    margin: 0 0 1rem;
+    padding: 0 0 0.6rem;
+    border-bottom: 1px solid #d9e0e1;
+    color: #263c43;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.055em;
+    text-align: left;
+}
+
+/* Highlight */
+
+.home-highlight-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 0.8rem;
+    overflow: hidden;
+    border-radius: 0.55rem;
+    background: #edf0ef;
+}
+
+    .home-highlight-image img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.home-highlight-title {
+    margin: 0 0 0.4rem;
+    color: #1d292d;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.home-highlight-description {
+    margin: 0;
+    color: #465357;
+    font-size: 0.8rem;
+    line-height: 1.55;
+}
+
+/* Experience */
+
+.home-experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.home-experience-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.home-experience-logo {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 0.35rem;
+    background: #ffffff;
+}
+
+.home-experience-details {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.2rem 0.5rem;
+    min-width: 0;
+    flex: 1;
+}
+
+    .home-experience-details h4 {
+        grid-column: 1 / -1;
+        margin: 0;
+        color: #263c43;
+        font-size: 0.82rem;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .home-experience-details p {
+        min-width: 0;
+        margin: 0;
+        color: #465357;
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .home-experience-details span {
+        color: #647276;
+        font-size: 0.68rem;
+        line-height: 1.4;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+/* Skill and technology tags */
+
+.home-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+}
+
+    .home-tags span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+        padding: 0.32rem 0.65rem;
+        border: 1px solid #d3dfe1;
+        border-radius: 999px;
+        background: #eaf0f1;
+        color: #314c54;
+        font-size: 0.72rem;
+        font-weight: 600;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+.home-project-tags {
+    margin-top: 0;
+    gap: 0.5rem;
+}
+
+    .home-project-tags span {
+        padding: 0.45rem 0.8rem;
+        font-size: 0.78rem;
+    }
+
+/* Education */
+
+.home-education-item h4 {
+    margin: 0 0 0.6rem;
+    color: #263c43;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.home-education-item p {
+    margin: 0 0 0.45rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid #dce3e4;
+    border-radius: 0.4rem;
+    background: rgba(255, 255, 255, 0.72);
+    color: #465357;
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+    .home-education-item p:last-child {
+        margin-bottom: 0;
+    }
+
+/* Home page responsive adjustments */
+
+@media (max-width: 767px) {
+    .home-career {
+        margin-top: 1rem;
+    }
+
+    .home-career-heading {
+        min-width: 180px;
+        margin-bottom: 1rem;
+    }
+
+    .home-panel {
+        padding: 0.9rem;
+        border-radius: 0.85rem;
+    }
+
+    .home-experience-details {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.15rem;
+    }
+
+        .home-experience-details h4,
+        .home-experience-details p,
+        .home-experience-details span {
+            grid-column: 1;
+            text-align: left;
+        }
+}
+
+
+/* ==========================================
+   Home page refinements
+   ========================================== */
+
+/* Larger, full-width Career heading */
+.home-career-heading {
+    width: 100%;
+    min-width: 0;
+    margin: 0 auto 1.35rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 0.8rem;
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* More prominent panel titles */
+.home-panel-heading {
+    margin-bottom: 1rem;
+    padding-bottom: 0.65rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.015em;
+}
+
+/* Separate experience entries more clearly */
+.home-experience-list {
+    gap: 1.15rem;
+}
+
+.home-experience-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid #d9e0e1;
+}
+
+    .home-experience-entry:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+@media (max-width: 767px) {
+    .home-career-heading {
+        margin-bottom: 1rem;
+        padding: 0.6rem 1rem;
+        font-size: 1.55rem;
+    }
+
+    .home-panel-heading {
+        font-size: 1.1rem;
+    }
+
+    .home-experience-list {
+        gap: 1rem;
+    }
+}
+
+
+/* ==========================================
+   Clickable homepage panels
+   ========================================== */
+
+.home-panel-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+    .home-panel-link:hover {
+        color: inherit;
+        text-decoration: none;
+        border-color: #78969d;
+        background-color: rgba(255, 255, 255, 0.94);
+    }
+
+    .home-panel-link:focus-visible {
+        outline: 3px solid #284b55;
+        outline-offset: 3px;
+    }
+
+    .home-panel-link .home-panel-heading {
+        color: #263c43;
+    }
+
+    .home-panel-link .home-tags span {
+        cursor: inherit;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .home-panel-link {
         transition: none;
     }
 }

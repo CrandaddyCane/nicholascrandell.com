@@ -1,8 +1,10 @@
 ﻿
 @{
     var pageTitle = ViewData["Title"]?.ToString() ?? "Home";
+
     var currentController =
         ViewContext.RouteData.Values["controller"]?.ToString();
+
     var currentAction =
         ViewContext.RouteData.Values["action"]?.ToString();
 
@@ -24,11 +26,12 @@
     <!-- Open Sans typography -->
     <link rel="preconnect"
           href="https://fonts.googleapis.com" />
+
     <link rel="preconnect"
           href="https://fonts.gstatic.com"
           crossorigin />
 
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap"
           rel="stylesheet" />
 
     <link rel="stylesheet"
@@ -44,6 +47,7 @@
 </head>
 
 <body>
+
     <!-- Primary navigation -->
     <header class="site-header">
         <nav class="navbar"
@@ -52,6 +56,7 @@
             <div class="container justify-content-center">
                 <ul class="navbar-nav flex-row align-items-center">
 
+                    <!-- Home -->
                     <li class="nav-item">
                         <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")"
                            asp-controller="Home"
@@ -61,6 +66,7 @@
                         </a>
                     </li>
 
+                    <!-- Portfolio -->
                     <li class="nav-item">
                         <a class="nav-link @(currentController == "Home" && currentAction == "Portfolio" ? "active" : "")"
                            asp-controller="Home"
@@ -72,20 +78,23 @@
 
                     @if (isAuthenticated)
                     {
+                        <!-- Workshop -->
                         <li class="nav-item">
                             <a class="nav-link @(currentController == "Workspace" ? "active" : "")"
                                asp-controller="Workspace"
                                asp-action="Index"
                                aria-current="@(currentController == "Workspace" ? "page" : null)">
-                                Workspace
+                                WIP
                             </a>
                         </li>
 
+                        <!-- Logout -->
                         <li class="nav-item">
                             <form asp-controller="Account"
                                   asp-action="Logout"
                                   method="post"
                                   class="m-0">
+
                                 @Html.AntiForgeryToken()
 
                                 <button type="submit"
@@ -97,6 +106,7 @@
                     }
                     else
                     {
+                        <!-- Login -->
                         <li class="nav-item">
                             <a class="nav-link @(currentController == "Account" && currentAction == "Login" ? "active" : "")"
                                asp-controller="Account"
@@ -184,5 +194,6 @@
             asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

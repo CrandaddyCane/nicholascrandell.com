@@ -1,99 +1,119 @@
-﻿@{
-    ViewData["Title"] = "Workspace";
+﻿@using Percy.Website.Models
+
+@{
+    ViewData["Title"] = "Workshop";
+
+    var projectManagement = new CardCollectionViewModel
+    {
+        CollectionId = "project-management-cards",
+        DisplayVariant = "horizontal",
+        ShowNavigation = false,
+        Cards = new List<ProjectCardViewModel>
+        {
+            new ProjectCardViewModel
+            {
+                Description = "A unified platform for project management, collaboration, tasks, documents, and workflows.",
+                ButtonText = "Coming Soon",
+                IsEnabled = false
+            }
+        }
+    };
+
+    var housingTools = new CardCollectionViewModel
+    {
+        CollectionId = "housing-tools-cards",
+        DisplayVariant = "horizontal",
+        ShowNavigation = false,
+        Cards = new List<ProjectCardViewModel>
+        {
+            new ProjectCardViewModel
+            {
+                Description = "Explore housing market data, property trends, and analytical tools.",
+                ButtonText = "Coming Soon",
+                IsEnabled = false
+            }
+        }
+    };
+
+    var gameTrackers = new CardCollectionViewModel
+    {
+        CollectionId = "video-game-cards",
+        DisplayVariant = "compact",
+        ShowNavigation = true,
+        Cards = new List<ProjectCardViewModel>
+        {
+            new ProjectCardViewModel
+            {
+                Title = "Animal Crossing",
+                Description = "First one goes to Blathers",
+                ImageUrl = "/images/games/card-ac.jpg",
+                ButtonText = "Open",
+                Url = "/workspace/animal-crossing/fish",
+                IsEnabled = true,
+            },
+            new ProjectCardViewModel
+            {
+                Title = "Satisfactory",
+                Description = "The factory must grow",
+                ImageUrl = "/images/games/card-satisfactory.jpg",
+                ButtonText = "Coming Soon",
+                IsEnabled = false,
+            },
+            new ProjectCardViewModel
+            {
+                Title = "Pokémon",
+                Description = "Gotta catch 'em all",
+                ImageUrl = "/images/games/card-pokeemans.jpg",
+                ButtonText = "Coming Soon",
+                IsEnabled = false,
+            },
+
+        }
+    };
 }
 
 <div class="container py-5">
 
-    <header class="mb-5">
-        <h1>My Workspace</h1>
-
-        <p class="lead">
-            Personal projects, experiments, and development tools.
-        </p>
-
-        <p class="text-muted">
-            My private development workspace.
-        </p>
+    <header class="mb-4">
+        <h1>Workshop</h1>
     </header>
 
-    <hr />
+    <section class="card p-4 mb-4"
+             aria-labelledby="project-management-heading">
 
-    <section class="mt-5" aria-labelledby="projects-heading">
-
-        <h2 id="projects-heading" class="mb-4">
-            Projects
+        <h2 id="project-management-heading" class="mb-3">
+            Project Management Software
         </h2>
 
-        <div class="row g-4">
+        @await Component.InvokeAsync(
+            "CardCollection",
+            new { model = projectManagement })
 
-            <!-- Video Game Trackers -->
-            <div class="col-12 col-md-6">
+    </section>
 
-                <div class="card h-100">
+    <section class="card p-4 mb-4"
+             aria-labelledby="housing-heading">
 
-                    <div class="card-body d-flex flex-column">
+        <h2 id="housing-heading" class="mb-3">
+            Housing Market Tool
+        </h2>
 
-                        <h3 class="h5">
-                            Video Game Trackers
-                        </h3>
+        @await Component.InvokeAsync(
+            "CardCollection",
+            new { model = housingTools })
 
-                        <p class="text-muted">
-                            In Development
-                        </p>
+    </section>
 
-                        <p>
-                            Track progress, accomplishments, and
-                            activities across Animal Crossing,
-                            Pokémon, and Satisfactory.
-                        </p>
+    <section class="card p-4 mb-4"
+             aria-labelledby="games-heading">
 
-                        <div class="mt-auto pt-3">
-                            <a href="/workspace/games"
-                               class="btn btn-primary">
-                                Open Project
-                            </a>
-                        </div>
+        <h2 id="games-heading" class="mb-3">
+            Video Game Trackers &amp; Assistants
+        </h2>
 
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Future Project -->
-            <div class="col-12 col-md-6">
-
-                <div class="card h-100">
-
-                    <div class="card-body d-flex flex-column">
-
-                        <h3 class="h5">
-                            Project #2
-                        </h3>
-
-                        <p class="text-muted">
-                            Planned
-                        </p>
-
-                        <p>
-                            Placeholder for a future project
-                            within the workspace.
-                        </p>
-
-                        <div class="mt-auto pt-3">
-                            <button class="btn btn-outline-secondary"
-                                    disabled>
-                                Coming Soon
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
+        @await Component.InvokeAsync(
+            "CardCollection",
+            new { model = gameTrackers })
 
     </section>
 
