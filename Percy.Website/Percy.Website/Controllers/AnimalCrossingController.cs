@@ -799,6 +799,158 @@ namespace Percy.Website.Controllers
             return View("Insects", insects);
         }
 
+        // Public Art Collection page.
+        [HttpGet("art")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Art()
+        {
+            var donatedIds = (await _context.MuseumDonations
+                .AsNoTracking()
+                .Where(d => d.TownID == TownID)
+                .Select(d => d.MuseumItemID)
+                .ToListAsync())
+                .ToHashSet();
+
+            var paintings = await _context.MuseumItems
+                .AsNoTracking()
+                .Where(item =>
+                    item.GameID == GameID &&
+                    item.CategoryID == ArtCategoryID &&
+                    item.IsActive)
+                .OrderBy(item => item.ItemName)
+                .Select(item => new ArtItemViewModel
+                {
+                    MuseumItemID = item.MuseumItemID,
+                    PaintingName = item.ItemName
+                })
+                .ToListAsync();
+
+            foreach (var painting in paintings)
+            {
+                painting.IsDonated = donatedIds.Contains(
+                    painting.MuseumItemID);
+            }
+
+            var model = new ArtCollectionViewModel
+            {
+                TownName = "Maple",
+                PlayerName = "Nick",
+                Paintings = paintings
+            };
+
+            return View("Art", model);
+        }
+
+        // Only administrators can change art donation records.
+        [HttpPost("art/donation")]
+        [Authorize(Roles = AdministratorRole)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateArtDonation(
+            int museumItemId,
+            bool isDonated)
+        {
+            return await SaveDonation(
+                museumItemId,
+                isDonated,
+                ArtCategoryID);
+        }
+
+        // Public Fossil Collection page.
+        [HttpGet("fossils")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Fossils()
+        {
+            var donatedIds = (await _context.MuseumDonations
+                .AsNoTracking()
+                .Where(d => d.TownID == TownID)
+                .Select(d => d.MuseumItemID)
+                .ToListAsync())
+                .ToHashSet();
+
+            var groups = await _context.FossilGroups
+                .AsNoTracking()
+                .Where(g => g.GameID == GameID)
+                .OrderBy(g => g.FossilGroupID)
+                .Select(g => new FossilGroupViewModel
+                {
+                    FossilGroupID = g.FossilGroupID,
+                    GroupName = g.GroupName
+                })
+                .ToListAsync();
+
+            var fossils = await _context.MuseumItems
+                .AsNoTracking()
+                .Where(item =>
+                    item.GameID == GameID &&
+                    item.CategoryID == FossilCategoryID &&
+                    item.IsActive)
+                .OrderBy(item => item.ItemName)
+                .Select(item => new
+                {
+                    item.MuseumItemID,
+                    item.FossilGroupID,
+                    item.ItemName
+                })
+                .ToListAsync();
+
+            var groupsById = groups.ToDictionary(g => g.FossilGroupID);
+
+            foreach (var fossil in fossils)
+            {
+                if (!fossil.FossilGroupID.HasValue ||
+                    !groupsById.TryGetValue(
+                        fossil.FossilGroupID.Value, out var group))
+                {
+                    // Retain items even if their grouping needs repair.
+                    group = groups.FirstOrDefault(g =>
+                        g.FossilGroupID == 0);
+
+                    if (group == null)
+                    {
+                        group = new FossilGroupViewModel
+                        {
+                            FossilGroupID = 0,
+                            GroupName = "Ungrouped Fossils"
+                        };
+                        groups.Add(group);
+                    }
+                }
+
+                group.Fossils.Add(new FossilItemViewModel
+                {
+                    MuseumItemID = fossil.MuseumItemID,
+                    FossilName = fossil.ItemName,
+                    IsDonated = donatedIds.Contains(fossil.MuseumItemID)
+                });
+            }
+
+            var model = new FossilCollectionViewModel
+            {
+                TownName = "Maple",
+                PlayerName = "Nick",
+                Groups = groups
+                    .Where(g => g.Fossils.Count > 0)
+                    .OrderBy(g => g.FossilGroupID == 0 ? int.MaxValue : g.FossilGroupID)
+                    .ToList()
+            };
+
+            return View("Fossils", model);
+        }
+
+        // Only administrators can change fossil donation records.
+        [HttpPost("fossils/donation")]
+        [Authorize(Roles = AdministratorRole)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateFossilDonation(
+            int museumItemId,
+            bool isDonated)
+        {
+            return await SaveDonation(
+                museumItemId,
+                isDonated,
+                FossilCategoryID);
+        }
+
         // Existing Fish Tracker donation endpoint.
         // Only administrators may make changes.
         [HttpPost("fish/donation")]

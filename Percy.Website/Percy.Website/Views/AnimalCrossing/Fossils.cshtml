@@ -1,0 +1,543 @@
+﻿@model Percy.Website.Models.FossilCollectionViewModel
+
+@{
+    ViewData["Title"] = "Fossil Collection";
+
+    bool canEdit = User.IsInRole("SystemAdministrator");
+}
+
+<style>
+    .fossil-page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 30px 20px 50px;
+        font-family: "Open Sans", Arial, sans-serif;
+        color: #172b3d;
+    }
+
+    .fossil-navigation {
+        margin-bottom: 20px;
+    }
+
+        .fossil-navigation a {
+            color: #1769aa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .fossil-navigation a:hover {
+                text-decoration: underline;
+            }
+
+    .fossil-header {
+        margin-bottom: 24px;
+    }
+
+        .fossil-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .fossil-header p {
+            margin-bottom: 6px;
+            color: #64748b;
+        }
+
+    .fossil-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        padding: 20px;
+        margin-bottom: 24px;
+        background: #fff;
+        border: 1px solid #e1e5e9;
+        border-radius: 10px;
+    }
+
+    .fossil-summary-count {
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .fossil-summary-label {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .fossil-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .fossil-card {
+        background: #fff;
+        border: 1px solid #dce2e7;
+        border-radius: 11px;
+        padding: 20px;
+        min-width: 0;
+    }
+
+        .fossil-card.complete {
+            border-color: #90cba0;
+        }
+
+    .fossil-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .fossil-card-title {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .fossil-card-count {
+        font-size: 13px;
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .fossil-progress {
+        height: 7px;
+        background: #e5eaf0;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 18px;
+    }
+
+    .fossil-progress-fill {
+        height: 100%;
+        background: #1769aa;
+        transition: width 0.2s ease;
+    }
+
+    .fossil-card.complete .fossil-progress-fill {
+        background: #308653;
+    }
+
+    .fossil-items {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .fossil-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 7px;
+        background: #fff;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+        .fossil-item.donated {
+            background: #eef5ed;
+        }
+
+        .fossil-item input {
+            width: 17px;
+            height: 17px;
+            accent-color: #1769aa;
+            flex-shrink: 0;
+        }
+
+            .fossil-item input:disabled {
+                cursor: default;
+            }
+
+    .fossil-item-name {
+        flex: 1;
+        overflow-wrap: anywhere;
+    }
+
+    .fossil-complete-label {
+        display: none;
+        font-size: 12px;
+        color: #216039;
+        font-weight: 700;
+        margin-top: 14px;
+    }
+
+    .fossil-card.complete .fossil-complete-label {
+        display: block;
+    }
+
+    .fossil-message {
+        margin-bottom: 18px;
+        padding: 12px;
+        border-radius: 7px;
+        font-size: 13px;
+    }
+
+    .fossil-message-error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .fossil-hidden {
+        display: none;
+    }
+
+    .fossil-help {
+        margin-top: 24px;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    @@media (max-width: 700px) {
+        .fossil-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .fossil-page {
+            padding: 20px 12px 40px;
+        }
+    }
+</style>
+
+<div class="fossil-page">
+
+    <nav class="fossil-navigation">
+        <a href="/workspace/animal-crossing">
+            &larr; Back to Museum Dashboard
+        </a>
+    </nav>
+
+    <header class="fossil-header">
+        <h1>Fossil Collection</h1>
+
+        <p>Animal Crossing Deluxe | GameCube</p>
+
+        <p>
+            Town: <strong>@Model.TownName</strong> |
+            Player: <strong>@Model.PlayerName</strong>
+        </p>
+    </header>
+
+    <section class="fossil-summary">
+
+        <div>
+            <div class="fossil-summary-count">
+                <span id="fossil-donated-count">
+                    @Model.DonatedFossils
+                </span>
+                / @Model.TotalFossils
+            </div>
+
+            <div class="fossil-summary-label">
+                Fossils Donated
+            </div>
+        </div>
+
+        <div>
+            <div class="fossil-summary-count">
+                <span id="fossil-completed-groups">
+                    @Model.CompletedGroups
+                </span>
+                / @Model.Groups.Count
+            </div>
+
+            <div class="fossil-summary-label">
+                Groups Completed
+            </div>
+        </div>
+
+    </section>
+
+    <form id="fossil-donation-form" class="fossil-hidden">
+        @Html.AntiForgeryToken()
+    </form>
+
+    <div id="fossil-message"
+         class="fossil-message fossil-hidden"
+         role="status"
+         aria-live="polite">
+    </div>
+
+    <div class="fossil-grid">
+
+        @foreach (var group in Model.Groups)
+        {
+            int donated = group.DonatedFossils;
+            int total = group.TotalFossils;
+
+            double percentage = total > 0
+                ? (double)donated / total * 100
+                : 0;
+
+            <section class="fossil-card @(group.IsComplete ? "complete" : "")"
+                     data-group-id="@group.FossilGroupID">
+
+                <div class="fossil-card-header">
+
+                    <h2 class="fossil-card-title">
+                        @group.GroupName
+                    </h2>
+
+                    <div class="fossil-card-count">
+                        <span class="group-donated-count">
+                            @donated
+                        </span>
+                        / @total donated
+                    </div>
+
+                </div>
+
+                <div class="fossil-progress">
+                    <div class="fossil-progress-fill"
+                         style="width: @(percentage.ToString(System.Globalization.CultureInfo.InvariantCulture))%">
+                    </div>
+                </div>
+
+                <div class="fossil-items">
+
+                    @foreach (var fossil in group.Fossils)
+                    {
+                        <label class="fossil-item @(fossil.IsDonated ? "donated" : "")">
+
+                            <input type="checkbox"
+                                   class="fossil-donation-checkbox"
+                                   data-item-id="@fossil.MuseumItemID"
+                                   checked="@fossil.IsDonated"
+                                   disabled="@(!canEdit)"
+                                   aria-label="Donated @fossil.FossilName" />
+
+                            <span class="fossil-item-name">
+                                @fossil.FossilName
+                            </span>
+
+                        </label>
+                    }
+
+                </div>
+
+                <div class="fossil-complete-label">
+                    Group Complete
+                </div>
+
+            </section>
+        }
+
+    </div>
+
+    <div class="fossil-help">
+        <p>
+            Each fossil piece is tracked individually.
+            Progress bars show how many pieces have been
+            donated within each group.
+        </p>
+
+        <p>
+            @if (canEdit)
+            {
+                <text>
+                    Donation checkboxes are editable.
+                    Changes are saved directly to SQL Server.
+                </text>
+            }
+            else
+            {
+                <text>
+                    Donation information is read-only.
+                    Only the administrator can make changes.
+                </text>
+            }
+        </p>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        "use strict";
+
+        const canEdit = @(canEdit ? "true" : "false");
+
+        if (!canEdit) {
+            return;
+        }
+
+        const checkboxes = document.querySelectorAll(
+            ".fossil-donation-checkbox"
+        );
+
+        const token = document.querySelector(
+            '#fossil-donation-form input[name="__RequestVerificationToken"]'
+        )?.value;
+
+        const message = document.getElementById(
+            "fossil-message"
+        );
+
+        function updateStatistics() {
+            const allCheckboxes = document.querySelectorAll(
+                ".fossil-donation-checkbox"
+            );
+
+            const donatedCount = document.querySelectorAll(
+                ".fossil-donation-checkbox:checked"
+            ).length;
+
+            document.getElementById(
+                "fossil-donated-count"
+            ).textContent = donatedCount;
+
+            let completedGroups = 0;
+
+            document.querySelectorAll(".fossil-card")
+                .forEach(function(card) {
+
+                    const groupCheckboxes = card.querySelectorAll(
+                        ".fossil-donation-checkbox"
+                    );
+
+                    const groupDonated = card.querySelectorAll(
+                        ".fossil-donation-checkbox:checked"
+                    ).length;
+
+                    const groupTotal = groupCheckboxes.length;
+
+                    const complete =
+                        groupTotal > 0 &&
+                        groupDonated === groupTotal;
+
+                    if (complete) {
+                        completedGroups++;
+                    }
+
+                    card.classList.toggle(
+                        "complete",
+                        complete
+                    );
+
+                    card.querySelector(
+                        ".group-donated-count"
+                    ).textContent = groupDonated;
+
+                    const percentage = groupTotal > 0
+                        ? groupDonated / groupTotal * 100
+                        : 0;
+
+                    card.querySelector(
+                        ".fossil-progress-fill"
+                    ).style.width = percentage + "%";
+                });
+
+            document.getElementById(
+                "fossil-completed-groups"
+            ).textContent = completedGroups;
+        }
+
+        function showError(text) {
+            message.textContent = text;
+            message.className =
+                "fossil-message fossil-message-error";
+        }
+
+        checkboxes.forEach(function(checkbox) {
+
+            checkbox.addEventListener(
+                "change",
+                async function() {
+
+                    const itemId = checkbox.dataset.itemId;
+                    const newValue = checkbox.checked;
+
+                    checkbox.disabled = true;
+
+                    message.className =
+                        "fossil-message fossil-hidden";
+
+                    message.textContent = "";
+
+                    try {
+                        if (!token) {
+                            throw new Error(
+                                "Antiforgery token missing."
+                            );
+                        }
+
+                        const formData = new FormData();
+
+                        formData.append(
+                            "museumItemId",
+                            itemId
+                        );
+
+                        formData.append(
+                            "isDonated",
+                            String(newValue)
+                        );
+
+                        formData.append(
+                            "__RequestVerificationToken",
+                            token
+                        );
+
+                        const response = await fetch(
+                            "/workspace/animal-crossing/fossils/donation",
+                            {
+                                method: "POST",
+                                body: formData,
+                                credentials: "same-origin",
+                                cache: "no-store"
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                "Database update failed."
+                            );
+                        }
+
+                        const result = await response.json();
+
+                        if (
+                            result.success !== true ||
+                            result.museumItemId !== Number(itemId) ||
+                            result.isDonated !== newValue
+                        ) {
+                            throw new Error(
+                                "Unexpected server response."
+                            );
+                        }
+
+                        checkbox.closest(".fossil-item")
+                            ?.classList.toggle(
+                                "donated",
+                                newValue
+                            );
+
+                        updateStatistics();
+
+                    } catch (error) {
+
+                        checkbox.checked = !newValue;
+
+                        showError(
+                            "Unable to save donation. " +
+                            "Please try again."
+                        );
+
+                        console.error(error);
+
+                    } finally {
+
+                        checkbox.disabled = false;
+                    }
+                }
+            );
+        });
+    });
+</script>

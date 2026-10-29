@@ -19,6 +19,10 @@ namespace Percy.Website.Data
         public DbSet<MuseumDonation> MuseumDonations
             => Set<MuseumDonation>();
 
+        // Fossil collection group reference table.
+        public DbSet<FossilGroup> FossilGroups
+            => Set<FossilGroup>();
+
         // Fishing locations.
         public DbSet<SpawnLocation> SpawnLocations
             => Set<SpawnLocation>();
@@ -85,6 +89,17 @@ namespace Percy.Website.Data
                     e.TownID,
                     e.MuseumItemID
                 }).IsUnique();
+            });
+
+            // Fossil group reference table.
+            modelBuilder.Entity<FossilGroup>(entity =>
+            {
+                entity.ToTable("FossilGroups", "ac");
+
+                entity.HasKey(e => e.FossilGroupID);
+
+                entity.Property(e => e.GroupName)
+                    .IsRequired();
             });
 
             // Fishing location reference table.
@@ -257,6 +272,15 @@ namespace Percy.Website.Data
         public DateTime? DonationDate { get; set; }
 
         public DateTime CreatedAt { get; set; }
+    }
+
+    public class FossilGroup
+    {
+        public int FossilGroupID { get; set; }
+
+        public int GameID { get; set; }
+
+        public string GroupName { get; set; } = string.Empty;
     }
 
     public class SpawnLocation

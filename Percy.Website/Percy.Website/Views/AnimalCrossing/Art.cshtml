@@ -1,0 +1,417 @@
+﻿@model Percy.Website.Models.ArtCollectionViewModel
+
+@{
+    ViewData["Title"] = "Art Collection";
+
+    bool canEdit = User.IsInRole("SystemAdministrator");
+}
+
+<style>
+    .art-page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 30px 20px 50px;
+        font-family: "Open Sans", Arial, sans-serif;
+        color: #172b3d;
+    }
+
+    .art-navigation {
+        margin-bottom: 20px;
+    }
+
+        .art-navigation a {
+            color: #1769aa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .art-navigation a:hover {
+                text-decoration: underline;
+            }
+
+    .art-header {
+        margin-bottom: 24px;
+    }
+
+        .art-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .art-header p {
+            margin-bottom: 6px;
+            color: #64748b;
+        }
+
+    .art-summary {
+        padding: 20px;
+        margin-bottom: 24px;
+        background: #fff;
+        border: 1px solid #e1e5e9;
+        border-radius: 10px;
+    }
+
+    .art-summary-count {
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .art-summary-label {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .art-progress {
+        height: 7px;
+        background: #e5eaf0;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 16px;
+    }
+
+    .art-progress-fill {
+        height: 100%;
+        background: #1769aa;
+        transition: width 0.2s ease;
+    }
+
+    .art-table-container {
+        overflow-x: auto;
+        border: 1px solid #dce2e7;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .art-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+        .art-table th {
+            background: #edf2f7;
+            color: #243447;
+            font-weight: 700;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #dce2e7;
+        }
+
+        .art-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .art-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .art-table tbody tr:hover {
+            background: #edf5fc;
+        }
+
+        .art-table .art-center {
+            text-align: center;
+        }
+
+        .art-table .art-name {
+            font-weight: 600;
+        }
+
+        .art-table .art-donated {
+            background: #eef5ed;
+        }
+
+    .art-checkbox {
+        width: 17px;
+        height: 17px;
+        accent-color: #1769aa;
+        cursor: pointer;
+    }
+
+        .art-checkbox:disabled {
+            cursor: default;
+        }
+
+    .art-status {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+        .art-status.donated {
+            color: #216039;
+            font-weight: 600;
+        }
+
+    .art-message {
+        padding: 12px;
+        margin-bottom: 16px;
+        border-radius: 7px;
+    }
+
+    .art-message-error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .art-hidden {
+        display: none;
+    }
+
+    .art-help {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.7;
+    }
+</style>
+
+<div class="art-page">
+
+    <nav class="art-navigation">
+        <a href="/workspace/animal-crossing">
+            &larr; Back to Museum Dashboard
+        </a>
+    </nav>
+
+    <header class="art-header">
+        <h1>Art Collection</h1>
+        <p>Animal Crossing Deluxe | GameCube</p>
+        <p>
+            Town: <strong>@Model.TownName</strong> |
+            Player: <strong>@Model.PlayerName</strong>
+        </p>
+    </header>
+
+    <section class="art-summary">
+        <div class="art-summary-count">
+            <span id="art-donated-count">@Model.DonatedPaintings</span>
+            / @Model.TotalPaintings
+        </div>
+
+        <div class="art-summary-label">
+            Paintings Donated
+        </div>
+
+        <div class="art-progress">
+            <div id="art-progress-fill"
+                 class="art-progress-fill"
+                 style="width: @(Model.CompletionPercentage.ToString(System.Globalization.CultureInfo.InvariantCulture))%">
+            </div>
+        </div>
+    </section>
+
+    <form id="art-donation-form" class="art-hidden">
+        @Html.AntiForgeryToken()
+    </form>
+
+    <div id="art-message"
+         class="art-message art-hidden"
+         role="status"
+         aria-live="polite">
+    </div>
+
+    <div class="art-table-container">
+        <table class="art-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="art-center">Donated</th>
+                    <th scope="col">Painting Name</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var painting in Model.Paintings)
+                {
+                    <tr>
+                        <td class="art-center @(painting.IsDonated ? "art-donated" : "")">
+                            <input type="checkbox"
+                                   class="art-checkbox"
+                                   data-item-id="@painting.MuseumItemID"
+                                   checked="@painting.IsDonated"
+                                   disabled="@(!canEdit)"
+                                   aria-label="Donated @painting.PaintingName" />
+                        </td>
+
+                        <td class="art-name">
+                            @painting.PaintingName
+                        </td>
+
+                        <td>
+                            <span class="art-status @(painting.IsDonated ? "donated" : "")">
+                                @(painting.IsDonated ? "Donated" : "Not Donated")
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="art-help">
+        @if (canEdit)
+        {
+            <p>
+                Donation checkboxes are editable.
+                Changes are saved directly to SQL Server.
+            </p>
+        }
+        else
+        {
+            <p>
+                Donation information is read-only.
+                Only the administrator can make changes.
+            </p>
+        }
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        "use strict";
+
+        const canEdit = @(canEdit ? "true" : "false");
+
+        if (!canEdit) {
+            return;
+        }
+
+        const checkboxes = document.querySelectorAll(
+            ".art-checkbox"
+        );
+
+        const token = document.querySelector(
+            '#art-donation-form input[name="__RequestVerificationToken"]'
+        )?.value;
+
+        const message = document.getElementById("art-message");
+        const donatedCount = document.getElementById(
+            "art-donated-count"
+        );
+
+        const totalPaintings = @Model.TotalPaintings;
+
+        function updateStatistics() {
+            const donated = document.querySelectorAll(
+                ".art-checkbox:checked"
+            ).length;
+
+            donatedCount.textContent = donated;
+
+            const percentage = totalPaintings > 0
+                ? donated / totalPaintings * 100
+                : 0;
+
+            document.getElementById(
+                "art-progress-fill"
+            ).style.width = percentage + "%";
+        }
+
+        function showError(text) {
+            message.textContent = text;
+            message.className =
+                "art-message art-message-error";
+        }
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener(
+                "change",
+                async function() {
+                    const itemId = checkbox.dataset.itemId;
+                    const newValue = checkbox.checked;
+
+                    checkbox.disabled = true;
+                    message.className = "art-message art-hidden";
+                    message.textContent = "";
+
+                    try {
+                        if (!token) {
+                            throw new Error(
+                                "Antiforgery token missing."
+                            );
+                        }
+
+                        const formData = new FormData();
+
+                        formData.append(
+                            "museumItemId",
+                            itemId
+                        );
+
+                        formData.append(
+                            "isDonated",
+                            String(newValue)
+                        );
+
+                        formData.append(
+                            "__RequestVerificationToken",
+                            token
+                        );
+
+                        const response = await fetch(
+                            "/workspace/animal-crossing/art/donation",
+                            {
+                                method: "POST",
+                                body: formData,
+                                credentials: "same-origin",
+                                cache: "no-store"
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                "Database update failed."
+                            );
+                        }
+
+                        const result = await response.json();
+
+                        if (
+                            result.success !== true ||
+                            result.museumItemId !== Number(itemId) ||
+                            result.isDonated !== newValue
+                        ) {
+                            throw new Error(
+                                "Unexpected server response."
+                            );
+                        }
+
+                        const row = checkbox.closest("tr");
+                        const status = row.querySelector(".art-status");
+
+                        status.textContent =
+                            newValue ? "Donated" : "Not Donated";
+
+                        status.classList.toggle(
+                            "donated",
+                            newValue
+                        );
+
+                        checkbox.closest("td")
+                            .classList.toggle(
+                                "art-donated",
+                                newValue
+                            );
+
+                        updateStatistics();
+
+                    } catch (error) {
+                        checkbox.checked = !newValue;
+
+                        showError(
+                            "Unable to save donation. Please try again."
+                        );
+
+                        console.error(error);
+
+                    } finally {
+                        checkbox.disabled = false;
+                    }
+                }
+            );
+        });
+    });
+</script>
