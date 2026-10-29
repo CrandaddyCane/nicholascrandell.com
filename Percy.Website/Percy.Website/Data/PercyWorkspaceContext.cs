@@ -31,6 +31,14 @@ namespace Percy.Website.Data
         public DbSet<FishAvailability> FishAvailabilities
             => Set<FishAvailability>();
 
+        // Insect habitat reference table.
+        public DbSet<InsectSpawnLocation> InsectSpawnLocations
+            => Set<InsectSpawnLocation>();
+
+        // Insect-to-habitat relationships.
+        public DbSet<InsectLocation> InsectLocations
+            => Set<InsectLocation>();
+
         // Insect monthly and hourly availability.
         public DbSet<InsectAvailability> InsectAvailabilities
             => Set<InsectAvailability>();
@@ -142,6 +150,42 @@ namespace Percy.Website.Data
                     .HasForeignKey(e => e.MuseumItemID);
             });
 
+            // Insect habitat reference table.
+            modelBuilder.Entity<InsectSpawnLocation>(entity =>
+            {
+                entity.ToTable("InsectSpawnLocations", "ac");
+
+                entity.HasKey(e => e.LocationID);
+
+                entity.Property(e => e.LocationName)
+                    .HasMaxLength(100)
+                    .IsRequired();
+            });
+
+            // Insect-to-habitat junction table.
+            modelBuilder.Entity<InsectLocation>(entity =>
+            {
+                entity.ToTable("InsectLocations", "ac");
+
+                entity.HasKey(e => new
+                {
+                    e.MuseumItemID,
+                    e.LocationID
+                });
+
+                entity.HasOne<MuseumItem>()
+                    .WithMany()
+                    .HasForeignKey(e => e.MuseumItemID)
+                    .HasConstraintName(
+                        "FK_InsectLocations_MuseumItems");
+
+                entity.HasOne<InsectSpawnLocation>()
+                    .WithMany()
+                    .HasForeignKey(e => e.LocationID)
+                    .HasConstraintName(
+                        "FK_InsectLocations_SpawnLocations");
+            });
+
             // Insect availability, including island-only species.
             modelBuilder.Entity<InsectAvailability>(entity =>
             {
@@ -165,13 +209,15 @@ namespace Percy.Website.Data
                 entity.Property(e => e.LastUpdated)
                     .HasColumnType("datetime2");
 
-                entity.HasOne<MuseumItem>()
+                entity.HasOne<InsectLocation>()
                     .WithMany()
-                    .HasForeignKey(e => e.MuseumItemID);
-
-                entity.HasOne<SpawnLocation>()
-                    .WithMany()
-                    .HasForeignKey(e => e.LocationID);
+                    .HasForeignKey(e => new
+                    {
+                        e.MuseumItemID,
+                        e.LocationID
+                    })
+                    .HasConstraintName(
+                        "FK_InsectAvailability_InsectLocations");
             });
         }
     }
@@ -249,6 +295,20 @@ namespace Percy.Website.Data
         public int? SourceID { get; set; }
 
         public DateTime LastUpdated { get; set; }
+    }
+
+    public class InsectSpawnLocation
+    {
+        public int LocationID { get; set; }
+
+        public string LocationName { get; set; } = string.Empty;
+    }
+
+    public class InsectLocation
+    {
+        public int MuseumItemID { get; set; }
+
+        public int LocationID { get; set; }
     }
 
     public class InsectAvailability

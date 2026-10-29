@@ -1,0 +1,587 @@
+﻿@model List<Percy.Website.Models.InsectViewModel>
+@using Percy.Website.Models
+
+@{
+    ViewData["Title"] = "Insect Collection";
+
+    bool canEdit = User.IsInRole("SystemAdministrator");
+
+    string[] months =
+    {
+        "Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"
+    };
+}
+
+@functions {
+    private static bool Overlaps(
+        InsectAvailabilityWindowViewModel window,
+        int startHour,
+        int endHour)
+    {
+        if (window.IsAllDay)
+        {
+            return true;
+        }
+
+        double start = window.StartTime.TotalHours;
+        double end = window.EndTime.TotalHours;
+
+        if (start == end)
+        {
+            return false;
+        }
+
+        if (end <= start)
+        {
+            end += 24;
+        }
+
+        double periodStart = startHour;
+        double periodEnd = endHour;
+
+        if (periodEnd <= periodStart)
+        {
+            periodEnd += 24;
+        }
+
+        // Compare intervals across midnight.
+        for (int offset = -24; offset <= 24; offset += 24)
+        {
+            double shiftedStart = start + offset;
+            double shiftedEnd = end + offset;
+
+            if (shiftedStart < periodEnd &&
+                shiftedEnd > periodStart)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool AvailableDuring(
+        InsectViewModel insect,
+        int startHour,
+        int endHour)
+    {
+        return insect.AvailabilityWindows.Any(window =>
+            Overlaps(window, startHour, endHour));
+    }
+
+    private static string FormatWindow(
+        InsectAvailabilityWindowViewModel window)
+    {
+        if (window.IsAllDay)
+        {
+            return "All day";
+        }
+
+        string start = DateTime.Today
+            .Add(window.StartTime)
+            .ToString("h:mm tt");
+
+        string end = DateTime.Today
+            .Add(window.EndTime)
+            .ToString("h:mm tt");
+
+        return $"{start}–{end}";
+    }
+}
+
+<style>
+    .insect-page {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 30px 20px 50px;
+        font-family: "Open Sans", Arial, sans-serif;
+    }
+
+    .insect-header {
+        margin-bottom: 24px;
+    }
+
+        .insect-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .insect-header p {
+            margin-bottom: 6px;
+            color: #64748b;
+        }
+
+    .insect-navigation {
+        margin-bottom: 20px;
+    }
+
+        .insect-navigation a {
+            color: #1769aa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .insect-navigation a:hover {
+                text-decoration: underline;
+            }
+
+    .insect-summary {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 18px 0;
+        padding: 16px;
+        border: 1px solid #e1e5e9;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .insect-summary-count {
+        font-size: 22px;
+        font-weight: 700;
+        color: #172b3d;
+    }
+
+    .insect-summary-label {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .insect-table-container {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #dce2e7;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .insect-table {
+        width: 100%;
+        min-width: 1550px;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin: 0;
+    }
+
+        .insect-table th {
+            background: #edf2f7;
+            color: #243447;
+            font-weight: 700;
+            text-align: center;
+            padding: 10px 7px;
+            border: 1px solid #dce2e7;
+            white-space: nowrap;
+        }
+
+        .insect-table td {
+            padding: 9px 7px;
+            border: 1px solid #e1e5e9;
+            vertical-align: middle;
+        }
+
+        .insect-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .insect-table tbody tr:hover {
+            background: #edf5fc;
+        }
+
+        .insect-table .insect-name {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .insect-table .insect-center {
+            text-align: center;
+        }
+
+        .insect-table .insect-price {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .insect-table .insect-location {
+            min-width: 120px;
+        }
+
+        .insect-table .insect-month {
+            width: 38px;
+            min-width: 38px;
+            text-align: center;
+        }
+
+    .insect-available {
+        background: #d7f2dc;
+        color: #216039;
+        font-weight: 700;
+    }
+
+    .insect-unavailable {
+        color: #b6c0c9;
+    }
+
+    .insect-table .insect-donated {
+        background: #eef5ed;
+    }
+
+    .insect-table .donation-checkbox {
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+        accent-color: #1769aa;
+    }
+
+        .insect-table .donation-checkbox:disabled {
+            cursor: default;
+        }
+
+    .insect-help {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 14px;
+        line-height: 1.6;
+    }
+
+    .insect-message {
+        margin: 12px 0;
+        padding: 12px;
+        border-radius: 7px;
+    }
+
+    .insect-message-error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .insect-hidden {
+        display: none;
+    }
+</style>
+
+<div class="insect-page">
+
+    <nav class="insect-navigation">
+        <a href="/workspace/animal-crossing">
+            ← Back to Museum Dashboard
+        </a>
+    </nav>
+
+    <header class="insect-header">
+        <h1>Insect Collection</h1>
+
+        <p>Animal Crossing Deluxe | GameCube</p>
+
+        <p>
+            Town: <strong>Maple</strong> |
+            Player: <strong>Nick</strong>
+        </p>
+    </header>
+
+    <section class="insect-summary">
+        <div>
+            <div class="insect-summary-count">
+                <span id="donated-count">
+                    @Model.Count(f => f.IsDonated)
+                </span>
+                / @Model.Count
+            </div>
+
+            <div class="insect-summary-label">
+                Insect Donated
+            </div>
+        </div>
+    </section>
+
+    <form id="donation-form" class="insect-hidden">
+        @Html.AntiForgeryToken()
+    </form>
+
+    <div id="donation-message"
+         class="insect-message insect-hidden"
+         role="status"
+         aria-live="polite">
+    </div>
+
+    <div class="insect-table-container">
+        <table class="insect-table">
+            <thead>
+                <tr>
+                    <th scope="col">Donated</th>
+                    <th scope="col">Insect Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Island Only</th>
+                    <th scope="col">Bells</th>
+
+                    <th scope="col">Morning</th>
+                    <th scope="col">Day</th>
+                    <th scope="col">Night</th>
+
+                    @foreach (var month in months)
+                    {
+                        <th scope="col">@month</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var insect in Model)
+                {
+                    bool morning = AvailableDuring(insect, 4, 12);
+                    bool day = AvailableDuring(insect, 12, 18);
+                    bool night = AvailableDuring(insect, 18, 4);
+
+                    string scheduleDescription =
+                        string.Join("; ",
+                            insect.AvailabilityWindows
+                                .GroupBy(w => new
+                                {
+                                    w.StartTime,
+                                    w.EndTime,
+                                    w.IsAllDay,
+                                    w.WeatherCondition,
+                                    w.LocationName,
+                                    w.IsIslandOnly
+                                })
+                                .Select(g =>
+                                {
+                                    string monthList = string.Join(
+                                        ", ",
+                                        g.Select(w => w.Month)
+                                         .Distinct()
+                                         .OrderBy(m => m)
+                                         .Select(m => months[m - 1]));
+
+                                    string windowText =
+                                        FormatWindow(g.First());
+
+                                    return $"{windowText} ({monthList}; " +
+                                           $"{g.Key.WeatherCondition}; " +
+                                           $"{g.Key.LocationName}" +
+                                           (g.Key.IsIslandOnly ? "; Island only" : "") + ")";
+                                }));
+
+                    <tr>
+                        <td class="insect-center @(insect.IsDonated ? "insect-donated" : "")">
+                            <input type="checkbox"
+                                   class="donation-checkbox"
+                                   data-item-id="@insect.MuseumItemID"
+                                   checked="@insect.IsDonated"
+                                   disabled="@(!canEdit)"
+                                   aria-label="Donated @insect.InsectName" />
+                        </td>
+
+                        <td class="insect-name">
+                            @insect.InsectName
+                        </td>
+
+                        <td class="insect-location">
+                            @(string.IsNullOrWhiteSpace(insect.SpawnLocations)
+                                ? "TBD"
+                                : insect.SpawnLocations)
+                        </td>
+
+                        <td class="insect-center" title="Indicates species with island-only availability">
+                            @(insect.IsIslandOnly ? "Yes" : "No")
+                        </td>
+
+                        <td class="insect-price">
+                            @(insect.SellPrice?.ToString("N0") ?? "N/A")
+                        </td>
+
+                        <td class="insect-center @(morning ? "insect-available" : "insect-unavailable")"
+                            title="@scheduleDescription">
+                            @(morning ? "✓" : "–")
+                        </td>
+
+                        <td class="insect-center @(day ? "insect-available" : "insect-unavailable")"
+                            title="@scheduleDescription">
+                            @(day ? "✓" : "–")
+                        </td>
+
+                        <td class="insect-center @(night ? "insect-available" : "insect-unavailable")"
+                            title="@scheduleDescription">
+                            @(night ? "✓" : "–")
+                        </td>
+
+                        @for (int month = 1; month <= 12; month++)
+                        {
+                            bool available =
+                                insect.AvailableMonths.Contains(month);
+
+                            <td class="insect-month @(available ? "insect-available" : "insect-unavailable")"
+                                title="@scheduleDescription">
+                                @(available ? "✓" : "–")
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="insect-help">
+        <p>
+            Green cells indicate that a insect is available during
+            that time of day or month at some point during the year.
+            Time-of-day indicators summarize all seasonal schedules.
+            Hover over an availability cell to see the recorded
+            time windows, weather restrictions, and habitats.
+            Island Only indicates that at least one recorded
+            availability window is restricted to the island.
+        </p>
+
+        <p>
+            @if (canEdit)
+            {
+                <text>
+                    Donation checkboxes are editable.
+                    Changes are saved directly to SQL Server.
+                </text>
+            }
+            else
+            {
+                <text>
+                    Donation information is read-only.
+                    Only the administrator can make changes.
+                </text>
+            }
+        </p>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        "use strict";
+
+        const canEdit = @(canEdit ? "true" : "false");
+
+        if (!canEdit) {
+            return;
+        }
+
+        const checkboxes = document.querySelectorAll(
+            ".donation-checkbox"
+        );
+
+        const token = document.querySelector(
+            '#donation-form input[name="__RequestVerificationToken"]'
+        )?.value;
+
+        const donatedCount = document.getElementById(
+            "donated-count"
+        );
+
+        const message = document.getElementById(
+            "donation-message"
+        );
+
+        function updateCount() {
+            donatedCount.textContent =
+                document.querySelectorAll(
+                    ".donation-checkbox:checked"
+                ).length;
+        }
+
+        function showError(text) {
+            message.textContent = text;
+            message.className =
+                "insect-message insect-message-error";
+        }
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener(
+                "change",
+                async function() {
+                    const itemId = checkbox.dataset.itemId;
+                    const newValue = checkbox.checked;
+
+                    checkbox.disabled = true;
+                    message.className =
+                        "insect-message insect-hidden";
+
+                    message.textContent = "";
+
+                    try {
+                        if (!token) {
+                            throw new Error(
+                                "Anti-forgery token missing."
+                            );
+                        }
+
+                        const formData = new FormData();
+
+                        formData.append(
+                            "museumItemId",
+                            itemId
+                        );
+
+                        formData.append(
+                            "isDonated",
+                            String(newValue)
+                        );
+
+                        formData.append(
+                            "__RequestVerificationToken",
+                            token
+                        );
+
+                        const response = await fetch(
+                            "/workspace/animal-crossing/insects/donation",
+                            {
+                                method: "POST",
+                                body: formData,
+                                credentials: "same-origin",
+                                cache: "no-store"
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                "Database update failed."
+                            );
+                        }
+
+                        const result = await response.json();
+
+                        if (
+                            result.success !== true ||
+                            result.museumItemId !== Number(itemId) ||
+                            result.isDonated !== newValue
+                        ) {
+                            throw new Error(
+                                "Unexpected response from server."
+                            );
+                        }
+
+                        updateCount();
+
+                        checkbox.closest("td")
+                            ?.classList.toggle(
+                                "insect-donated",
+                                newValue
+                            );
+
+                    } catch (error) {
+                        checkbox.checked = !newValue;
+
+                        showError(
+                            "Unable to save donation. " +
+                            "Please try again."
+                        );
+
+                        console.error(error);
+
+                    } finally {
+                        checkbox.disabled = false;
+                    }
+                }
+            );
+        });
+    });
+</script>

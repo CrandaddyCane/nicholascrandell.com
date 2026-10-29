@@ -638,8 +638,43 @@ namespace Percy.Website.Controllers
                 })
                 .ToListAsync();
 
+            // Retrieve every monthly schedule, not only the current month.
+            // Keep separate windows because the same fish may have different
+            // hours and weather requirements throughout the year.
+            var schedules = await _context.FishAvailabilities
+                .AsNoTracking()
+                .OrderBy(x => x.Month)
+                .ThenBy(x => x.StartTime)
+                .ToListAsync();
+
+            var schedulesByFish = schedules
+                .GroupBy(x => x.MuseumItemID)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Select(x =>
+                        new FishAvailabilityWindowViewModel
+                        {
+                            Month = x.Month,
+                            StartTime = x.StartTime,
+                            EndTime = x.EndTime,
+                            IsAllDay = x.IsAllDay,
+                            WeatherCondition = x.WeatherCondition
+                        }).ToList());
+
             foreach (var item in fish)
             {
+                if (schedulesByFish.TryGetValue(
+                    item.MuseumItemID,
+                    out var windows))
+                {
+                    item.AvailabilityWindows = windows;
+                    item.AvailableMonths = windows
+                        .Select(x => x.Month)
+                        .Distinct()
+                        .OrderBy(x => x)
+                        .ToList();
+                }
+
                 item.IsDonated =
                     donatedSet.Contains(
                         item.MuseumItemID);
@@ -653,6 +688,115 @@ namespace Percy.Website.Controllers
             }
 
             return View(fish);
+        }
+
+        // Public Insect Collection page.
+        [HttpGet("insects")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Insects()
+        {
+            var donatedSet = (await _context.MuseumDonations
+                .AsNoTracking()
+                .Where(d => d.TownID == TownID)
+                .Select(d => d.MuseumItemID)
+                .ToListAsync())
+                .ToHashSet();
+
+            // Use insect-specific habitats, never the fishing locations table.
+            var locationRecords = await (
+                from il in _context.InsectLocations
+                join isl in _context.InsectSpawnLocations
+                    on il.LocationID equals isl.LocationID
+                select new
+                {
+                    il.MuseumItemID,
+                    isl.LocationName
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            var locationsByInsect = locationRecords
+                .GroupBy(x => x.MuseumItemID)
+                .ToDictionary(
+                    group => group.Key,
+                    group => string.Join(", ",
+                        group.Select(x => x.LocationName)
+                            .Distinct()
+                            .OrderBy(name => name)));
+
+            var insects = await _context.MuseumItems
+                .AsNoTracking()
+                .Where(item =>
+                    item.GameID == GameID &&
+                    item.CategoryID == InsectCategoryID &&
+                    item.IsActive)
+                .OrderBy(item => item.ItemName)
+                .Select(item => new InsectViewModel
+                {
+                    MuseumItemID = item.MuseumItemID,
+                    InsectName = item.ItemName,
+                    SellPrice = item.SellPrice
+                })
+                .ToListAsync();
+
+            // Keep every monthly/hourly window and its specific habitat.
+            var scheduleRecords = await (
+                from availability in _context.InsectAvailabilities
+                join habitat in _context.InsectSpawnLocations
+                    on availability.LocationID equals habitat.LocationID
+                orderby availability.Month, availability.StartTime
+                select new
+                {
+                    availability.MuseumItemID,
+                    availability.Month,
+                    availability.StartTime,
+                    availability.EndTime,
+                    availability.IsAllDay,
+                    availability.WeatherCondition,
+                    availability.IsIslandOnly,
+                    habitat.LocationName
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            var schedulesByInsect = scheduleRecords
+                .GroupBy(x => x.MuseumItemID)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Select(x =>
+                        new InsectAvailabilityWindowViewModel
+                        {
+                            Month = x.Month,
+                            StartTime = x.StartTime,
+                            EndTime = x.EndTime,
+                            IsAllDay = x.IsAllDay,
+                            WeatherCondition = x.WeatherCondition,
+                            IsIslandOnly = x.IsIslandOnly,
+                            LocationName = x.LocationName
+                        }).ToList());
+
+            foreach (var insect in insects)
+            {
+                insect.IsDonated = donatedSet.Contains(insect.MuseumItemID);
+                insect.SpawnLocations = locationsByInsect.TryGetValue(
+                    insect.MuseumItemID, out var habitatNames)
+                    ? habitatNames
+                    : string.Empty;
+
+                if (schedulesByInsect.TryGetValue(
+                    insect.MuseumItemID, out var windows))
+                {
+                    insect.AvailabilityWindows = windows;
+                    insect.AvailableMonths = windows
+                        .Select(x => (int)x.Month)
+                        .Distinct()
+                        .OrderBy(month => month)
+                        .ToList();
+                    insect.IsIslandOnly = windows.Any(x => x.IsIslandOnly);
+                }
+            }
+
+            return View("Insects", insects);
         }
 
         // Existing Fish Tracker donation endpoint.

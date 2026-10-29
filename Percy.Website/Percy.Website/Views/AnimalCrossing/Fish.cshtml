@@ -1,94 +1,464 @@
-﻿@model List<Percy.Website.Models.FishViewModel>
+﻿
+@model List<Percy.Website.Models.FishViewModel>
+@using Percy.Website.Models
 
 @{
     ViewData["Title"] = "Fish Collection";
+
+    bool canEdit = User.IsInRole("SystemAdministrator");
+
+    string[] months =
+    {
+        "Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"
+    };
 }
 
-<div class="container py-5">
+@functions {
+    private static bool Overlaps(
+        FishAvailabilityWindowViewModel window,
+        int startHour,
+        int endHour)
+    {
+        if (window.IsAllDay)
+        {
+            return true;
+        }
 
-    <header class="mb-4">
+        double start = window.StartTime.TotalHours;
+        double end = window.EndTime.TotalHours;
+
+        if (start == end)
+        {
+            return false;
+        }
+
+        if (end <= start)
+        {
+            end += 24;
+        }
+
+        double periodStart = startHour;
+        double periodEnd = endHour;
+
+        if (periodEnd <= periodStart)
+        {
+            periodEnd += 24;
+        }
+
+        // Compare intervals across midnight.
+        for (int offset = -24; offset <= 24; offset += 24)
+        {
+            double shiftedStart = start + offset;
+            double shiftedEnd = end + offset;
+
+            if (shiftedStart < periodEnd &&
+                shiftedEnd > periodStart)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool AvailableDuring(
+        FishViewModel fish,
+        int startHour,
+        int endHour)
+    {
+        return fish.AvailabilityWindows.Any(window =>
+            Overlaps(window, startHour, endHour));
+    }
+
+    private static string FormatWindow(
+        FishAvailabilityWindowViewModel window)
+    {
+        if (window.IsAllDay)
+        {
+            return "All day";
+        }
+
+        string start = DateTime.Today
+            .Add(window.StartTime)
+            .ToString("h:mm tt");
+
+        string end = DateTime.Today
+            .Add(window.EndTime)
+            .ToString("h:mm tt");
+
+        return $"{start}–{end}";
+    }
+}
+
+<style>
+    .fish-page {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 30px 20px 50px;
+        font-family: "Open Sans", Arial, sans-serif;
+    }
+
+    .fish-header {
+        margin-bottom: 24px;
+    }
+
+    .fish-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .fish-header p {
+        margin-bottom: 6px;
+        color: #64748b;
+    }
+
+    .fish-navigation {
+        margin-bottom: 20px;
+    }
+
+    .fish-navigation a {
+        color: #1769aa;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .fish-navigation a:hover {
+        text-decoration: underline;
+    }
+
+    .fish-summary {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 18px 0;
+        padding: 16px;
+        border: 1px solid #e1e5e9;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .fish-summary-count {
+        font-size: 22px;
+        font-weight: 700;
+        color: #172b3d;
+    }
+
+    .fish-summary-label {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .fish-table-container {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid #dce2e7;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .fish-table {
+        width: 100%;
+        min-width: 1550px;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    .fish-table th {
+        background: #edf2f7;
+        color: #243447;
+        font-weight: 700;
+        text-align: center;
+        padding: 10px 7px;
+        border: 1px solid #dce2e7;
+        white-space: nowrap;
+    }
+
+    .fish-table td {
+        padding: 9px 7px;
+        border: 1px solid #e1e5e9;
+        vertical-align: middle;
+    }
+
+    .fish-table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    .fish-table tbody tr:hover {
+        background: #edf5fc;
+    }
+
+    .fish-table .fish-name {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .fish-table .fish-center {
+        text-align: center;
+    }
+
+    .fish-table .fish-price {
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .fish-table .fish-location {
+        min-width: 120px;
+    }
+
+    .fish-table .fish-month {
+        width: 38px;
+        min-width: 38px;
+        text-align: center;
+    }
+
+    .fish-available {
+        background: #d7f2dc;
+        color: #216039;
+        font-weight: 700;
+    }
+
+    .fish-unavailable {
+        color: #b6c0c9;
+    }
+
+    .fish-table .fish-donated {
+        background: #eef5ed;
+    }
+
+    .fish-table .donation-checkbox {
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+        accent-color: #1769aa;
+    }
+
+    .fish-table .donation-checkbox:disabled {
+        cursor: default;
+    }
+
+    .fish-help {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 14px;
+        line-height: 1.6;
+    }
+
+    .fish-message {
+        margin: 12px 0;
+        padding: 12px;
+        border-radius: 7px;
+    }
+
+    .fish-message-error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .fish-hidden {
+        display: none;
+    }
+</style>
+
+<div class="fish-page">
+
+    <nav class="fish-navigation">
+        <a href="/workspace/animal-crossing">
+            ← Back to Museum Dashboard
+        </a>
+    </nav>
+
+    <header class="fish-header">
         <h1>Fish Collection</h1>
 
-        <p class="lead">
-            Animal Crossing Deluxe - GameCube
-        </p>
+        <p>Animal Crossing Deluxe | GameCube</p>
 
         <p>
             Town: <strong>Maple</strong> |
             Player: <strong>Nick</strong>
         </p>
-
-        <p>
-            <span id="donated-count">
-                @Model.Count(f => f.IsDonated)
-            </span>
-            of @Model.Count fish donated.
-        </p>
     </header>
 
-    <form id="donation-form">
+    <section class="fish-summary">
+        <div>
+            <div class="fish-summary-count">
+                <span id="donated-count">
+                    @Model.Count(f => f.IsDonated)
+                </span>
+                / @Model.Count
+            </div>
+
+            <div class="fish-summary-label">
+                Fish Donated
+            </div>
+        </div>
+    </section>
+
+    <form id="donation-form" class="fish-hidden">
         @Html.AntiForgeryToken()
     </form>
 
     <div id="donation-message"
-         class="alert d-none"
+         class="fish-message fish-hidden"
          role="status"
          aria-live="polite">
     </div>
 
-    <div class="table-responsive">
-
-        <table class="table table-bordered table-striped table-hover">
-
+    <div class="fish-table-container">
+        <table class="fish-table">
             <thead>
                 <tr>
                     <th scope="col">Donated</th>
                     <th scope="col">Fish Name</th>
                     <th scope="col">Location</th>
-                    <th scope="col">Shadow Size</th>
-                    <th scope="col">Sell Price</th>
+                    <th scope="col">Shadow</th>
+                    <th scope="col">Bells</th>
+
+                    <th scope="col">Morning</th>
+                    <th scope="col">Day</th>
+                    <th scope="col">Night</th>
+
+                    @foreach (var month in months)
+                    {
+                        <th scope="col">@month</th>
+                    }
                 </tr>
             </thead>
 
             <tbody>
                 @foreach (var fish in Model)
                 {
+                    bool morning = AvailableDuring(fish, 4, 12);
+                    bool day = AvailableDuring(fish, 12, 18);
+                    bool night = AvailableDuring(fish, 18, 4);
+
+                    string scheduleDescription =
+                        string.Join("; ",
+                            fish.AvailabilityWindows
+                                .GroupBy(w => new
+                                {
+                                    w.StartTime,
+                                    w.EndTime,
+                                    w.IsAllDay,
+                                    w.WeatherCondition
+                                })
+                                .Select(g =>
+                                {
+                                    string monthList = string.Join(
+                                        ", ",
+                                        g.Select(w => w.Month)
+                                         .Distinct()
+                                         .OrderBy(m => m)
+                                         .Select(m => months[m - 1]));
+
+                                    string windowText =
+                                        FormatWindow(g.First());
+
+                                    return $"{windowText} ({monthList}; " +
+                                           $"{g.Key.WeatherCondition})";
+                                }));
+
                     <tr>
-                        <td class="text-center">
+                        <td class="fish-center @(fish.IsDonated ? "fish-donated" : "")">
                             <input type="checkbox"
-                                   class="form-check-input donation-checkbox"
+                                   class="donation-checkbox"
                                    data-item-id="@fish.MuseumItemID"
                                    checked="@fish.IsDonated"
+                                   disabled="@(!canEdit)"
                                    aria-label="Donated @fish.FishName" />
                         </td>
 
-                        <td>@fish.FishName</td>
+                        <td class="fish-name">
+                            @fish.FishName
+                        </td>
 
-                        <td>
+                        <td class="fish-location">
                             @(string.IsNullOrWhiteSpace(fish.SpawnLocations)
                                 ? "TBD"
                                 : fish.SpawnLocations)
                         </td>
 
-                        <td>
+                        <td class="fish-center">
                             @(fish.ShadowSize?.ToString() ?? "TBD")
                         </td>
 
-                        <td>
+                        <td class="fish-price">
                             @(fish.SellPrice?.ToString("N0") ?? "N/A")
                         </td>
+
+                        <td class="fish-center @(morning ? "fish-available" : "fish-unavailable")"
+                            title="@scheduleDescription">
+                            @(morning ? "✓" : "–")
+                        </td>
+
+                        <td class="fish-center @(day ? "fish-available" : "fish-unavailable")"
+                            title="@scheduleDescription">
+                            @(day ? "✓" : "–")
+                        </td>
+
+                        <td class="fish-center @(night ? "fish-available" : "fish-unavailable")"
+                            title="@scheduleDescription">
+                            @(night ? "✓" : "–")
+                        </td>
+
+                        @for (int month = 1; month <= 12; month++)
+                        {
+                            bool available =
+                                fish.AvailableMonths.Contains(month);
+
+                            <td class="fish-month @(available ? "fish-available" : "fish-unavailable")"
+                                title="@scheduleDescription">
+                                @(available ? "✓" : "–")
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>
-
         </table>
+    </div>
 
+    <div class="fish-help">
+        <p>
+            Green cells indicate that a fish is available during
+            that time of day or month at some point during the year.
+            Time-of-day indicators summarize all seasonal schedules.
+            Hover over an availability cell to see the exact
+            recorded time windows and weather restrictions.
+        </p>
+
+        <p>
+            @if (canEdit)
+            {
+                <text>
+                    Donation checkboxes are editable.
+                    Changes are saved directly to SQL Server.
+                </text>
+            }
+            else
+            {
+                <text>
+                    Donation information is read-only.
+                    Only the administrator can make changes.
+                </text>
+            }
+        </p>
     </div>
 
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        "use strict";
+
+        const canEdit = @(canEdit ? "true" : "false");
+
+        if (!canEdit) {
+            return;
+        }
 
         const checkboxes = document.querySelectorAll(
             ".donation-checkbox"
@@ -96,7 +466,7 @@
 
         const token = document.querySelector(
             '#donation-form input[name="__RequestVerificationToken"]'
-        ).value;
+        )?.value;
 
         const donatedCount = document.getElementById(
             "donated-count"
@@ -115,82 +485,98 @@
 
         function showError(text) {
             message.textContent = text;
-            message.className = "alert alert-danger";
+            message.className =
+                "fish-message fish-message-error";
         }
 
         checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener(
+                "change",
+                async function () {
+                    const itemId = checkbox.dataset.itemId;
+                    const newValue = checkbox.checked;
 
-            checkbox.addEventListener("change", async function () {
+                    checkbox.disabled = true;
+                    message.className =
+                        "fish-message fish-hidden";
 
-                const itemId = checkbox.dataset.itemId;
-                const newValue = checkbox.checked;
+                    message.textContent = "";
 
-                checkbox.disabled = true;
-                message.className = "alert d-none";
-                message.textContent = "";
-
-                try {
-                    const formData = new FormData();
-
-                    formData.append(
-                        "museumItemId",
-                        itemId
-                    );
-
-                    formData.append(
-                        "isDonated",
-                        newValue.toString()
-                    );
-
-                    formData.append(
-                        "__RequestVerificationToken",
-                        token
-                    );
-
-                    const response = await fetch(
-                        "/workspace/animal-crossing/fish/donation",
-                        {
-                            method: "POST",
-                            body: formData,
-                            credentials: "same-origin"
+                    try {
+                        if (!token) {
+                            throw new Error(
+                                "Anti-forgery token missing."
+                            );
                         }
-                    );
 
-                    if (!response.ok) {
-                        throw new Error(
-                            "Database update failed."
+                        const formData = new FormData();
+
+                        formData.append(
+                            "museumItemId",
+                            itemId
                         );
-                    }
 
-                    const result = await response.json();
-
-                    if (
-                        result.success !== true ||
-                        result.museumItemId !== Number(itemId) ||
-                        result.isDonated !== newValue
-                    ) {
-                        throw new Error(
-                            "Unexpected response from server."
+                        formData.append(
+                            "isDonated",
+                            String(newValue)
                         );
+
+                        formData.append(
+                            "__RequestVerificationToken",
+                            token
+                        );
+
+                        const response = await fetch(
+                            "/workspace/animal-crossing/fish/donation",
+                            {
+                                method: "POST",
+                                body: formData,
+                                credentials: "same-origin",
+                                cache: "no-store"
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                "Database update failed."
+                            );
+                        }
+
+                        const result = await response.json();
+
+                        if (
+                            result.success !== true ||
+                            result.museumItemId !== Number(itemId) ||
+                            result.isDonated !== newValue
+                        ) {
+                            throw new Error(
+                                "Unexpected response from server."
+                            );
+                        }
+
+                        updateCount();
+
+                        checkbox.closest("td")
+                            ?.classList.toggle(
+                                "fish-donated",
+                                newValue
+                            );
+
+                    } catch (error) {
+                        checkbox.checked = !newValue;
+
+                        showError(
+                            "Unable to save donation. " +
+                            "Please try again."
+                        );
+
+                        console.error(error);
+
+                    } finally {
+                        checkbox.disabled = false;
                     }
-
-                    updateCount();
-
-                } catch (error) {
-
-                    // Restore the previous checkbox state.
-                    checkbox.checked = !newValue;
-
-                    showError(
-                        "Unable to save donation. Please try again."
-                    );
-
-                    console.error(error);
-
-                } finally {
-                    checkbox.disabled = false;
                 }
-            });
+            );
         });
     });
 </script>
