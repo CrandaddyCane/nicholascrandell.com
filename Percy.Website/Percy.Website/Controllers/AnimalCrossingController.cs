@@ -1,5 +1,6 @@
 ﻿
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Percy.Website.Data;
@@ -20,6 +21,9 @@ namespace Percy.Website.Controllers
         private const int ArtCategoryID = 4;
         private const int TownID = 1;
         private const int PlayerID = 1;
+
+        private const string AdministratorRole =
+            "SystemAdministrator";
 
         private const string SpriteDirectory =
             "/images/animal-crossing/sprites/";
@@ -138,15 +142,18 @@ namespace Percy.Website.Controllers
             _context = context;
         }
 
-        // Render the visual dashboard.
+        // Public dashboard page.
         [HttpGet("")]
+        [AllowAnonymous]
         public IActionResult Dashboard()
         {
             var model = new AnimalCrossingDashboardViewModel
             {
                 TownName = "Maple",
-                SelectedDate = DateOnly.FromDateTime(DateTime.Now),
-                SelectedTime = TimeOnly.FromDateTime(DateTime.Now),
+                SelectedDate =
+                    DateOnly.FromDateTime(DateTime.Now),
+                SelectedTime =
+                    TimeOnly.FromDateTime(DateTime.Now),
                 Weather = "Unknown",
                 IsManualDateTime = false
             };
@@ -154,8 +161,9 @@ namespace Percy.Website.Controllers
             return View("Dashboard", model);
         }
 
-        // Read-only dashboard data endpoint.
+        // Public, read-only dashboard data endpoint.
         [HttpGet("data")]
+        [AllowAnonymous]
         public async Task<IActionResult> DashboardData(
             string? date,
             string? time,
@@ -189,13 +197,18 @@ namespace Percy.Website.Controllers
 
             var validWeather = new[]
             {
-                "Unknown", "Sunny", "Cloudy", "Rain", "Snow"
+                "Unknown",
+                "Sunny",
+                "Cloudy",
+                "Rain",
+                "Snow"
             };
 
-            var requestedWeather = (weather ?? "Unknown").Trim();
+            var requestedWeather =
+                (weather ?? "Unknown").Trim();
 
-            var selectedWeather = validWeather.FirstOrDefault(x =>
-                x.Equals(
+            var selectedWeather = validWeather.FirstOrDefault(
+                x => x.Equals(
                     requestedWeather,
                     StringComparison.OrdinalIgnoreCase));
 
@@ -209,7 +222,9 @@ namespace Percy.Website.Controllers
 
             var items = await _context.MuseumItems
                 .AsNoTracking()
-                .Where(x => x.GameID == GameID && x.IsActive)
+                .Where(x =>
+                    x.GameID == GameID &&
+                    x.IsActive)
                 .ToListAsync();
 
             var donatedIds = (await _context.MuseumDonations
@@ -222,22 +237,25 @@ namespace Percy.Website.Controllers
             var currentMonth = selectedDate.Month;
             var previousMonth = previousDate.Month;
 
-            var fishSchedules = await _context.FishAvailabilities
-                .AsNoTracking()
-                .Where(x =>
-                    x.Month == currentMonth ||
-                    x.Month == previousMonth)
-                .ToListAsync();
+            var fishSchedules =
+                await _context.FishAvailabilities
+                    .AsNoTracking()
+                    .Where(x =>
+                        x.Month == currentMonth ||
+                        x.Month == previousMonth)
+                    .ToListAsync();
 
-            var insectSchedules = await _context.InsectAvailabilities
-                .AsNoTracking()
-                .Where(x =>
-                    x.Month == currentMonth ||
-                    x.Month == previousMonth)
-                .ToListAsync();
+            var insectSchedules =
+                await _context.InsectAvailabilities
+                    .AsNoTracking()
+                    .Where(x =>
+                        x.Month == currentMonth ||
+                        x.Month == previousMonth)
+                    .ToListAsync();
 
             var fish = BuildSpecies(
-                items.Where(x => x.CategoryID == FishCategoryID),
+                items.Where(x =>
+                    x.CategoryID == FishCategoryID),
                 fishSchedules.Select(x => new AvailabilityRule
                 {
                     MuseumItemID = x.MuseumItemID,
@@ -254,7 +272,8 @@ namespace Percy.Website.Controllers
                 selectedWeather);
 
             var insects = BuildSpecies(
-                items.Where(x => x.CategoryID == InsectCategoryID),
+                items.Where(x =>
+                    x.CategoryID == InsectCategoryID),
                 insectSchedules.Select(x => new AvailabilityRule
                 {
                     MuseumItemID = x.MuseumItemID,
@@ -285,6 +304,10 @@ namespace Percy.Website.Controllers
                 selectedTime,
                 weather = selectedWeather,
 
+                // Used by the dashboard to determine
+                // whether editing controls should be enabled.
+                canEdit = User.IsInRole(AdministratorRole),
+
                 collections = new
                 {
                     fish = BuildStatistics(fish),
@@ -293,19 +316,25 @@ namespace Percy.Website.Controllers
                     fossils = new
                     {
                         donated = fossils.Count(x =>
-                            donatedIds.Contains(x.MuseumItemID)),
+                            donatedIds.Contains(
+                                x.MuseumItemID)),
                         total = fossils.Count
                     },
 
                     art = new
                     {
                         donated = art.Count(x =>
-                            donatedIds.Contains(x.MuseumItemID)),
+                            donatedIds.Contains(
+                                x.MuseumItemID)),
                         total = art.Count
                     }
                 },
 
-                species = new { fish, insects }
+                species = new
+                {
+                    fish,
+                    insects
+                }
             });
         }
 
@@ -319,7 +348,9 @@ namespace Percy.Website.Controllers
         {
             var groupedSchedules = schedules
                 .GroupBy(x => x.MuseumItemID)
-                .ToDictionary(x => x.Key, x => x.ToList());
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.ToList());
 
             var previousDate = selectedDate.AddDays(-1);
             var result = new List<DashboardSpecies>();
@@ -339,7 +370,9 @@ namespace Percy.Website.Controllers
                     .ToList();
 
                 var availableToday = eligibleRules.Any(x =>
-                    IsAvailableDuringDate(x, selectedDate));
+                    IsAvailableDuringDate(
+                        x,
+                        selectedDate));
 
                 var availableNow = eligibleRules.Any(x =>
                     IsAvailableAtTime(
@@ -353,9 +386,10 @@ namespace Percy.Website.Controllers
                         (x.Month == previousDate.Month &&
                          IsOvernight(x) &&
                          x.EndTime > TimeSpan.Zero))
-                    .Where(x => IsAvailableDuringDate(
-                        x,
-                        selectedDate))
+                    .Where(x =>
+                        IsAvailableDuringDate(
+                            x,
+                            selectedDate))
                     .ToList();
 
                 string imagePath = string.Empty;
@@ -367,7 +401,8 @@ namespace Percy.Website.Controllers
                 {
                     imagePath = SpriteDirectory + fishSprite;
                 }
-                else if (item.CategoryID == InsectCategoryID &&
+                else if (
+                    item.CategoryID == InsectCategoryID &&
                     InsectSpriteFiles.TryGetValue(
                         item.MuseumItemID,
                         out var insectSprite))
@@ -409,7 +444,8 @@ namespace Percy.Website.Controllers
                 .ToList();
         }
 
-        private static bool IsOvernight(AvailabilityRule rule)
+        private static bool IsOvernight(
+            AvailabilityRule rule)
         {
             return !rule.IsAllDay &&
                    rule.StartTime > rule.EndTime;
@@ -455,9 +491,10 @@ namespace Percy.Website.Controllers
 
             if (!IsOvernight(rule))
             {
-                return rule.Month == selectedDate.Month &&
-                       selectedTime >= rule.StartTime &&
-                       selectedTime < rule.EndTime;
+                return
+                    rule.Month == selectedDate.Month &&
+                    selectedTime >= rule.StartTime &&
+                    selectedTime < rule.EndTime;
             }
 
             var eveningAvailable =
@@ -517,14 +554,16 @@ namespace Percy.Website.Controllers
             {
                 total = new
                 {
-                    donated = species.Count(x => x.IsDonated),
+                    donated = species.Count(x =>
+                        x.IsDonated),
                     available = species.Count
                 },
 
                 rightNow = new
                 {
                     donated = species.Count(x =>
-                        x.AvailableNow && x.IsDonated),
+                        x.AvailableNow &&
+                        x.IsDonated),
                     available = species.Count(x =>
                         x.AvailableNow)
                 },
@@ -532,7 +571,8 @@ namespace Percy.Website.Controllers
                 totalDay = new
                 {
                     donated = species.Count(x =>
-                        x.AvailableToday && x.IsDonated),
+                        x.AvailableToday &&
+                        x.IsDonated),
                     available = species.Count(x =>
                         x.AvailableToday)
                 }
@@ -548,8 +588,9 @@ namespace Percy.Website.Controllers
                     CultureInfo.InvariantCulture);
         }
 
-        // Existing Fish Tracker.
+        // Public Fish Tracker.
         [HttpGet("fish")]
+        [AllowAnonymous]
         public async Task<IActionResult> Fish()
         {
             var donatedIds = await _context.MuseumDonations
@@ -568,8 +609,9 @@ namespace Percy.Website.Controllers
                 {
                     fsl.MuseumItemID,
                     sl.LocationName
-                }
-            ).AsNoTracking().ToListAsync();
+                })
+                .AsNoTracking()
+                .ToListAsync();
 
             var locationsByFish = locationRecords
                 .GroupBy(x => x.MuseumItemID)
@@ -599,7 +641,8 @@ namespace Percy.Website.Controllers
             foreach (var item in fish)
             {
                 item.IsDonated =
-                    donatedSet.Contains(item.MuseumItemID);
+                    donatedSet.Contains(
+                        item.MuseumItemID);
 
                 item.SpawnLocations =
                     locationsByFish.TryGetValue(
@@ -612,21 +655,84 @@ namespace Percy.Website.Controllers
             return View(fish);
         }
 
-        // Existing fish donation endpoint.
+        // Existing Fish Tracker donation endpoint.
+        // Only administrators may make changes.
         [HttpPost("fish/donation")]
+        [Authorize(Roles = AdministratorRole)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateFishDonation(
             int museumItemId,
             bool isDonated)
         {
-            var fishExists = await _context.MuseumItems
+            return await SaveDonation(
+                museumItemId,
+                isDonated,
+                FishCategoryID);
+        }
+
+        // Insect donation endpoint.
+        // Only administrators may make changes.
+        [HttpPost("insects/donation")]
+        [Authorize(Roles = AdministratorRole)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateInsectDonation(
+            int museumItemId,
+            bool isDonated)
+        {
+            return await SaveDonation(
+                museumItemId,
+                isDonated,
+                InsectCategoryID);
+        }
+
+        // Shared dashboard donation endpoint.
+        // Only administrators may make changes.
+        [HttpPost("donation")]
+        [Authorize(Roles = AdministratorRole)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateDashboardDonation(
+            int museumItemId,
+            bool isDonated)
+        {
+            var categoryId = await _context.MuseumItems
+                .AsNoTracking()
+                .Where(item =>
+                    item.MuseumItemID == museumItemId &&
+                    item.GameID == GameID &&
+                    item.IsActive &&
+                    (item.CategoryID == FishCategoryID ||
+                     item.CategoryID == InsectCategoryID))
+                .Select(item => item.CategoryID)
+                .FirstOrDefaultAsync();
+
+            if (categoryId != FishCategoryID &&
+                categoryId != InsectCategoryID)
+            {
+                return NotFound();
+            }
+
+            return await SaveDonation(
+                museumItemId,
+                isDonated,
+                categoryId);
+        }
+
+        // Shared database update logic.
+        // Called only from role-protected controller actions.
+        private async Task<IActionResult> SaveDonation(
+            int museumItemId,
+            bool isDonated,
+            int categoryId)
+        {
+            var itemExists = await _context.MuseumItems
+                .AsNoTracking()
                 .AnyAsync(item =>
                     item.MuseumItemID == museumItemId &&
                     item.GameID == GameID &&
-                    item.CategoryID == FishCategoryID &&
+                    item.CategoryID == categoryId &&
                     item.IsActive);
 
-            if (!fishExists)
+            if (!itemExists)
             {
                 return NotFound();
             }
@@ -648,9 +754,11 @@ namespace Percy.Website.Controllers
                         DonationDate = null
                     });
             }
-            else if (!isDonated && existingDonation != null)
+            else if (!isDonated &&
+                     existingDonation != null)
             {
-                _context.MuseumDonations.Remove(existingDonation);
+                _context.MuseumDonations.Remove(
+                    existingDonation);
             }
 
             await _context.SaveChangesAsync();
@@ -680,7 +788,10 @@ namespace Percy.Website.Controllers
         private sealed class DashboardSpecies
         {
             public int MuseumItemID { get; set; }
-            public string Name { get; set; } = string.Empty;
+
+            public string Name { get; set; }
+                = string.Empty;
+
             public int CategoryID { get; set; }
             public int? SellPrice { get; set; }
 
